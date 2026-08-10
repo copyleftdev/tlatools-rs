@@ -1,21 +1,21 @@
 --- crates/tla-syntax/src/lexer.rs
-+++ delete match arm "E" | "exists" in Lexer::scan_backslash
++++ delete match arm "lor" in Lexer::scan_backslash
 @@ -480,17 +480,17 @@
+             "cup" | "union" => Op::Cup,
+             "cap" | "intersect" => Op::Cap,
+             "times" | "X" => Op::Cartesian,
+             "div" => Op::Div,
+             "o" | "circ" => Op::Concat,
              "equiv" => Op::Equiv,
              "lnot" | "neg" => Op::Not,
              "land" => Op::And,
-             "lor" => Op::Or,
+-            "lor" => Op::Or,
++             /* ~ changed by cargo-mutants ~ */
              "leq" => Op::Le,
              "geq" => Op::Ge,
              "neq" => Op::Neq,
              "A" | "forall" => Op::Forall,
--            "E" | "exists" => Op::Exists,
-+             /* ~ changed by cargo-mutants ~ */
+             "E" | "exists" => Op::Exists,
              "AA" => Op::TemporalForall,
              "EE" => Op::TemporalExists,
              _ => match token::user_operator(&format!("\\{name}")) {
-                 Some(op) => op,
-                 None => return Err(self.err(format!("unknown operator `\\{name}`"))),
-             },
-         };
-         self.advance(1 + name.len());

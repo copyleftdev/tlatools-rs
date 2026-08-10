@@ -14,11 +14,11 @@
 -                    Tok::Op(Op::Le)
 -                }
 +                 /* ~ changed by cargo-mutants ~ */
+                 Some('|') => {
+                     self.advance(2);
+                     Tok::Op(Op::User("=|"))
+                 }
                  _ => {
                      self.bump();
                      Tok::Op(Op::Eq)
                  }
-             });
-         }
-         Err(self.err("`===` is neither a definition nor a module terminator"))
-     }

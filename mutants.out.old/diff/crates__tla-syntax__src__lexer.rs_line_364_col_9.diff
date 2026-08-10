@@ -1,6 +1,6 @@
 --- crates/tla-syntax/src/lexer.rs
 +++ replace Lexer::scan_equals -> Result<Tok> with Ok(Default::default())
-@@ -356,42 +356,17 @@
+@@ -356,46 +356,17 @@
                      });
                  }
                  Some(c) => s.push(c),
@@ -27,6 +27,10 @@
 -                Some('<') => {
 -                    self.advance(2);
 -                    Tok::Op(Op::Le)
+-                }
+-                Some('|') => {
+-                    self.advance(2);
+-                    Tok::Op(Op::User("=|"))
 -                }
 -                _ => {
 -                    self.bump();

@@ -1,0 +1,28 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::expr -> Result<Expr> with Ok(Default::default())
+@@ -493,24 +493,17 @@
+             }
+         }
+         Ok((module, subs))
+     }
+ 
+     // ------------------------------------------------------------ expression
+ 
+     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
+-        if self.depth >= self.nesting_limit {
+-            let limit = self.nesting_limit;
+-            return Err(self.err(format!("expressions nest more than {limit} deep")));
+-        }
+-        self.depth += 1;
+-        let parsed = self.expr_inner(min_prec);
+-        self.depth -= 1;
+-        parsed
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn expr_inner(&mut self, min_prec: u8) -> Result<Expr> {
+         // A bulleted list is an operand, not a whole expression: after
+         //
+         //     /\ TypeOK
+         //     /\ OneVote
+         //     => chosen = {}

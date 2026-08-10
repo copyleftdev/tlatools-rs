@@ -1,0 +1,27 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace parse_expression_bounded -> Result<Expr> with Ok(Default::default())
+@@ -16,23 +16,17 @@
+ /// Parse a bare expression, with no surrounding module. Task definitions carry
+ /// predicates as strings, and they have nowhere else to live.
+ pub fn parse_expression(src: &str) -> Result<Expr> {
+     parse_expression_bounded(src, DEFAULT_NESTING_LIMIT)
+ }
+ 
+ /// As [`parse_expression`], with a nesting limit of your own.
+ pub fn parse_expression_bounded(src: &str, nesting_limit: usize) -> Result<Expr> {
+-    let mut p = Parser::new(lex(src)?, nesting_limit);
+-    let e = p.expr(0)?;
+-    if matches!(p.peek(), Tok::Eof) {
+-        Ok(e)
+-    } else {
+-        Err(p.err(format!("unexpected {:?} after the expression", p.peek())))
+-    }
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ /// How deeply expressions may nest before the parser gives up on them.
+ ///
+ /// The parser descends recursively, so without a bound a file of enough open
+ /// brackets exhausts the stack — and a parser that aborts the process on bad
+ /// input is worse than one that rejects it. SANY, the reference parser, has no
+ /// such bound and dies with a `StackOverflowError`.

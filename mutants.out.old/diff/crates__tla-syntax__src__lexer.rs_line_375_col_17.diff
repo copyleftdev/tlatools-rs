@@ -18,7 +18,7 @@
                      self.advance(2);
                      Tok::Op(Op::Le)
                  }
-                 _ => {
-                     self.bump();
-                     Tok::Op(Op::Eq)
+                 Some('|') => {
+                     self.advance(2);
+                     Tok::Op(Op::User("=|"))
                  }

@@ -48,10 +48,10 @@
 
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
-       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/crates/tla-syntax)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps`
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps`
 warning: variable does not need to be mutable
   --> crates/tla-syntax/src/lexer.rs:93:12
    |
@@ -134,19 +134,19 @@ warning: multiple methods are never used
 341 |     fn scan_equals(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^^
 ...
-372 |     fn scan_dashes(&mut self) -> Tok {
+376 |     fn scan_dashes(&mut self) -> Tok {
     |        ^^^^^^^^^^^
 ...
-392 |     fn scan_lt(&mut self) -> Tok {
+396 |     fn scan_lt(&mut self) -> Tok {
     |        ^^^^^^^
 ...
-409 |     fn scan_gt(&mut self) -> Tok {
+414 |     fn scan_gt(&mut self) -> Tok {
     |        ^^^^^^^
 ...
-420 |     fn scan_slash(&mut self) -> Result<Tok> {
+425 |     fn scan_slash(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^
 ...
-433 |     fn scan_backslash(&mut self) -> Result<Tok> {
+438 |     fn scan_backslash(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^^^^^
 
 warning: function `user_operator` is never used
@@ -155,20 +155,22 @@ warning: function `user_operator` is never used
 193 | pub(crate) fn user_operator(symbol: &str) -> Option<Op> {
     |               ^^^^^^^^^^^^^
 
-warning: `tla-syntax` (lib test) generated 4 warnings (4 duplicates)
-warning: `tla-syntax` (lib) generated 4 warnings (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name robustness --edition=2024 crates/tla-syntax/tests/robustness.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=3b1de0d84c0f7391 -C extra-filename=-4657dcdff6c43e2f --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name queries --edition=2024 crates/tla-syntax/tests/queries.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fc19234c6e95ae98 -C extra-filename=-2cacbc55350fea8e --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name depth --edition=2024 crates/tla-syntax/examples/depth.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=945ad0d3a4da74b3 -C extra-filename=-2ef4d05ce566e5e5 --out-dir /tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.56s
-  Executable `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
-  Executable `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
-  Executable `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
-  Executable `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/queries-2cacbc55350fea8e`
-  Executable `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/robustness-4657dcdff6c43e2f`
+warning: `tla-syntax` (lib test) generated 4 warnings (run `cargo fix --lib -p tla-syntax --tests` to apply 1 suggestion)
+warning: `tla-syntax` (lib) generated 4 warnings (4 duplicates)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name queries --edition=2024 crates/tla-syntax/tests/queries.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fc19234c6e95ae98 -C extra-filename=-2cacbc55350fea8e --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name printing --edition=2024 crates/tla-syntax/tests/printing.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=630f5e3de7b96aa4 -C extra-filename=-a0b972b47931cbf0 --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name robustness --edition=2024 crates/tla-syntax/tests/robustness.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=3b1de0d84c0f7391 -C extra-filename=-4657dcdff6c43e2f --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name depth --edition=2024 crates/tla-syntax/examples/depth.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=945ad0d3a4da74b3 -C extra-filename=-2ef4d05ce566e5e5 --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.79s
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/printing-a0b972b47931cbf0`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/queries-2cacbc55350fea8e`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/robustness-4657dcdff6c43e2f`
 
 *** result: Success
 
@@ -255,19 +257,19 @@ warning: multiple methods are never used
 341 |     fn scan_equals(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^^
 ...
-372 |     fn scan_dashes(&mut self) -> Tok {
+376 |     fn scan_dashes(&mut self) -> Tok {
     |        ^^^^^^^^^^^
 ...
-392 |     fn scan_lt(&mut self) -> Tok {
+396 |     fn scan_lt(&mut self) -> Tok {
     |        ^^^^^^^
 ...
-409 |     fn scan_gt(&mut self) -> Tok {
+414 |     fn scan_gt(&mut self) -> Tok {
     |        ^^^^^^^
 ...
-420 |     fn scan_slash(&mut self) -> Result<Tok> {
+425 |     fn scan_slash(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^
 ...
-433 |     fn scan_backslash(&mut self) -> Result<Tok> {
+438 |     fn scan_backslash(&mut self) -> Result<Tok> {
     |        ^^^^^^^^^^^^^^
 
 warning: function `user_operator` is never used
@@ -277,158 +279,158 @@ warning: function `user_operator` is never used
     |               ^^^^^^^^^^^^^
 
 warning: `tla-syntax` (lib) generated 4 warnings (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/crates/tla-syntax)
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/crates/tla-syntax)
 warning: `tla-syntax` (lib test) generated 4 warnings (4 duplicates)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s
-     Running `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.09s
+     Running `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running `/tmp/cargo-mutants-tlatools-rs-NDfs6d.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+     Running `/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
 
 running 23 tests
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
+test a_fairness_subscript_may_be_a_tuple ... FAILED
 test a_choose_inside_braces_is_not_a_set_filter ... FAILED
 test a_function_may_be_defined_by_its_graph ... FAILED
-test a_fairness_subscript_may_be_a_tuple ... FAILED
-test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
 test a_module_may_contain_another ... FAILED
-test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
-test a_named_theorem_keeps_its_statement ... FAILED
 test a_postfix_operator_binds_to_what_precedes_it ... FAILED
 test a_proof_is_skipped_and_the_module_continues ... FAILED
 test an_action_subscript_is_recognised_past_an_inner_colon ... FAILED
+test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
 test an_infix_operator_can_be_defined ... FAILED
+test a_named_theorem_keeps_its_statement ... FAILED
 test an_operator_may_be_passed_as_an_argument ... FAILED
 test an_operator_may_follow_a_bulleted_list ... FAILED
-test case_arms_are_separated_by_boxes ... FAILED
 test except_accepts_several_indices_at_once ... FAILED
 test higher_order_parameters_record_their_arity ... FAILED
+test case_arms_are_separated_by_boxes ... FAILED
 test instance_names_may_be_chained_and_take_arguments ... FAILED
 test labels_are_read_and_dropped ... FAILED
 test prefix_and_postfix_operators_can_be_defined ... FAILED
 test prose_outside_the_module_is_not_lexed ... FAILED
-test set_filters_and_set_maps_are_told_apart ... FAILED
 test temporal_quantifiers_parse_and_are_marked_as_such ... FAILED
 test the_new_forms_round_trip ... FAILED
+test set_filters_and_set_maps_are_told_apart ... FAILED
 
 failures:
 
+---- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
+
+thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (808340) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_fairness_subscript_may_be_a_tuple stdout ----
+
+thread 'a_fairness_subscript_may_be_a_tuple' (808338) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
 ---- a_choose_inside_braces_is_not_a_set_filter stdout ----
 
-thread 'a_choose_inside_braces_is_not_a_set_filter' (350828) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'a_choose_inside_braces_is_not_a_set_filter' (808337) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 ---- a_function_may_be_defined_by_its_graph stdout ----
 
-thread 'a_function_may_be_defined_by_its_graph' (350830) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- a_fairness_subscript_may_be_a_tuple stdout ----
-
-thread 'a_fairness_subscript_may_be_a_tuple' (350829) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
-
-thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (350831) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'a_function_may_be_defined_by_its_graph' (808339) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- a_module_may_contain_another stdout ----
 
-thread 'a_module_may_contain_another' (350832) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
-
-thread 'a_name_may_begin_with_a_digit_or_an_underscore' (350833) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- a_named_theorem_keeps_its_statement stdout ----
-
-thread 'a_named_theorem_keeps_its_statement' (350834) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'a_module_may_contain_another' (808341) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- a_postfix_operator_binds_to_what_precedes_it stdout ----
 
-thread 'a_postfix_operator_binds_to_what_precedes_it' (350835) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'a_postfix_operator_binds_to_what_precedes_it' (808344) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- a_proof_is_skipped_and_the_module_continues stdout ----
 
-thread 'a_proof_is_skipped_and_the_module_continues' (350836) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'a_proof_is_skipped_and_the_module_continues' (808345) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- an_action_subscript_is_recognised_past_an_inner_colon stdout ----
 
-thread 'an_action_subscript_is_recognised_past_an_inner_colon' (350837) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'an_action_subscript_is_recognised_past_an_inner_colon' (808346) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
+
+thread 'a_name_may_begin_with_a_digit_or_an_underscore' (808342) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- an_infix_operator_can_be_defined stdout ----
 
-thread 'an_infix_operator_can_be_defined' (350838) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'an_infix_operator_can_be_defined' (808347) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_named_theorem_keeps_its_statement stdout ----
+
+thread 'a_named_theorem_keeps_its_statement' (808343) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- an_operator_may_be_passed_as_an_argument stdout ----
 
-thread 'an_operator_may_be_passed_as_an_argument' (350839) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'an_operator_may_be_passed_as_an_argument' (808348) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- an_operator_may_follow_a_bulleted_list stdout ----
 
-thread 'an_operator_may_follow_a_bulleted_list' (350840) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- case_arms_are_separated_by_boxes stdout ----
-
-thread 'case_arms_are_separated_by_boxes' (350841) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'an_operator_may_follow_a_bulleted_list' (808349) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- except_accepts_several_indices_at_once stdout ----
 
-thread 'except_accepts_several_indices_at_once' (350842) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'except_accepts_several_indices_at_once' (808351) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- higher_order_parameters_record_their_arity stdout ----
 
-thread 'higher_order_parameters_record_their_arity' (350843) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'higher_order_parameters_record_their_arity' (808352) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- case_arms_are_separated_by_boxes stdout ----
+
+thread 'case_arms_are_separated_by_boxes' (808350) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- instance_names_may_be_chained_and_take_arguments stdout ----
 
-thread 'instance_names_may_be_chained_and_take_arguments' (350844) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'instance_names_may_be_chained_and_take_arguments' (808358) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- labels_are_read_and_dropped stdout ----
 
-thread 'labels_are_read_and_dropped' (350845) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'labels_are_read_and_dropped' (808360) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- prefix_and_postfix_operators_can_be_defined stdout ----
 
-thread 'prefix_and_postfix_operators_can_be_defined' (350846) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'prefix_and_postfix_operators_can_be_defined' (808365) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- prose_outside_the_module_is_not_lexed stdout ----
 
-thread 'prose_outside_the_module_is_not_lexed' (350847) panicked at crates/tla-syntax/src/parser.rs:68:19:
-index out of bounds: the len is 0 but the index is 0
-
----- set_filters_and_set_maps_are_told_apart stdout ----
-
-thread 'set_filters_and_set_maps_are_told_apart' (350848) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'prose_outside_the_module_is_not_lexed' (808366) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- temporal_quantifiers_parse_and_are_marked_as_such stdout ----
 
-thread 'temporal_quantifiers_parse_and_are_marked_as_such' (350849) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'temporal_quantifiers_parse_and_are_marked_as_such' (808368) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 ---- the_new_forms_round_trip stdout ----
 
-thread 'the_new_forms_round_trip' (350850) panicked at crates/tla-syntax/src/parser.rs:68:19:
+thread 'the_new_forms_round_trip' (808369) panicked at crates/tla-syntax/src/parser.rs:68:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- set_filters_and_set_maps_are_told_apart stdout ----
+
+thread 'set_filters_and_set_maps_are_told_apart' (808367) panicked at crates/tla-syntax/src/parser.rs:68:19:
 index out of bounds: the len is 0 but the index is 0
 
 
@@ -457,7 +459,7 @@ failures:
     temporal_quantifiers_parse_and_are_marked_as_such
     the_new_forms_round_trip
 
-test result: FAILED. 0 passed; 23 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: FAILED. 0 passed; 23 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 
 error: test failed, to rerun pass `-p tla-syntax --test grammar`
 

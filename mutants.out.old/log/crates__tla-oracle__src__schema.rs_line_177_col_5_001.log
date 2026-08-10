@@ -31,21 +31,21 @@
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-oracle@0.1.0
        Fresh unicode-ident v1.0.24
        Fresh proc-macro2 v1.0.107
-       Fresh itoa v1.0.18
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
        Fresh memchr v2.8.3
+       Fresh itoa v1.0.18
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-syntax)
        Fresh quote v1.0.47
-       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
        Fresh serde_core v1.0.229
-       Fresh syn v3.0.3
        Fresh zmij v1.0.23
-       Fresh serde_derive v1.0.229
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-eval)
+       Fresh syn v3.0.3
        Fresh serde_json v1.0.151
+       Fresh serde_derive v1.0.229
        Fresh serde v1.0.229
-       Dirty tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle): the file `crates/tla-oracle/src/schema.rs` has changed (1786402200.977123777s, 387023699ns after last build at 1786402200.590100078s)
-   Compiling tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+       Dirty tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-oracle): the file `crates/tla-oracle/src/schema.rs` has changed (1786402668.179719397s, 1s after last build at 1786402667.264663475s)
+   Compiling tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-oracle)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
 warning: unused variable: `json`
    --> crates/tla-oracle/src/schema.rs:176:14
     |
@@ -60,25 +60,25 @@ warning: unused variable: `path`
 176 | fn array<'a>(json: &'a Json, path: &str) -> Result<&'a Vec<Json>> {
     |                              ^^^^ help: if this is intentional, prefix it with an underscore: `_path`
 
-warning: `tla-oracle` (lib test) generated 2 warnings (run `cargo fix --lib -p tla-oracle --tests` to apply 2 suggestions)
-warning: `tla-oracle` (lib) generated 2 warnings (2 duplicates)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name jobs --edition=2024 crates/tla-oracle/tests/jobs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c96bd47a0a5f8df1 -C extra-filename=-9836ff370b14868d --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_oracle=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_oracle-05e96871ddace9ec.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.37s
-  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
-  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/jobs-9836ff370b14868d`
+warning: `tla-oracle` (lib test) generated 2 warnings (1 duplicate) (run `cargo fix --lib -p tla-oracle --tests` to apply 1 suggestion)
+warning: `tla-oracle` (lib) generated 2 warnings (1 duplicate) (run `cargo fix --lib -p tla-oracle` to apply 1 suggestion)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name jobs --edition=2024 crates/tla-oracle/tests/jobs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c96bd47a0a5f8df1 -C extra-filename=-9836ff370b14868d --out-dir /tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_oracle=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_oracle-05e96871ddace9ec.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+  Executable `/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
+  Executable `/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/jobs-9836ff370b14868d`
 
 *** result: Success
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-oracle@0.1.0
        Fresh unicode-ident v1.0.24
-       Fresh proc-macro2 v1.0.107
-       Fresh itoa v1.0.18
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
        Fresh memchr v2.8.3
-       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
+       Fresh itoa v1.0.18
+       Fresh proc-macro2 v1.0.107
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-syntax)
        Fresh quote v1.0.47
        Fresh serde_core v1.0.229
        Fresh zmij v1.0.23
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-eval)
        Fresh syn v3.0.3
        Fresh serde_json v1.0.151
        Fresh serde_derive v1.0.229
@@ -99,117 +99,117 @@ warning: unused variable: `path`
 
 warning: `tla-oracle` (lib) generated 2 warnings (run `cargo fix --lib -p tla-oracle` to apply 2 suggestions)
 warning: `tla-oracle` (lib test) generated 2 warnings (2 duplicates)
-       Fresh tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
-     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
+       Fresh tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/crates/tla-oracle)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s
+     Running `/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/jobs-9836ff370b14868d`
+     Running `/tmp/cargo-mutants-tlatools-rs-h8HYri.tmp/target/debug/deps/jobs-9836ff370b14868d`
 
 running 20 tests
 test a_broken_specification_is_an_error_not_a_verdict ... ok
 test a_boolean_is_not_accepted_where_an_integer_is_wanted ... ok
 test a_constant_without_a_value_is_an_error ... ok
-test a_state_the_specification_cannot_read_is_a_contract_violation ... ok
-test a_missing_variable_is_a_contract_violation ... ok
 test a_passing_check_carries_no_diagnosis ... ok
-test a_reachable_outcome_passes ... FAILED
-test a_refinement_failure_names_the_action_that_came_closest ... FAILED
-test a_legal_walk_passes ... FAILED
-test a_state_of_the_wrong_shape_is_a_contract_violation ... ok
-test an_edge_pointing_outside_the_graph_is_an_error ... FAILED
-test duplicate_members_of_a_set_are_rejected ... FAILED
-test an_illegal_root_is_quoted_in_the_report ... FAILED
 test an_illegal_edge_is_named ... FAILED
+test a_reachable_outcome_passes ... FAILED
 test an_illegal_root_is_an_init_failure ... FAILED
+test a_missing_variable_is_a_contract_violation ... ok
+test an_edge_pointing_outside_the_graph_is_an_error ... FAILED
+test a_refinement_failure_names_the_action_that_came_closest ... FAILED
+test a_state_the_specification_cannot_read_is_a_contract_violation ... ok
+test an_illegal_root_is_quoted_in_the_report ... FAILED
+test a_state_of_the_wrong_shape_is_a_contract_violation ... ok
+test a_legal_walk_passes ... FAILED
+test an_unparsable_outcome_names_itself ... FAILED
 test an_outcome_that_is_not_a_predicate_is_an_error ... FAILED
 test an_unreachable_outcome_is_a_coverage_failure ... FAILED
-test an_unparsable_outcome_names_itself ... FAILED
-test the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept ... FAILED
+test duplicate_members_of_a_set_are_rejected ... FAILED
 test the_status_names_match_the_harness_vocabulary ... ok
+test the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept ... FAILED
 
 failures:
 
+---- an_illegal_edge_is_named stdout ----
+
+thread 'an_illegal_edge_is_named' (757002) panicked at crates/tla-oracle/tests/jobs.rs:69:5:
+assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
+  left: Contract
+ right: Refines
+
 ---- a_reachable_outcome_passes stdout ----
 
-thread 'a_reachable_outcome_passes' (304221) panicked at crates/tla-oracle/tests/jobs.rs:88:5:
+thread 'a_reachable_outcome_passes' (756997) panicked at crates/tla-oracle/tests/jobs.rs:88:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
  right: Pass
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
----- a_refinement_failure_names_the_action_that_came_closest stdout ----
+---- an_illegal_root_is_an_init_failure stdout ----
 
-thread 'a_refinement_failure_names_the_action_that_came_closest' (304222) panicked at crates/tla-oracle/tests/jobs.rs:173:42:
-an action came close
-
----- a_legal_walk_passes stdout ----
-
-thread 'a_legal_walk_passes' (304218) panicked at crates/tla-oracle/tests/jobs.rs:45:5:
+thread 'an_illegal_root_is_an_init_failure' (757003) panicked at crates/tla-oracle/tests/jobs.rs:53:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
- right: Pass
+ right: Init
 
 ---- an_edge_pointing_outside_the_graph_is_an_error stdout ----
 
-thread 'an_edge_pointing_outside_the_graph_is_an_error' (304225) panicked at crates/tla-oracle/tests/jobs.rs:246:5:
+thread 'an_edge_pointing_outside_the_graph_is_an_error' (757001) panicked at crates/tla-oracle/tests/jobs.rs:246:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
  right: Error
 
----- duplicate_members_of_a_set_are_rejected stdout ----
+---- a_refinement_failure_names_the_action_that_came_closest stdout ----
 
-thread 'duplicate_members_of_a_set_are_rejected' (304232) panicked at crates/tla-oracle/tests/jobs.rs:120:5:
-state[0].s[0]: expected an integer, got null
+thread 'a_refinement_failure_names_the_action_that_came_closest' (756998) panicked at crates/tla-oracle/tests/jobs.rs:173:42:
+an action came close
 
 ---- an_illegal_root_is_quoted_in_the_report stdout ----
 
-thread 'an_illegal_root_is_quoted_in_the_report' (304228) panicked at crates/tla-oracle/tests/jobs.rs:222:5:
+thread 'an_illegal_root_is_quoted_in_the_report' (757004) panicked at crates/tla-oracle/tests/jobs.rs:222:5:
 assertion `left == right` failed
   left: Contract
  right: Init
 
----- an_illegal_edge_is_named stdout ----
+---- a_legal_walk_passes stdout ----
 
-thread 'an_illegal_edge_is_named' (304226) panicked at crates/tla-oracle/tests/jobs.rs:69:5:
+thread 'a_legal_walk_passes' (756994) panicked at crates/tla-oracle/tests/jobs.rs:45:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
- right: Refines
+ right: Pass
 
----- an_illegal_root_is_an_init_failure stdout ----
+---- an_unparsable_outcome_names_itself stdout ----
 
-thread 'an_illegal_root_is_an_init_failure' (304227) panicked at crates/tla-oracle/tests/jobs.rs:53:5:
+thread 'an_unparsable_outcome_names_itself' (757006) panicked at crates/tla-oracle/tests/jobs.rs:281:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
- right: Init
+ right: Error
 
 ---- an_outcome_that_is_not_a_predicate_is_an_error stdout ----
 
-thread 'an_outcome_that_is_not_a_predicate_is_an_error' (304229) panicked at crates/tla-oracle/tests/jobs.rs:273:5:
+thread 'an_outcome_that_is_not_a_predicate_is_an_error' (757005) panicked at crates/tla-oracle/tests/jobs.rs:273:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
  right: Error
 
 ---- an_unreachable_outcome_is_a_coverage_failure stdout ----
 
-thread 'an_unreachable_outcome_is_a_coverage_failure' (304231) panicked at crates/tla-oracle/tests/jobs.rs:80:5:
+thread 'an_unreachable_outcome_is_a_coverage_failure' (757007) panicked at crates/tla-oracle/tests/jobs.rs:80:5:
 assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
   left: Contract
  right: Coverage
 
----- an_unparsable_outcome_names_itself stdout ----
+---- duplicate_members_of_a_set_are_rejected stdout ----
 
-thread 'an_unparsable_outcome_names_itself' (304230) panicked at crates/tla-oracle/tests/jobs.rs:281:5:
-assertion `left == right` failed: state[0].buf[0]: expected an integer, got null
-  left: Contract
- right: Error
+thread 'duplicate_members_of_a_set_are_rejected' (757008) panicked at crates/tla-oracle/tests/jobs.rs:120:5:
+state[0].s[0]: expected an integer, got null
 
 ---- the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept stdout ----
 
-thread 'the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept' (304234) panicked at crates/tla-oracle/tests/jobs.rs:198:5:
+thread 'the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept' (757010) panicked at crates/tla-oracle/tests/jobs.rs:198:5:
 assertion failed: passing.passed()
 
 
@@ -227,7 +227,7 @@ failures:
     duplicate_members_of_a_set_are_rejected
     the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept
 
-test result: FAILED. 8 passed; 12 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: FAILED. 8 passed; 12 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
 error: test failed, to rerun pass `-p tla-oracle --test jobs`
 
