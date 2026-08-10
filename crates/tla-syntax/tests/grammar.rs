@@ -261,3 +261,130 @@ fn the_new_forms_round_trip() {
         assert_eq!(parsed, again, "`{source}` printed as `{printed}`");
     }
 }
+
+// ------------------------------- forms the wider corpora drove out
+
+/// An operator may be declared by the shape it is written in rather than by a
+/// name; the underscores mark where its operands go.
+#[test]
+fn operators_can_be_declared_by_their_fixity() {
+    let m = module("CONSTANTS _+_, -._, _^#, Plain\nUse(_*_, x) == x");
+    let declared: Vec<(&str, usize)> = m.constants().map(|d| (d.name.as_str(), d.arity)).collect();
+    assert_eq!(declared, [("+", 2), ("-", 1), ("^#", 1), ("Plain", 0)]);
+
+    let params = &m.definition("Use").expect("defined").params;
+    assert_eq!((params[0].name.as_str(), params[0].arity), ("*", 2));
+}
+
+#[test]
+fn numbers_may_be_written_in_another_base() {
+    assert_eq!(definition("X == \\b1011", "X"), Expr::Num(11));
+    assert_eq!(definition("X == \\o777", "X"), Expr::Num(511));
+    assert_eq!(definition("X == \\h1F", "X"), Expr::Num(31));
+    // `\o` is concatenation unless digits follow it directly.
+    assert!(matches!(
+        definition("X == a \\o b", "X"),
+        Expr::Binary(tla_syntax::token::Op::Concat, ..)
+    ));
+}
+
+/// TLA+ decimals are exact, so the literal is kept as written rather than
+/// turned into a binary approximation of itself.
+#[test]
+fn a_decimal_is_kept_as_written() {
+    assert_eq!(
+        definition("X == 000123.456000", "X"),
+        Expr::Decimal("000123.456000".to_string())
+    );
+    // `1..2` is still a range.
+    assert!(matches!(
+        definition("X == 1..2", "X"),
+        Expr::Binary(tla_syntax::token::Op::DotDot, ..)
+    ));
+}
+
+#[test]
+fn a_field_may_be_spelled_like_a_keyword() {
+    assert_eq!(definition("X == bar.NEW", "X").to_string(), "bar.NEW");
+    assert_eq!(definition("X == bar.SF_", "X").to_string(), "bar.SF_");
+    assert_eq!(
+        definition("X == [f EXCEPT !.DOMAIN = 1]", "X").to_string(),
+        "[f EXCEPT !.DOMAIN = 1]"
+    );
+}
+
+#[test]
+fn a_let_may_introduce_an_instance() {
+    let body = definition("X == LET I == INSTANCE M IN I!Op", "X");
+    let Expr::Let { instances, .. } = &body else {
+        panic!("expected a LET, got {body}");
+    };
+    assert_eq!(instances.len(), 1);
+    assert_eq!(instances[0].name.as_deref(), Some("I"));
+    assert_eq!(instances[0].module, "M");
+}
+
+/// An operator can be handed over as a value, including the ones spelled with
+/// punctuation.
+#[test]
+fn operators_can_be_passed_by_symbol() {
+    for (source, expected) in [
+        ("X == apply(', v)", "'"),
+        ("X == apply(ENABLED, v)", "ENABLED"),
+        ("X == apply(\\cup, v)", "\\cup"),
+    ] {
+        let Expr::Apply(_, args) = definition(source, "X") else {
+            panic!("expected an application in `{source}`");
+        };
+        assert_eq!(args[0], Expr::Ident(expected.to_string()), "{source}");
+    }
+}
+
+/// Machine-generated specifications wrap expressions into the first column, so
+/// "starts at column one" cannot be what ends a definition. Having a `==` is.
+#[test]
+fn an_expression_may_continue_into_the_first_column() {
+    let m = module("X == a\n\\/ b\n\\/ c\nY == 2");
+    assert_eq!(
+        m.definition("X").expect("X").body.to_string(),
+        "a \\/ b \\/ c"
+    );
+    assert!(
+        m.definition("Y").is_some(),
+        "the next definition still starts"
+    );
+}
+
+/// ...but a definition of a prefix operator does start a new unit, even though
+/// it also begins with an operator in the first column.
+#[test]
+fn a_prefix_operator_definition_still_starts_a_unit() {
+    let m = module("X == a\n-. b == 0 - b");
+    assert_eq!(m.definition("X").expect("X").body.to_string(), "a");
+    assert!(
+        m.definition("-").is_some(),
+        "the prefix definition is its own unit"
+    );
+}
+
+/// A proof step begins a line; a comparison does not. Telling them apart by
+/// that is what stops a theorem's statement swallowing its proof.
+#[test]
+fn a_proof_step_does_not_look_like_a_comparison() {
+    let m = module(
+        "THEOREM T == Spec => []Inv\n\
+         <1>1 Init => Inv\n\
+           BY DEF Init\n\
+         <1> QED\n\
+         After == 1",
+    );
+    assert!(m.definition("After").is_some(), "the proof was skipped");
+    assert_eq!(definition("X == a < 1 > b", "X").to_string(), "a < 1 > b");
+}
+
+/// A file that cannot be got past must say so rather than spin.
+#[test]
+fn a_unit_that_reads_nothing_is_an_error_not_a_hang() {
+    let err = parse_module("---- MODULE T ----\n)\n====").expect_err("cannot be read");
+    assert!(!err.message.is_empty());
+}

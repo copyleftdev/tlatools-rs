@@ -230,6 +230,10 @@ impl Lexer {
                 .user_symbol()
                 .map_or_else(|| self.scan_punctuation(c), Ok),
             '.' => {
+                if self.starts_with("...") {
+                    self.advance(3);
+                    return Ok(Tok::Op(Op::User("...")));
+                }
                 if self.starts_with("..") {
                     self.advance(2);
                     Ok(Tok::Op(Op::DotDot))
@@ -296,6 +300,30 @@ impl Lexer {
         Some(Tok::Op(Op::User(symbol)))
     }
 
+    /// `\b1011`, `\o777`, `\h1F` — a number written in another base. The
+    /// digits must follow the letter directly, which is what keeps `\o` as
+    /// concatenation everywhere else.
+    fn scan_based_number(&mut self) -> Result<Option<Tok>> {
+        let (radix, digits) = match self.at(1) {
+            Some('b' | 'B') => (2u32, "01"),
+            Some('o' | 'O') => (8, "01234567"),
+            Some('h' | 'H') => (16, "0123456789abcdefABCDEF"),
+            _ => return Ok(None),
+        };
+        let mut end = self.pos + 2;
+        while self.chars.get(end).is_some_and(|c| digits.contains(*c)) {
+            end += 1;
+        }
+        if end == self.pos + 2 {
+            return Ok(None);
+        }
+        let text: String = self.chars[self.pos + 2..end].iter().collect();
+        let value = i64::from_str_radix(&text, radix)
+            .map_err(|_| self.err(format!("number out of range: {text}")))?;
+        self.advance(2 + text.chars().count());
+        Ok(Some(Tok::Num(value)))
+    }
+
     fn scan_number(&mut self) -> Result<Tok> {
         let start = self.pos;
         while self.peek().is_some_and(|c| c.is_ascii_digit()) {
@@ -309,6 +337,14 @@ impl Lexer {
         {
             self.pos = start;
             return Ok(self.scan_word());
+        }
+        // `123.456` is one number; `1..2` is a range between two.
+        if self.peek() == Some('.') && self.at(1).is_some_and(|c| c.is_ascii_digit()) {
+            self.bump();
+            while self.peek().is_some_and(|c| c.is_ascii_digit()) {
+                self.bump();
+            }
+            return Ok(Tok::Decimal(self.chars[start..self.pos].iter().collect()));
         }
         let text: String = self.chars[start..self.pos].iter().collect();
         text.parse()
@@ -327,6 +363,11 @@ impl Lexer {
         let word: String = self.chars[start..self.pos].iter().collect();
 
         // `WF_vars` is one word to the lexer but an operator plus a subscript.
+        // Immediately after a `.` a word is a field name, whatever else it
+        // would otherwise spell: `bar.NEW` and `bar.SF_` name fields.
+        if matches!(self.out.last().map(|t| &t.tok), Some(Tok::Dot)) {
+            return Tok::Ident(word);
+        }
         // `WF_vars` is one word; `WF_<<a, b>>` is the same operator with a
         // subscript the lexer cannot see, so the name is left empty.
         for (prefix, strong) in [("WF_", false), ("SF_", true)] {
@@ -411,6 +452,10 @@ impl Lexer {
             self.advance(run);
             return Tok::Separator;
         }
+        if run == 2 {
+            self.advance(2);
+            return Tok::Op(Op::User("--"));
+        }
         for (text, tok) in [("->", Tok::Arrow), ("-|", Tok::Op(Op::User("-|")))] {
             if self.starts_with(text) {
                 self.advance(2);
@@ -467,6 +512,9 @@ impl Lexer {
         if self.starts_with("\\/") {
             self.advance(2);
             return Ok(Tok::Op(Op::Or));
+        }
+        if let Some(based) = self.scan_based_number()? {
+            return Ok(based);
         }
         let start = self.pos + 1;
         let mut end = start;

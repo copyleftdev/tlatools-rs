@@ -42,7 +42,7 @@
 ./modules/QuorumTheorems.tla	ok	QuorumTheorems	3 units
 ./modules/QuorumTheorems_proofs.tla	ok	QuorumTheorems_proofs	3 units
 ./modules/Relation.tla	ok	Relation	23 units
-./modules/SVG.tla	error	237:32	only definitions may appear inside LET
+./modules/SVG.tla	ok	SVG	20 units
 ./modules/SequencesExt.tla	ok	SequencesExt	50 units
 ./modules/SequencesExtTheorems.tla	ok	SequencesExtTheorems	106 units
 ./modules/SequencesExtTheorems_proofs.tla	ok	SequencesExtTheorems_proofs	106 units

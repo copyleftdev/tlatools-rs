@@ -106,6 +106,14 @@ impl Bound {
     }
 }
 
+/// An `INSTANCE` introduced by a `LET`, in scope only for its body.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LetInstance {
+    pub name: Option<String>,
+    pub module: String,
+    pub subs: Vec<(String, Expr)>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QuantKind {
     Forall,
@@ -131,6 +139,8 @@ pub enum ExceptPath {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Expr {
     Num(i64),
+    /// `123.456`, as written. TLA+ decimals are exact rationals.
+    Decimal(String),
     Str(String),
     Bool(bool),
     Ident(String),
@@ -194,6 +204,8 @@ pub enum Expr {
     },
     Let {
         defs: Vec<Def>,
+        /// `LET I == INSTANCE M IN ...` — an instance whose scope is the body.
+        instances: Vec<LetInstance>,
         body: Box<Expr>,
     },
     If {
@@ -279,8 +291,16 @@ impl Expr {
                 bound.mentions_next_state() || body.mentions_next_state()
             }
             Expr::Lambda { body, .. } => body.mentions_next_state(),
-            Expr::Let { defs, body } => {
-                body.mentions_next_state() || defs.iter().any(|d| d.body.mentions_next_state())
+            Expr::Let {
+                defs,
+                instances,
+                body,
+            } => {
+                body.mentions_next_state()
+                    || defs.iter().any(|d| d.body.mentions_next_state())
+                    || instances
+                        .iter()
+                        .any(|i| i.subs.iter().any(|(_, e)| e.mentions_next_state()))
             }
             Expr::If {
                 cond,
@@ -296,7 +316,12 @@ impl Expr {
                     .any(|(g, r)| g.mentions_next_state() || r.mentions_next_state())
                     || other.as_ref().is_some_and(|o| o.mentions_next_state())
             }
-            Expr::Num(_) | Expr::Str(_) | Expr::Bool(_) | Expr::Ident(_) | Expr::At => false,
+            Expr::Num(_)
+            | Expr::Decimal(_)
+            | Expr::Str(_)
+            | Expr::Bool(_)
+            | Expr::Ident(_)
+            | Expr::At => false,
         }
     }
 

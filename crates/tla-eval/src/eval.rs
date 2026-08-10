@@ -138,9 +138,16 @@ impl<'m> Evaluator<'m> {
 
     // ------------------------------------------------------------ evaluation
 
+    #[expect(
+        clippy::too_many_lines,
+        reason = "one arm per syntactic form; splitting it would only scatter the language"
+    )]
     pub(crate) fn eval(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
         match e {
             Expr::Num(n) => Ok(Value::Int(*n)),
+            Expr::Decimal(text) => Err(Error::NotGround(format!(
+                "{text} is a real number, and real arithmetic is not implemented"
+            ))),
             Expr::Str(s) => Ok(Value::Str(s.clone())),
             Expr::Bool(b) => Ok(Value::Bool(*b)),
             Expr::Ident(name) => self.ident(name, ctx),
@@ -192,7 +199,7 @@ impl<'m> Evaluator<'m> {
             }
             Expr::Quant { kind, bounds, body } => self.quantify(*kind, bounds, body, ctx),
             Expr::Choose { bound, body } => self.choose(bound, body, ctx),
-            Expr::Let { defs, body } => {
+            Expr::Let { defs, body, .. } => {
                 let base = ctx.locals.len();
                 let scope = base + defs.len();
                 for def in defs {

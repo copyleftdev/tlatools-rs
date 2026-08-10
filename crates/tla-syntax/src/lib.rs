@@ -12,7 +12,7 @@ mod parser;
 mod print;
 pub mod token;
 
-pub use ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
+pub use ast::{Bound, Decl, Def, ExceptPath, Expr, LetInstance, Module, Param, QuantKind, Unit};
 pub use error::{Error, Result, Stage};
 pub use lexer::lex;
 pub use parser::{

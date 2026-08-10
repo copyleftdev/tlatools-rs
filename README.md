@@ -10,12 +10,12 @@ question is often not "what states can this system reach?" but "is *this*
 transition one the specification permits?", and TLC cannot be asked that
 directly.
 
-**Reads 1,214 of the 1,258 specifications** in every public TLA+ corpus we
+**Reads 1,266 of the 1,268 specifications** in every public TLA+ corpus we
 could find — the [examples](https://github.com/tlaplus/Examples), the
 [community modules](https://github.com/tlaplus/CommunityModules), and the
-[tools' own test models](https://github.com/tlaplus/tlaplus), which include
-specifications deliberately written to be rejected. Exactly how each one is
-read is recorded in `golden/`.
+[tools' own test models](https://github.com/tlaplus/tlaplus). The two it does
+not read are two that SANY, the reference parser, does not read either. Exactly
+how each one is read is recorded in `golden/`.
 
 ## Why an evaluator and not a checker
 
@@ -229,6 +229,10 @@ somewhere past 500.
 
 ## What it will not do
 
+- **Real arithmetic is not implemented.** A decimal literal is parsed and kept
+  exactly as written, because TLA+ decimals are exact rationals and no binary
+  floating-point type could hold one faithfully — but evaluating one is an
+  error rather than a rounded guess.
 - **Integers are 64-bit.** TLA+'s are unbounded, so this is not the language.
   It is, however, wider than the reference implementation: TLC's integers are
   32-bit, and it refuses the literal `2147483648` outright. Both report

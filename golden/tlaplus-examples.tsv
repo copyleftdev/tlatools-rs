@@ -12,7 +12,7 @@
 ./specifications/Chameneos/APChameneos.tla	ok	APChameneos	5 units
 ./specifications/Chameneos/Chameneos.tla	ok	Chameneos	18 units
 ./specifications/CheckpointCoordination/CheckpointCoordination.tla	ok	CheckpointCoordination	43 units
-./specifications/CheckpointCoordination/MCCheckpointCoordination.tla	error	15:45	only definitions may appear inside LET
+./specifications/CheckpointCoordination/MCCheckpointCoordination.tla	ok	MCCheckpointCoordination	6 units
 ./specifications/CigaretteSmokers/APCigaretteSmokers.tla	ok	APCigaretteSmokers	5 units
 ./specifications/CigaretteSmokers/CigaretteSmokers.tla	ok	CigaretteSmokers	13 units
 ./specifications/CigaretteSmokers/CigaretteSmokers_proof.tla	ok	CigaretteSmokers_proof	11 units
@@ -243,7 +243,7 @@
 ./specifications/SpecifyingSystems/Standard/Integers.tla	ok	Integers	3 units
 ./specifications/SpecifyingSystems/Standard/Naturals.tla	ok	Naturals	13 units
 ./specifications/SpecifyingSystems/Standard/Peano.tla	ok	Peano	5 units
-./specifications/SpecifyingSystems/Standard/ProtoReals.tla	error	5:29	expected an identifier, found Underscore
+./specifications/SpecifyingSystems/Standard/ProtoReals.tla	ok	ProtoReals	13 units
 ./specifications/SpecifyingSystems/Standard/Reals.tla	ok	Reals	4 units
 ./specifications/SpecifyingSystems/Standard/Sequences.tla	ok	Sequences	9 units
 ./specifications/SpecifyingSystems/Syntax/BNFGrammars.tla	ok	BNFGrammars	13 units
@@ -291,7 +291,7 @@
 ./specifications/barriers/APBarrier.tla	ok	APBarrier	4 units
 ./specifications/barriers/Barrier.tla	ok	Barrier	11 units
 ./specifications/barriers/Barriers.tla	ok	Barriers	49 units
-./specifications/bcastByz/bcastByz.tla	error	851:37	expected DefEq, found Op(And)
+./specifications/bcastByz/bcastByz.tla	ok	bcastByz	44 units
 ./specifications/bcastFolklore/APbcastFolklore.tla	ok	APbcastFolklore	3 units
 ./specifications/bcastFolklore/bcastFolklore.tla	ok	bcastFolklore	23 units
 ./specifications/bosco/APbosco.tla	ok	APbosco	3 units
@@ -364,9 +364,9 @@
 ./specifications/ewd998/EWD998ChanID_shiviz.tla	ok	EWD998ChanID_shiviz	4 units
 ./specifications/ewd998/EWD998ChanTrace.tla	ok	EWD998ChanTrace	19 units
 ./specifications/ewd998/EWD998Chan_opts.tla	ok	EWD998Chan_opts	16 units
-./specifications/ewd998/EWD998PCal.tla	error	151:52	`!` must follow an instance name
+./specifications/ewd998/EWD998PCal.tla	ok	EWD998PCal	23 units
 ./specifications/ewd998/EWD998PCal_proof.tla	ok	EWD998PCal_proof	38 units
-./specifications/ewd998/EWD998_anim.tla	error	47:48	only definitions may appear inside LET
+./specifications/ewd998/EWD998_anim.tla	ok	EWD998_anim	28 units
 ./specifications/ewd998/EWD998_opts.tla	ok	EWD998_opts	20 units
 ./specifications/ewd998/EWD998_optsSC.tla	ok	EWD998_optsSC	6 units
 ./specifications/ewd998/EWD998_proof.tla	ok	EWD998_proof	30 units

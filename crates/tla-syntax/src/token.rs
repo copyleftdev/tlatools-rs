@@ -32,6 +32,42 @@ pub enum Kw {
 }
 
 impl Kw {
+    /// How the keyword is spelled, for the rare specification that defines
+    /// something by that name. `Proof` stands for a dozen words at once and so
+    /// has none.
+    pub fn text(self) -> Option<&'static str> {
+        Some(match self {
+            Self::Module => "MODULE",
+            Self::Extends => "EXTENDS",
+            Self::Constant => "CONSTANT",
+            Self::Variable => "VARIABLE",
+            Self::Let => "LET",
+            Self::In => "IN",
+            Self::If => "IF",
+            Self::Then => "THEN",
+            Self::Else => "ELSE",
+            Self::Choose => "CHOOSE",
+            Self::Case => "CASE",
+            Self::Other => "OTHER",
+            Self::Assume => "ASSUME",
+            Self::Theorem => "THEOREM",
+            Self::Instance => "INSTANCE",
+            Self::With => "WITH",
+            Self::Local => "LOCAL",
+            Self::Recursive => "RECURSIVE",
+            Self::Lambda => "LAMBDA",
+            Self::Except => "EXCEPT",
+            Self::True => "TRUE",
+            Self::False => "FALSE",
+            Self::Domain => "DOMAIN",
+            Self::Subset => "SUBSET",
+            Self::Union => "UNION",
+            Self::Enabled => "ENABLED",
+            Self::Unchanged => "UNCHANGED",
+            Self::Proof => return None,
+        })
+    }
+
     pub fn lookup(word: &str) -> Option<Self> {
         Some(match word {
             "MODULE" => Self::Module,
@@ -146,6 +182,8 @@ pub(crate) const USER_OPERATORS: &[(&str, u8)] = &[
     ("\\propto", 5),
     ("\\cdot", 5),
     ("\\mod", 11),
+    ("...", 9),
+    ("--", 11),
     ("\\times", 11),
     ("|-", 5),
     ("-|", 5),
@@ -323,6 +361,9 @@ impl Op {
 pub enum Tok {
     Ident(String),
     Num(i64),
+    /// `123.456`, kept as written: TLA+ decimals are exact, and no binary
+    /// floating-point type could hold one faithfully.
+    Decimal(String),
     Str(String),
     Kw(Kw),
     Op(Op),

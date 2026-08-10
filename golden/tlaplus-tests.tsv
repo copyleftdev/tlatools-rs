@@ -11,7 +11,7 @@
 ./tlatools/org.lamport.tlatools/test-model/BagsTest.tla	ok	BagsTest	146 units
 ./tlatools/org.lamport.tlatools/test-model/BidirectionalTransitions.tla	ok	BidirectionalTransitions	24 units
 ./tlatools/org.lamport.tlatools/test-model/Bug156/FindOp.tla	ok	FindOpWithoutPrint	120 units
-./tlatools/org.lamport.tlatools/test-model/Bug156/TE.tla	error	461:1	expected an identifier, found LParen
+./tlatools/org.lamport.tlatools/test-model/Bug156/TE.tla	ok	TE	4 units
 ./tlatools/org.lamport.tlatools/test-model/Bug279/InitStateBug.tla	ok	InitStateBug	10 units
 ./tlatools/org.lamport.tlatools/test-model/Calculator.tla	ok	Calculator	12 units
 ./tlatools/org.lamport.tlatools/test-model/CalculatorSC.tla	ok	CalculatorSC	6 units
@@ -36,9 +36,9 @@
 ./tlatools/org.lamport.tlatools/test-model/ConstantRank2AssertError.tla	ok	ConstantRank2AssertError	4 units
 ./tlatools/org.lamport.tlatools/test-model/Continue.tla	ok	Continue	6 units
 ./tlatools/org.lamport.tlatools/test-model/CyclicRedefine.tla	ok	CyclicRedefine	6 units
-./tlatools/org.lamport.tlatools/test-model/CyclicRedefineInstance.tla	error	6:2	only definitions may appear inside LET
+./tlatools/org.lamport.tlatools/test-model/CyclicRedefineInstance.tla	ok	CyclicRedefineInstance	1 units
 ./tlatools/org.lamport.tlatools/test-model/CyclicRedefineVars.tla	ok	CyclicRedefineVars	5 units
-./tlatools/org.lamport.tlatools/test-model/Decimal.tla	error	2:14	expected an identifier, found Num(456000)
+./tlatools/org.lamport.tlatools/test-model/Decimal.tla	ok	Decimal	1 units
 ./tlatools/org.lamport.tlatools/test-model/DepthFirstErrorTrace.tla	ok	DepthFirstErrorTrace	3 units
 ./tlatools/org.lamport.tlatools/test-model/DepthFirstTerminate.tla	ok	DepthFirstTerminate	8 units
 ./tlatools/org.lamport.tlatools/test-model/DieHard.tla	ok	DieHard	16 units
@@ -61,8 +61,8 @@
 ./tlatools/org.lamport.tlatools/test-model/EWD840/MC03Sim.tla	ok	MC03Sim	2 units
 ./tlatools/org.lamport.tlatools/test-model/EWD840/MC06.tla	ok	MC06	3 units
 ./tlatools/org.lamport.tlatools/test-model/EWD998/EWD998.tla	ok	EWD998	28 units
-./tlatools/org.lamport.tlatools/test-model/EWD998/EWD998Chan.tla	error	197:27	only definitions may appear inside LET
-./tlatools/org.lamport.tlatools/test-model/EWD998/EWD998_TTrace.tla	error	25:5	only definitions may appear inside LET
+./tlatools/org.lamport.tlatools/test-model/EWD998/EWD998Chan.tla	ok	EWD998Chan	33 units
+./tlatools/org.lamport.tlatools/test-model/EWD998/EWD998_TTrace.tla	ok	EWD998_TTrace	7 units
 ./tlatools/org.lamport.tlatools/test-model/EWD998/Utils.tla	ok	Utils	6 units
 ./tlatools/org.lamport.tlatools/test-model/Echo/Echo.tla	ok	Echo	30 units
 ./tlatools/org.lamport.tlatools/test-model/Echo/MCEcho.tla	ok	MCEcho	7 units
@@ -309,7 +309,7 @@
 ./tlatools/org.lamport.tlatools/test-model/examples/detector_chan96/Age_Channel.tla	ok	Age_Channel	9 units
 ./tlatools/org.lamport.tlatools/test-model/examples/detector_chan96/EPFailureDetector.tla	ok	EPFailureDetector	12 units
 ./tlatools/org.lamport.tlatools/test-model/examples/detector_chan96/EnvironmentController.tla	ok	EnvironmentController	32 units
-./tlatools/org.lamport.tlatools/test-model/examples/ewd687a/EWD687a.tla	error	423:9	only definitions may appear inside LET
+./tlatools/org.lamport.tlatools/test-model/examples/ewd687a/EWD687a.tla	ok	EWD687a	27 units
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd687a/MCEWD687a.tla	ok	MCEWD687a	7 units
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd840/EWD840.tla	ok	EWD840	31 units
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd840/SyncTerminationDetection.tla	ok	SyncTerminationDetection	17 units
@@ -317,7 +317,7 @@
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd998/EWD998.tla	ok	EWD998	33 units
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd998/EWD998Chan.tla	ok	EWD998Chan	28 units
 ./tlatools/org.lamport.tlatools/test-model/examples/ewd998/EWD998ChanID.tla	ok	EWD998ChanID	41 units
-./tlatools/org.lamport.tlatools/test-model/examples/ewd998/Utils.tla	error	20:48	only definitions may appear inside LET
+./tlatools/org.lamport.tlatools/test-model/examples/ewd998/Utils.tla	ok	Utils	2 units
 ./tlatools/org.lamport.tlatools/test-model/examples/locks_auxiliary_vars/Lock.tla	ok	Lock	15 units
 ./tlatools/org.lamport.tlatools/test-model/examples/locks_auxiliary_vars/LockHS.tla	ok	LockHS	16 units
 ./tlatools/org.lamport.tlatools/test-model/examples/locks_auxiliary_vars/Peterson.tla	ok	Peterson	22 units
@@ -460,12 +460,12 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test202.tla	ok	test202	9 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test203.tla	ok	test203	4 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test203a.tla	ok	test203a	2 units
-./tlatools/org.lamport.tlatools/test-model/suite/test204.tla	error	24:5	expected an identifier, found Dot
+./tlatools/org.lamport.tlatools/test-model/suite/test204.tla	ok	test204	156 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test205.tla	ok	test205	83 units
-./tlatools/org.lamport.tlatools/test-model/suite/test206.tla	error	97:42	expected an identifier, found At
+./tlatools/org.lamport.tlatools/test-model/suite/test206.tla	ok	test206	116 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test206a.tla	ok	test206a	7 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test207.tla	ok	test207	6 units
-./tlatools/org.lamport.tlatools/test-model/suite/test208.tla	error	12:9	expected an identifier, found Kw(Proof)
+./tlatools/org.lamport.tlatools/test-model/suite/test208.tla	ok	test208	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test209.tla	ok	test209	62 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test21.tla	ok	test21	9 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test210.tla	ok	test210	6 units
@@ -477,7 +477,7 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test213b.tla	ok	test213b	3 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test214.tla	ok	test214	2 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test215.tla	ok	test215	16 units
-./tlatools/org.lamport.tlatools/test-model/suite/test216.tla	error	27:14	expected an identifier, found LTup
+./tlatools/org.lamport.tlatools/test-model/suite/test216.tla	ok	test216	45 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test216a.tla	ok	test216a	6 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test216b.tla	ok	test216b	2 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test216c.tla	ok	test216c	7 units
@@ -485,10 +485,10 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test217a.tla	ok	test217a	2 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test218.tla	ok	test218	2 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test219.tla	ok	test219	178 units
-./tlatools/org.lamport.tlatools/test-model/suite/test219a.tla	error	98:42	expected an identifier, found At
+./tlatools/org.lamport.tlatools/test-model/suite/test219a.tla	ok	test219a	46 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test22.tla	ok	test22	6 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test220.tla	ok	test220	5 units
-./tlatools/org.lamport.tlatools/test-model/suite/test23.tla	error	51:5	expected an identifier, found Op(Minus)
+./tlatools/org.lamport.tlatools/test-model/suite/test23.tla	ok	test23	30 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test23bis.tla	ok	test23	11 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test24.tla	ok	test24	4 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test25.tla	ok	test25	5 units
@@ -497,8 +497,8 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test28.tla	ok	test28	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test29.tla	ok	test29	4 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test3.tla	ok	test3	6 units
-./tlatools/org.lamport.tlatools/test-model/suite/test30-true.tla	error	9:18	expected an identifier, found Underscore
-./tlatools/org.lamport.tlatools/test-model/suite/test30.tla	error	9:18	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test-model/suite/test30-true.tla	error	15:10	expected DefEq, found Op(Eq)
+./tlatools/org.lamport.tlatools/test-model/suite/test30.tla	ok	test30	9 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test31.tla	ok	test31	4 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test32.tla	ok	test32	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test33.tla	ok	test33	4 units
@@ -512,24 +512,24 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test4.tla	ok	test4	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test40.tla	ok	test40	4 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test41.tla	ok	test41	4 units
-./tlatools/org.lamport.tlatools/test-model/suite/test42.tla	error	11:8	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test-model/suite/test42.tla	ok	test42	9 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test43.tla	ok	test43	9 units
-./tlatools/org.lamport.tlatools/test-model/suite/test44.tla	error	25:4	expected an identifier, found Op(Minus)
+./tlatools/org.lamport.tlatools/test-model/suite/test44.tla	ok	test44	60 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test45.tla	ok	test45	7 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test46.tla	ok	test46	13 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test47.tla	ok	test47	3 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test47a.tla	ok	test47a	1 units
-./tlatools/org.lamport.tlatools/test-model/suite/test48.tla	error	19:5	expected an identifier, found Dot
+./tlatools/org.lamport.tlatools/test-model/suite/test48.tla	ok	test48	66 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test49.tla	ok	test49	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test49a.tla	ok	test49a	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test49b.tla	ok	test49b	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test49c.tla	ok	test49c	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test5.tla	ok	test5	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test50.tla	ok	test50	9 units
-./tlatools/org.lamport.tlatools/test-model/suite/test51.tla	error	11:10	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test-model/suite/test51.tla	ok	test51	80 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test51a.tla	ok	test51a	8 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test51b.tla	ok	test51b	1 units
-./tlatools/org.lamport.tlatools/test-model/suite/test52.tla	error	9:9	expected an identifier, found Op(Minus)
+./tlatools/org.lamport.tlatools/test-model/suite/test52.tla	ok	test52	20 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test53.tla	ok	test53	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test54.tla	ok	test54	12 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test55.tla	ok	test55	9 units
@@ -538,8 +538,8 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test56a.tla	ok	test56a	3 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test57.tla	ok	test57	10 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test57a.tla	ok	test57a	5 units
-./tlatools/org.lamport.tlatools/test-model/suite/test58.tla	error	7:11	unknown operator `\b`
-./tlatools/org.lamport.tlatools/test-model/suite/test59.tla	error	9:9	only definitions may appear inside LET
+./tlatools/org.lamport.tlatools/test-model/suite/test58.tla	ok	test58	1 units
+./tlatools/org.lamport.tlatools/test-model/suite/test59.tla	ok	test59	6 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test59a.tla	ok	test59a	2 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test6.tla	ok	test6	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test60.tla	ok	test60	4 units
@@ -556,7 +556,7 @@
 ./tlatools/org.lamport.tlatools/test-model/suite/test8.tla	ok	test8	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test9.tla	ok	test9	5 units
 ./tlatools/org.lamport.tlatools/test-model/suite/test99.tla	ok	test99	4 units
-./tlatools/org.lamport.tlatools/test-model/suite/test999.tla	error	9:18	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test-model/suite/test999.tla	ok	test999	9 units
 ./tlatools/org.lamport.tlatools/test-model/suite/testa.tla	ok	testa	0 units
 ./tlatools/org.lamport.tlatools/test-model/suite/testfoo.tla	ok	test	3 units
 ./tlatools/org.lamport.tlatools/test-model/suite/testt37.tla	ok	test37	4 units
@@ -611,7 +611,7 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/CaseTest.tla	ok	CaseTest	37 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ConjunctionListTest.tla	ok	ConjunctionListTest	14 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ConstantModuleSubstitution.tla	ok	ConstantModuleSubstitution	10 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ConstantsTest.tla	error	17:15	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ConstantsTest.tla	ok	ConstantsTest	14 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/DisjunctionListTest.tla	ok	DisjunctionListTest	14 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ExceptTest.tla	ok	ExceptTest	20 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/FairnessTest.tla	ok	FairnessTest	10 units
@@ -619,10 +619,10 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/IfThenElseTest.tla	ok	IfThenElseTest	16 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ImplicitProofsTest.tla	ok	ImplicitProofsTest	5 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/InnerModuleTest.tla	ok	InnerModuleTest	4 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/LetInTest.tla	error	47:22	expected an identifier, found Underscore
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/NegativeOpTest.tla	error	5:20	expected an identifier, found Op(Minus)
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/NumbersTest.tla	error	6:16	unknown operator `\b`
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ProofsTest.tla	error	51:45	expected an identifier, found Str("c")
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/LetInTest.tla	ok	LetInTest	12 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/NegativeOpTest.tla	ok	NegativeOpTest	5 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/NumbersTest.tla	ok	NumbersTest	15 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/ProofsTest.tla	ok	ProofsTest	15 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/QuantificationTest.tla	ok	QuantificationTest	12 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/RecordsTest.tla	ok	RecordsTest	17 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/corpus/RecordsWarning2Test.tla	ok	RecordsWarning2Test	4 units
@@ -643,7 +643,7 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4201_OpParameter_Twice_Test.tla	ok	E4201_OpParameter_Twice_Test	1 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4201_Op_Test.tla	ok	E4201_Op_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4201_VariableName_Test.tla	ok	E4201_VariableName_Test	2 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4202_Test.tla	error	3:1	expected a declaration, found Kw(True)
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4202_Test.tla	ok	E4202_Test	1 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4203_Test.tla	ok	E4203_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4204_0_Required_1_Provided_Test.tla	ok	E4204_0_Required_1_Provided_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4204_1_Required_0_Provided_Test.tla	ok	E4204_1_Required_0_Provided_Test	2 units
@@ -662,7 +662,7 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4222_Instanced.tla	ok	E4222_Instanced	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4222_Test.tla	ok	E4222_Test	0 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4223_Test.tla	ok	E4223_Test	2 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4224_Extended.tla	error	4:10	expected an identifier, found Underscore
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4224_Extended.tla	ok	E4224_Extended	1 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4224_Test.tla	ok	E4224_Test	0 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4240_Test.tla	ok	E4240_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4241_Test.tla	ok	E4241_Test	2 units
@@ -671,14 +671,14 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4243_1_Required_0_Provided_Test.tla	ok	E4243_1_Required_0_Provided_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4243_1_Required_2_Provided_Test.tla	ok	E4243_1_Required_2_Provided_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4243_2_Required_1_Provided_Test.tla	ok	E4243_2_Required_1_Provided_Test	3 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Always_Test.tla	error	15:1	expected an expression, found ModuleEnd
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Eventually_Test.tla	error	15:1	expected an expression, found ModuleEnd
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Always_Test.tla	ok	E4244_Always_Test	2 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Eventually_Test.tla	ok	E4244_Eventually_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Op_Test.tla	ok	E4244_Op_Test	3 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Prime_Test.tla	error	14:26	expected an expression, found Prime
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4244_Prime_Test.tla	ok	E4244_Prime_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4245_Constant_Sub_Test.tla	ok	E4245_Constant_Sub_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4245_Variable_Sub_Test.tla	ok	E4245_Variable_Sub_Test	3 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4246_Test.tla	error	17:26	expected an expression, found Prime
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4247_Test.tla	error	18:26	expected an expression, found Prime
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4246_Test.tla	ok	E4246_Test	2 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4247_Test.tla	ok	E4247_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4260_1_Expected_2_Provided_Test.tla	ok	E4260_1_Expected_2_Provided_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4260_2_Expected_3_Provided_Test.tla	ok	E4260_2_Expected_3_Provided_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4261_Test.tla	ok	E4261_Test	1 units
@@ -689,8 +689,8 @@
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4271_2_Required_0_Provided_Test.tla	ok	E4271_2_Required_0_Provided_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4271_2_Required_1_Provided_Test.tla	ok	E4271_2_Required_1_Provided_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4271_2_Required_3_Provided_Test.tla	ok	E4271_2_Required_3_Provided_Test	3 units
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4272_Test.tla	error	15:11	expected an expression, found Prime
-./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4273_Test.tla	error	15:13	expected an expression, found Prime
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4272_Test.tla	ok	E4272_Test	3 units
+./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4273_Test.tla	ok	E4273_Test	3 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4274_1_Required_2_Provided_Test.tla	ok	E4274_1_Required_2_Provided_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4274_2_Required_1_Provided_Test.tla	ok	E4274_2_Required_1_Provided_Test	2 units
 ./tlatools/org.lamport.tlatools/test/tla2sany/semantic/error_corpus/E4274_2_Required_3_Provided_Test.tla	ok	E4274_2_Required_3_Provided_Test	2 units

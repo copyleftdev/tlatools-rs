@@ -1,4 +1,4 @@
-use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
+use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, LetInstance, Module, Param, QuantKind, Unit};
 use crate::error::{Error, Result};
 use crate::lexer::lex;
 use crate::token::{Kw, Op, Tok, Token};
@@ -189,7 +189,20 @@ impl Parser {
                         extends.push(self.expect_ident()?);
                     }
                 }
-                _ => units.push(self.unit()?),
+                _ => {
+                    // A unit that reads nothing would leave this loop spinning
+                    // on the same token for ever. Nothing should do that, and
+                    // if something does, saying so beats hanging.
+                    let before = self.pos;
+                    let unit = self.unit_body()?;
+                    if self.pos == before {
+                        return Err(self.err(format!(
+                            "cannot make sense of {:?}, and cannot get past it",
+                            self.peek()
+                        )));
+                    }
+                    units.push(unit);
+                }
             }
         }
         Ok(Module {
@@ -199,14 +212,11 @@ impl Parser {
         })
     }
 
-    fn unit(&mut self) -> Result<Unit> {
-        self.fences.push(1);
-        let parsed = self.unit_body();
-        self.fences.pop();
-        parsed
-    }
-
     fn unit_body(&mut self) -> Result<Unit> {
+        if self.at_proof() {
+            self.skip_proof();
+            return Ok(Unit::Opaque);
+        }
         let local = self.eat(&Tok::Kw(Kw::Local));
         match self.peek().clone() {
             Tok::Kw(Kw::Constant) => {
@@ -270,6 +280,12 @@ impl Parser {
                 }))
             }
             Tok::Ident(name) => self.named_definition(name, local),
+            // A specification may define something spelled like a keyword.
+            // SANY reads it and complains afterwards; so do we.
+            Tok::Kw(kw) if matches!(self.peek_at(1), Tok::DefEq) && kw.text().is_some() => {
+                let name = kw.text().expect("checked").to_string();
+                self.named_definition(name, local)
+            }
             other => Err(self.err(format!("expected a declaration, found {other:?}"))),
         }
     }
@@ -367,6 +383,10 @@ impl Parser {
         if !self.at_proof() {
             return;
         }
+        // Always consume the token that began the proof. A proof step can
+        // itself look like the start of a unit -- `<1> DEFINE Op == ...` --
+        // and returning without moving would leave the caller where it was.
+        self.advance();
         while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
             if self.at_unit_start() {
                 return;
@@ -386,12 +406,26 @@ impl Parser {
         }
     }
 
+    /// Would a new unit begin `ahead` tokens from here? Used to tell an
+    /// operator substitution from the start of an expression.
+    fn at_unit_start_after(&self, ahead: usize) -> bool {
+        self.toks.get(self.pos + ahead).is_some_and(|t| t.col == 1)
+    }
+
     fn at_proof(&self) -> bool {
-        matches!(self.peek(), Tok::Kw(Kw::Proof))
-            // A proof step is written `<1>2.`, which reaches us as `<`, a
-            // number or name, then `>`.
-            || (matches!(self.peek(), Tok::Op(Op::Lt))
-                && matches!(self.peek_at(2), Tok::Op(Op::Gt)))
+        if matches!(self.peek(), Tok::Kw(Kw::Proof)) {
+            return true;
+        }
+        // A proof step is written `<1>2.`, which reaches us as `<`, a number
+        // or name, then `>`. It always begins a line; without that, the `<`
+        // and `>` of an ordinary comparison would look the same.
+        self.begins_line()
+            && matches!(self.peek(), Tok::Op(Op::Lt))
+            && matches!(self.peek_at(2), Tok::Op(Op::Gt))
+    }
+
+    fn begins_line(&self) -> bool {
+        self.pos == 0 || self.toks[self.pos - 1].line < self.toks[self.pos].line
     }
 
     /// Does a new module unit begin here? Only tokens in the first column can,
@@ -408,13 +442,66 @@ impl Parser {
                 | Kw::Theorem
                 | Kw::Local
                 | Kw::Instance
-                | Kw::Recursive,
+                | Kw::Recursive
+                | Kw::Extends,
             ) => true,
-            Tok::Ident(_) => matches!(
-                self.peek_at(1),
-                Tok::DefEq | Tok::LParen | Tok::LBrack | Tok::Op(_)
-            ),
+            Tok::Ident(_) | Tok::Op(_) | Tok::Underscore => self.at_definition(),
             _ => false,
+        }
+    }
+
+    /// Does a definition's left-hand side start here?
+    ///
+    /// Matching the shape matters rather than merely finding a `==` further
+    /// on: a generated specification wraps expressions into the first column,
+    /// and the next definition's `==` is only a few tokens away.
+    fn at_definition(&self) -> bool {
+        let defeq = |offset: usize| matches!(self.peek_at(offset), Tok::DefEq);
+        match self.peek() {
+            // `Name ==`, `Name(..) ==`, `Name[..] ==`, `a + b ==`, `b ^+ ==`
+            Tok::Ident(_) => {
+                defeq(1)
+                    || match self.peek_at(1) {
+                        Tok::LParen | Tok::LBrack => defeq(self.past_brackets(1)),
+                        Tok::Op(_) => defeq(2) || (self.is_name(2) && defeq(3)),
+                        _ => false,
+                    }
+            }
+            // `-. a ==`, `- a ==`, `-. _ ==`
+            Tok::Op(_) => {
+                let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
+                self.is_name(after) && defeq(after + 1)
+            }
+            // `_ + _ ==`, `_ ^# ==`
+            Tok::Underscore => {
+                matches!(self.peek_at(1), Tok::Op(_))
+                    && (defeq(2) || (matches!(self.peek_at(2), Tok::Underscore) && defeq(3)))
+            }
+            _ => false,
+        }
+    }
+
+    fn is_name(&self, offset: usize) -> bool {
+        matches!(self.peek_at(offset), Tok::Ident(_) | Tok::Underscore)
+    }
+
+    /// The offset just past the bracket group that begins at `offset`.
+    fn past_brackets(&self, offset: usize) -> usize {
+        let mut depth = 0usize;
+        let mut at = offset;
+        loop {
+            match self.peek_at(at) {
+                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+                    depth -= 1;
+                    if depth == 0 {
+                        return at + 1;
+                    }
+                }
+                Tok::Eof => return at,
+                _ => {}
+            }
+            at += 1;
         }
     }
 
@@ -427,6 +514,12 @@ impl Parser {
     }
 
     fn decl(&mut self) -> Result<Decl> {
+        if let Some(param) = self.fixity_declaration() {
+            return Ok(Decl {
+                name: param.name,
+                arity: param.arity,
+            });
+        }
         let name = self.expect_ident()?;
         let mut arity = 0;
         if self.eat(&Tok::LParen) {
@@ -458,9 +551,44 @@ impl Parser {
         Ok(params)
     }
 
-    /// A formal parameter: a name, or `f(_, _)` for one that is itself an
-    /// operator and so has to be applied rather than used as a value.
+    /// An operator declared by the shape it is written in rather than by a
+    /// name: `_+_` takes two operands around it, `-._` one after it, `_^#` one
+    /// before it. The underscores are where the operands go.
+    fn fixity_declaration(&mut self) -> Option<Param> {
+        let mark = self.pos;
+        // `_ op _` and `_ op`
+        if matches!(self.peek(), Tok::Underscore)
+            && let Tok::Op(op) = *self.peek_at(1)
+        {
+            self.advance();
+            self.advance();
+            let arity = if self.eat(&Tok::Underscore) { 2 } else { 1 };
+            return Some(Param {
+                name: op.symbol().to_string(),
+                arity,
+            });
+        }
+        // `op _`, and the `-._` spelling that marks a prefix minus.
+        if let Tok::Op(op) = *self.peek() {
+            self.advance();
+            self.eat(&Tok::Dot);
+            if self.eat(&Tok::Underscore) {
+                return Some(Param {
+                    name: op.symbol().to_string(),
+                    arity: 1,
+                });
+            }
+            self.pos = mark;
+        }
+        None
+    }
+
+    /// A formal parameter: a name, `f(_, _)` for one that is itself an
+    /// operator, or an operator written by its fixity.
     fn param(&mut self) -> Result<Param> {
+        if let Some(operator) = self.fixity_declaration() {
+            return Ok(operator);
+        }
         let name = self.expect_ident()?;
         let mut arity = 0;
         if self.eat(&Tok::LParen) {
@@ -486,7 +614,17 @@ impl Parser {
             loop {
                 let name = self.expect_ident()?;
                 self.expect(&Tok::Gets)?;
-                subs.push((name, self.expr(0)?));
+                let replacement = if matches!(self.peek_at(1), Tok::Comma | Tok::Eof)
+                    || self.at_unit_start_after(1)
+                {
+                    self.operator_by_symbol()
+                } else {
+                    None
+                };
+                match replacement {
+                    Some(operator) => subs.push((name, operator)),
+                    None => subs.push((name, self.expr(0)?)),
+                }
                 if !self.eat(&Tok::Comma) {
                     break;
                 }
@@ -521,7 +659,7 @@ impl Parser {
             _ => self.prefix()?,
         };
         loop {
-            if self.fenced() {
+            if self.fenced() || self.at_unit_start() || self.at_proof() {
                 break;
             }
             let Tok::Op(op) = *self.peek() else { break };
@@ -631,9 +769,14 @@ impl Parser {
     }
 
     fn postfix(&mut self) -> Result<Expr> {
-        let mut e = self.primary()?;
+        let e = self.primary()?;
+        self.continue_postfix(e)
+    }
+
+    fn continue_postfix(&mut self, head: Expr) -> Result<Expr> {
+        let mut e = head;
         loop {
-            if self.fenced() {
+            if self.fenced() || self.at_unit_start() {
                 break;
             }
             match self.peek() {
@@ -670,8 +813,10 @@ impl Parser {
                         _ => return Err(self.err("`!` must follow an instance name")),
                     };
                     self.advance();
-                    // `Inv!2` picks the second conjunct of `Inv`, and `Inv!:`
-                    // its whole body; both are proof notation, not values.
+                    // `Inv!2` picks the second conjunct of `Inv`, `Inv!:` its
+                    // whole body, `Inv!<<` and `Inv!>>` the sides of a tuple,
+                    // and `Inv!@` the subject of an EXCEPT. All are proof
+                    // notation for pointing inside a definition, not values.
                     let name = match self.peek().clone() {
                         Tok::Num(n) => {
                             self.advance();
@@ -680,6 +825,18 @@ impl Parser {
                         Tok::Op(op) => {
                             self.advance();
                             op.symbol().to_string()
+                        }
+                        Tok::At => {
+                            self.advance();
+                            "@".to_string()
+                        }
+                        Tok::LTup => {
+                            self.advance();
+                            "<<".to_string()
+                        }
+                        Tok::RTup => {
+                            self.advance();
+                            ">>".to_string()
                         }
                         Tok::Colon => {
                             self.advance();
@@ -711,12 +868,12 @@ impl Parser {
         }
         loop {
             // `FoldSet(+, 0, S)` passes the operator itself, not an
-            // application of it.
-            if let Tok::Op(op) = *self.peek()
-                && (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) == close)
+            // application of it. So does `apply(', v')`, where the operator is
+            // the prime.
+            if (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) == close)
+                && let Some(operator) = self.operator_by_symbol()
             {
-                self.advance();
-                out.push(Expr::Ident(op.symbol().to_string()));
+                out.push(operator);
                 if !self.eat(&Tok::Comma) {
                     return Ok(out);
                 }
@@ -729,10 +886,27 @@ impl Parser {
         }
     }
 
+    /// An operator standing where a value would, named by its own symbol.
+    fn operator_by_symbol(&mut self) -> Option<Expr> {
+        let symbol = match self.peek() {
+            Tok::Op(op) => op.symbol(),
+            Tok::Prime => "'",
+            Tok::Kw(Kw::Enabled) => "ENABLED",
+            Tok::Kw(Kw::Unchanged) => "UNCHANGED",
+            Tok::Kw(Kw::Domain) => "DOMAIN",
+            Tok::Kw(Kw::Subset) => "SUBSET",
+            Tok::Kw(Kw::Union) => "UNION",
+            _ => return None,
+        };
+        self.advance();
+        Some(Expr::Ident(symbol.to_string()))
+    }
+
     fn primary(&mut self) -> Result<Expr> {
         let at = self.pos;
         match self.advance() {
             Tok::Num(n) => Ok(Expr::Num(n)),
+            Tok::Decimal(text) => Ok(Expr::Decimal(text)),
             Tok::Str(s) => Ok(Expr::Str(s)),
             Tok::Kw(Kw::True) => Ok(Expr::Bool(true)),
             Tok::Kw(Kw::False) => Ok(Expr::Bool(false)),
@@ -758,28 +932,7 @@ impl Parser {
                     otherwise: Box::new(otherwise),
                 })
             }
-            Tok::Kw(Kw::Let) => {
-                let mut defs = Vec::new();
-                while !matches!(self.peek(), Tok::Kw(Kw::In)) {
-                    if self.eat(&Tok::Kw(Kw::Recursive)) {
-                        self.decl_list()?;
-                        continue;
-                    }
-                    let Tok::Ident(name) = self.peek().clone() else {
-                        return Err(self.err("expected a definition inside LET"));
-                    };
-                    match self.named_definition(name, false)? {
-                        Unit::Def(def) => defs.push(def),
-                        _ => return Err(self.err("only definitions may appear inside LET")),
-                    }
-                }
-                self.advance();
-                let body = self.expr(0)?;
-                Ok(Expr::Let {
-                    defs,
-                    body: Box::new(body),
-                })
-            }
+            Tok::Kw(Kw::Let) => self.let_form(),
             Tok::Kw(Kw::Choose) => {
                 let mut bounds = self.bounds(&Tok::Colon)?;
                 self.expect(&Tok::Colon)?;
@@ -823,6 +976,43 @@ impl Parser {
             }
             other => Err(self.err_at(at, format!("expected an expression, found {other:?}"))),
         }
+    }
+
+    fn let_form(&mut self) -> Result<Expr> {
+        let mut defs = Vec::new();
+        let mut instances = Vec::new();
+        while !matches!(self.peek(), Tok::Kw(Kw::In)) {
+            if self.eat(&Tok::Kw(Kw::Recursive)) {
+                self.decl_list()?;
+                continue;
+            }
+            if matches!(self.peek(), Tok::Kw(Kw::Instance)) {
+                let (module, subs) = self.instance_tail()?;
+                instances.push(LetInstance {
+                    name: None,
+                    module,
+                    subs,
+                });
+                continue;
+            }
+            let Tok::Ident(name) = self.peek().clone() else {
+                return Err(self.err("expected a definition inside LET"));
+            };
+            match self.named_definition(name, false)? {
+                Unit::Def(def) => defs.push(def),
+                Unit::Instance { name, module, subs } => {
+                    instances.push(LetInstance { name, module, subs });
+                }
+                _ => return Err(self.err("only definitions may appear inside LET")),
+            }
+        }
+        self.advance();
+        let body = self.expr(0)?;
+        Ok(Expr::Let {
+            defs,
+            instances,
+            body: Box::new(body),
+        })
     }
 
     fn case_form(&mut self) -> Result<Expr> {
@@ -875,9 +1065,11 @@ impl Parser {
             && let Some(rest) = name.strip_prefix('_')
             && !rest.is_empty()
         {
-            let subscript = Expr::Ident(rest.to_string());
+            let head = Expr::Ident(rest.to_string());
             self.advance();
-            return Ok(subscript);
+            // The name may carry on -- `[A]_Inst!vars` -- so whatever follows
+            // it still belongs to the subscript.
+            return self.continue_postfix(head);
         }
         self.expect(&Tok::Underscore)?;
         self.postfix()

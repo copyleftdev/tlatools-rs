@@ -14,7 +14,7 @@
 
 use std::fmt;
 
-use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
+use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, LetInstance, Module, Param, QuantKind, Unit};
 use crate::token::Op;
 
 /// The binding power of the constructs that run to the end of the expression.
@@ -74,6 +74,7 @@ fn write(e: &Expr, min: u8, f: &mut fmt::Formatter<'_>) -> fmt::Result {
 fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match e {
         Expr::Num(n) => write!(f, "{n}"),
+        Expr::Decimal(text) => f.write_str(text),
         Expr::Str(s) => write!(f, "\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\"")),
         Expr::Bool(b) => f.write_str(if *b { "TRUE" } else { "FALSE" }),
         Expr::Ident(name) => f.write_str(name),
@@ -171,13 +172,23 @@ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "{} {} : {body}", symbol.symbol(), bounds_list(bounds))
         }
         Expr::Choose { bound, body } => write!(f, "CHOOSE {bound} : {body}"),
-        Expr::Let { defs, body } => {
+        Expr::Let {
+            defs,
+            instances,
+            body,
+        } => {
             f.write_str("LET ")?;
             for (i, def) in defs.iter().enumerate() {
                 if i > 0 {
                     f.write_str(" ")?;
                 }
                 write!(f, "{def}")?;
+            }
+            for instance in instances {
+                if !defs.is_empty() {
+                    f.write_str(" ")?;
+                }
+                write!(f, "{instance}")?;
             }
             write!(f, " IN {body}")
         }
@@ -316,6 +327,24 @@ impl fmt::Display for Unit {
             Unit::Inner(module) => write!(f, "{module}"),
             Unit::Opaque => Ok(()),
         }
+    }
+}
+
+impl fmt::Display for LetInstance {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(name) = &self.name {
+            write!(f, "{name} == ")?;
+        }
+        write!(f, "INSTANCE {}", self.module)?;
+        if !self.subs.is_empty() {
+            let with: Vec<String> = self
+                .subs
+                .iter()
+                .map(|(name, value)| format!("{name} <- {value}"))
+                .collect();
+            write!(f, " WITH {}", with.join(", "))?;
+        }
+        Ok(())
     }
 }
 

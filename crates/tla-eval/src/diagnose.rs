@@ -118,7 +118,7 @@ impl<'m> Evaluator<'m> {
                 }
                 Ok(())
             }
-            Expr::Let { defs, body } => {
+            Expr::Let { defs, body, .. } => {
                 let base = ctx.locals.len();
                 let scope = base + defs.len();
                 for def in defs {
