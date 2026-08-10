@@ -33,9 +33,11 @@ mod builtin;
 mod diagnose;
 mod error;
 mod eval;
+mod spec;
 mod value;
 
 pub use diagnose::Blocked;
 pub use error::{Error, Result};
-pub use eval::{Evaluator, MAX_ELEMENTS, Spec, State};
+pub use eval::{Evaluator, MAX_ELEMENTS, State};
+pub use spec::{Directory, Modules, NoModules, Spec};
 pub use value::{Infinite, Value};

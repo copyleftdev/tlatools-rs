@@ -79,12 +79,18 @@ the generated refinement modules; temporal operators parse but carry no meaning
 here.
 
 **Phase 1 — evaluator.** Complete. `tla-eval` evaluates a specification's
-predicates and actions at concrete states. It runs every benchmark spec,
+predicates and actions at concrete states, including operators the
+specification defines itself (infix, prefix and postfix), operators passed as
+arguments, `LAMBDA`, `EXTENDS`, and `INSTANCE ... WITH`. It runs every benchmark spec,
 including the ones that stress the corners: `RECURSIVE` operators, `CHOOSE`,
 nested set comprehensions, `EXCEPT` with `@` and multiple sequential updates,
 record sets and function sets.
 
-Two choices are worth stating. Sequences, records and functions are one thing in
+Substitution is held as an expression rather than a value, because priming has
+to reach through it: under `n <- a`, an `n'` inside the instantiated module
+means `a'`. Evaluating the substitution eagerly would lose that, and quietly.
+
+Two further choices are worth stating. Sequences, records and functions are one thing in
 TLA+, so a value's representation is derived from its domain rather than from
 how it was written — otherwise `[r \in {"a"} |-> 1]` and `[a |-> 1]` would
 compare unequal. And a formula that one state cannot decide is refused rather

@@ -1,10 +1,11 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use tla_syntax::token::Op;
-use tla_syntax::{Bound, Def, ExceptPath, Expr, Module, QuantKind, parse_module};
+use tla_syntax::{Bound, Def, ExceptPath, Expr, Param, QuantKind};
 
 use crate::builtin;
 use crate::error::{Error, Result, type_error};
+use crate::spec::Spec;
 use crate::value::{Infinite, Value};
 
 /// Nothing enumerable is materialized beyond this many elements. The bound
@@ -18,47 +19,16 @@ const MAX_DEPTH: usize = 512;
 pub type State = BTreeMap<String, Value>;
 
 #[derive(Debug)]
-pub struct Spec {
-    pub(crate) module: Module,
-    variables: BTreeSet<String>,
-    constants: BTreeSet<String>,
-}
-
-impl Spec {
-    pub fn parse(src: &str) -> Result<Self> {
-        let module = parse_module(src)?;
-        let variables = module.variables().cloned().collect();
-        let constants = module.constants().map(|d| d.name.clone()).collect();
-        Ok(Self {
-            module,
-            variables,
-            constants,
-        })
-    }
-
-    pub fn name(&self) -> &str {
-        &self.module.name
-    }
-
-    pub fn variables(&self) -> impl Iterator<Item = &str> {
-        self.variables.iter().map(String::as_str)
-    }
-
-    pub fn constants(&self) -> impl Iterator<Item = &str> {
-        self.constants.iter().map(String::as_str)
-    }
-
-    pub fn defines(&self, name: &str) -> bool {
-        self.module.definition(name).is_some()
-    }
-}
-
-#[derive(Debug)]
 pub struct Evaluator<'m> {
     pub(crate) spec: &'m Spec,
     constants: BTreeMap<String, Value>,
 }
 
+/// What a name in scope stands for.
+///
+/// A parameter declared `f(_)` is an operator, not a value, so what it binds to
+/// has to be something that can be *applied* — and TLA+ lets that be any of
+/// four things.
 #[derive(Clone)]
 pub(crate) enum Local<'m> {
     Val(Value),
@@ -68,9 +38,31 @@ pub(crate) enum Local<'m> {
         def: &'m Def,
         scope: usize,
     },
+    /// A `LAMBDA`, or a definition passed by name.
+    Closure {
+        params: &'m [Param],
+        body: &'m Expr,
+        scope: usize,
+    },
+    /// An operator symbol passed by itself, as in `FoldSet(+, 0, S)`.
+    Symbol(Op),
+    /// An operator of a standard module passed by name, as in `FoldSet(Len, ...)`.
+    Builtin(String),
+    /// What an instantiated module's declared name stands for. Held as an
+    /// expression rather than a value because priming has to reach through it:
+    /// under `x <- y`, an `x'` inside the instance means `y'`.
+    Subst {
+        expr: &'m Expr,
+        module: usize,
+        scope: usize,
+    },
 }
 
 pub(crate) struct Ctx<'m, 'a> {
+    /// The module whose scope names are read in. Evaluating an instantiated
+    /// definition moves it, which is what makes `S!Op` mean `Op` as written in
+    /// the instantiated module rather than here.
+    pub(crate) module: usize,
     pub(crate) state: &'a State,
     pub(crate) next: Option<&'a State>,
     pub(crate) primed: bool,
@@ -99,29 +91,28 @@ impl<'m> Evaluator<'m> {
     /// Does the named state predicate hold at `state`?
     pub fn holds_at(&self, name: &str, state: &State) -> Result<bool> {
         let body = self.body_of(name)?;
-        self.eval_bool(body, &mut Self::ctx(state, None))
+        self.eval_bool(body, &mut self.ctx(state, None))
     }
 
     /// Is `from -> to` a step the named action permits?
     pub fn step_allowed(&self, name: &str, from: &State, to: &State) -> Result<bool> {
         let body = self.body_of(name)?;
-        self.eval_bool(body, &mut Self::ctx(from, Some(to)))
+        self.eval_bool(body, &mut self.ctx(from, Some(to)))
     }
 
     pub fn value_of(&self, name: &str, state: &State) -> Result<Value> {
         let body = self.body_of(name)?;
-        self.eval(body, &mut Self::ctx(state, None))
+        self.eval(body, &mut self.ctx(state, None))
     }
 
     pub fn eval_at(&self, expr: &'m Expr, from: &State, to: Option<&State>) -> Result<Value> {
-        self.eval(expr, &mut Self::ctx(from, to))
+        self.eval(expr, &mut self.ctx(from, to))
     }
 
     pub(crate) fn body_of(&self, name: &str) -> Result<&'m Expr> {
-        let def = self
+        let (_, def) = self
             .spec
-            .module
-            .definition(name)
+            .definition(self.spec.root(), name)
             .ok_or_else(|| Error::Undefined(name.to_string()))?;
         if def.params.is_empty() {
             Ok(&def.body)
@@ -133,8 +124,9 @@ impl<'m> Evaluator<'m> {
         }
     }
 
-    pub(crate) fn ctx<'a>(state: &'a State, next: Option<&'a State>) -> Ctx<'m, 'a> {
+    pub(crate) fn ctx<'a>(&self, state: &'a State, next: Option<&'a State>) -> Ctx<'m, 'a> {
         Ctx {
+            module: self.spec.root(),
             state,
             next,
             primed: false,
@@ -170,10 +162,11 @@ impl<'m> Evaluator<'m> {
                 v.apply(&Value::Str(name.clone()))
                     .ok_or_else(|| Error::Type(format!("{v} has no field `{name}`")))
             }
-            Expr::Qualified { instance, name, .. } => Err(Error::Undefined(format!(
-                "{instance}!{name}: instance-qualified names are not resolved; \
-                 evaluate against the instantiated module directly"
-            ))),
+            Expr::Qualified {
+                instance,
+                name,
+                args,
+            } => self.qualified(instance, name, args, ctx),
             Expr::Unary(op, inner) => self.unary(*op, inner, ctx),
             Expr::Binary(op, l, r) => self.binary(*op, l, r, ctx),
             Expr::Tuple(items) => Ok(Value::Seq(self.eval_all(items, ctx)?)),
@@ -282,9 +275,20 @@ impl<'m> Evaluator<'m> {
             return match local {
                 Local::Val(v) => Ok(v),
                 Local::Def { def, scope } => self.call(def, scope, &[], ctx),
+                Local::Closure { body, scope, .. } => {
+                    self.run(name, body, scope, &[], Vec::new(), ctx)
+                }
+                Local::Subst {
+                    expr,
+                    module,
+                    scope,
+                } => self.substituted(expr, module, scope, ctx),
+                Local::Symbol(_) | Local::Builtin(_) => Err(Error::Malformed(format!(
+                    "`{name}` is an operator and must be applied to arguments"
+                ))),
             };
         }
-        if self.spec.variables.contains(name) {
+        if self.spec.declares_variable(ctx.module, name) {
             let source = if ctx.primed {
                 ctx.next.ok_or_else(|| {
                     Error::NoNextState(format!(
@@ -301,14 +305,17 @@ impl<'m> Evaluator<'m> {
         if let Some(v) = self.constants.get(name) {
             return Ok(v.clone());
         }
-        if let Some(def) = self.spec.module.definition(name) {
+        if let Some((module, def)) = self.spec.definition(ctx.module, name) {
             if !def.params.is_empty() {
                 return Err(Error::Malformed(format!(
                     "`{name}` takes {} argument(s) but was used as a value",
                     def.params.len()
                 )));
             }
-            return self.call(def, 0, &[], ctx);
+            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &[], ctx));
+        }
+        if self.spec.declares_constant(ctx.module, name) {
+            return Err(Error::Undefined(format!("constant `{name}` has no value")));
         }
         builtin::constant(name).ok_or_else(|| Error::Undefined(name.to_string()))
     }
@@ -319,14 +326,279 @@ impl<'m> Evaluator<'m> {
                 "only a named operator can be applied to arguments".to_string(),
             ));
         };
+        match lookup(name, ctx) {
+            Some(Local::Def { def, scope }) => return self.invoke(def, scope, args, ctx),
+            Some(Local::Closure {
+                params,
+                body,
+                scope,
+            }) => return self.enter_closure(name, params, body, scope, args, ctx),
+            Some(Local::Symbol(op)) => {
+                let values = self.eval_all(args, ctx)?;
+                return Self::apply_symbol(op, values);
+            }
+            Some(Local::Builtin(builtin)) => {
+                let values = self.eval_all(args, ctx)?;
+                return builtin::call(&builtin, &values);
+            }
+            // An instance's declared name can itself be an operator, so an
+            // application of it applies whatever it stands for.
+            Some(Local::Subst {
+                expr,
+                module,
+                scope,
+            }) => {
+                let Expr::Ident(replacement) = expr else {
+                    return Err(Error::Malformed(format!(
+                        "`{name}` stands for {expr}, which cannot be applied"
+                    )));
+                };
+                let values = self.eval_all(args, ctx)?;
+                let hidden = ctx.locals.split_off(scope);
+                let out = self.in_module(module, ctx, |me, ctx| {
+                    match me.spec.definition(ctx.module, replacement) {
+                        Some((defining, def)) => {
+                            me.in_module(defining, ctx, |me, ctx| me.call(def, 0, &values, ctx))
+                        }
+                        None => builtin::call(replacement, &values),
+                    }
+                });
+                ctx.locals.truncate(scope);
+                ctx.locals.extend(hidden);
+                return out;
+            }
+            Some(Local::Val(_)) => {
+                return Err(Error::Malformed(format!(
+                    "`{name}` is a value, and cannot be applied to arguments"
+                )));
+            }
+            None => {}
+        }
+        if let Some((module, def)) = self.spec.definition(ctx.module, name) {
+            return self.in_module(module, ctx, |me, ctx| me.invoke(def, 0, args, ctx));
+        }
         let values = self.eval_all(args, ctx)?;
-        if let Some(Local::Def { def, scope }) = lookup(name, ctx) {
-            return self.call(def, scope, &values, ctx);
-        }
-        if let Some(def) = self.spec.module.definition(name) {
-            return self.call(def, 0, &values, ctx);
-        }
         builtin::call(name, &values)
+    }
+
+    /// An operator symbol used as a value: `+` in `FoldSet(+, 0, S)`.
+    fn apply_symbol(op: Op, mut values: Vec<Value>) -> Result<Value> {
+        match values.len() {
+            2 => {
+                let right = values.pop().expect("length checked");
+                let left = values.pop().expect("length checked");
+                combine(op, left, right)
+            }
+            _ => Err(Error::Malformed(format!(
+                "`{}` takes two arguments, given {}",
+                op.symbol(),
+                values.len()
+            ))),
+        }
+    }
+
+    /// Call a definition with argument *expressions*, so that an argument for
+    /// an operator parameter is bound rather than evaluated.
+    fn invoke(
+        &self,
+        def: &'m Def,
+        scope: usize,
+        args: &'m [Expr],
+        ctx: &mut Ctx<'m, '_>,
+    ) -> Result<Value> {
+        if def.params.len() != args.len() {
+            return Err(Error::Malformed(format!(
+                "`{}` takes {} argument(s), given {}",
+                def.name,
+                def.params.len(),
+                args.len()
+            )));
+        }
+        let mut bindings = Vec::with_capacity(args.len());
+        for (param, arg) in def.params.iter().zip(args) {
+            bindings.push(if param.arity == 0 {
+                Local::Val(self.eval(arg, ctx)?)
+            } else {
+                self.operator_argument(arg, ctx)?
+            });
+        }
+        self.run(&def.name, &def.body, scope, &def.params, bindings, ctx)
+    }
+
+    fn enter_closure(
+        &self,
+        name: &str,
+        params: &'m [Param],
+        body: &'m Expr,
+        scope: usize,
+        args: &'m [Expr],
+        ctx: &mut Ctx<'m, '_>,
+    ) -> Result<Value> {
+        if params.len() != args.len() {
+            return Err(Error::Malformed(format!(
+                "`{name}` takes {} argument(s), given {}",
+                params.len(),
+                args.len()
+            )));
+        }
+        let mut bindings = Vec::with_capacity(args.len());
+        for (param, arg) in params.iter().zip(args) {
+            bindings.push(if param.arity == 0 {
+                Local::Val(self.eval(arg, ctx)?)
+            } else {
+                self.operator_argument(arg, ctx)?
+            });
+        }
+        self.run(name, body, scope, params, bindings, ctx)
+    }
+
+    /// What an argument means when the parameter it fills is an operator.
+    fn operator_argument(&self, arg: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Local<'m>> {
+        match arg {
+            Expr::Lambda { params, body } => Ok(Local::Closure {
+                params,
+                body,
+                scope: ctx.locals.len(),
+            }),
+            Expr::Ident(name) => {
+                if let Some(
+                    local @ (Local::Closure { .. } | Local::Symbol(_) | Local::Builtin(_)),
+                ) = lookup(name, ctx)
+                {
+                    return Ok(local);
+                }
+                if let Some((_, def)) = self.spec.definition(ctx.module, name) {
+                    return Ok(Local::Closure {
+                        params: &def.params,
+                        body: &def.body,
+                        scope: 0,
+                    });
+                }
+                if let Some(op) = symbol_operator(name) {
+                    return Ok(Local::Symbol(op));
+                }
+                Ok(Local::Builtin(name.clone()))
+            }
+            other => Err(Error::Malformed(format!(
+                "an operator was expected here, but {other} is an expression"
+            ))),
+        }
+    }
+
+    /// Read the rest of this expression in another module's scope.
+    fn in_module<T>(
+        &self,
+        module: usize,
+        ctx: &mut Ctx<'m, '_>,
+        f: impl FnOnce(&Self, &mut Ctx<'m, '_>) -> Result<T>,
+    ) -> Result<T> {
+        let previous = std::mem::replace(&mut ctx.module, module);
+        let out = f(self, ctx);
+        ctx.module = previous;
+        out
+    }
+
+    /// A declared name of an instantiated module, which stands for whatever
+    /// the `WITH` clause put in its place — read back where the instance was
+    /// written, and under the prime in force here.
+    fn substituted(
+        &self,
+        expr: &'m Expr,
+        module: usize,
+        scope: usize,
+        ctx: &mut Ctx<'m, '_>,
+    ) -> Result<Value> {
+        let hidden = ctx.locals.split_off(scope);
+        let previous = std::mem::replace(&mut ctx.module, module);
+        let out = self.eval(expr, ctx);
+        ctx.module = previous;
+        ctx.locals.truncate(scope);
+        ctx.locals.extend(hidden);
+        out
+    }
+
+    /// `S!Op(args)`: `Op` as written in the module `S` instantiates, with that
+    /// module's declared names standing for what `S` substituted for them.
+    fn qualified(
+        &self,
+        instance: &str,
+        name: &str,
+        args: &'m [Expr],
+        ctx: &mut Ctx<'m, '_>,
+    ) -> Result<Value> {
+        // `A!B!C` names a chain of instances; each step moves into the next.
+        if let Some((head, rest)) = instance.split_once('!') {
+            let outer = self
+                .spec
+                .instance(ctx.module, head)
+                .ok_or_else(|| Error::Undefined(format!("no instance named `{head}`")))?;
+            let scope = Self::bind_substitutions(outer, ctx);
+            let out = self.in_module(outer.target, ctx, |me, ctx| {
+                me.qualified(rest, name, args, ctx)
+            });
+            ctx.locals.truncate(scope);
+            return out;
+        }
+
+        let found = self
+            .spec
+            .instance(ctx.module, instance)
+            .ok_or_else(|| Error::Undefined(format!("no instance named `{instance}`")))?;
+        let (module, def) = self
+            .spec
+            .definition(found.target, name)
+            .ok_or_else(|| Error::Undefined(format!("`{instance}!{name}`")))?;
+
+        // The substituting expressions belong to the scope the instance was
+        // written in, so they are bound before the arguments are read.
+        let scope = Self::bind_substitutions(found, ctx);
+        let out = self.in_module(module, ctx, |me, ctx| me.invoke(def, scope, args, ctx));
+        ctx.locals.truncate(scope);
+        out
+    }
+
+    fn bind_substitutions(instance: &'m crate::spec::Instance, ctx: &mut Ctx<'m, '_>) -> usize {
+        let outer = ctx.locals.len();
+        let here = ctx.module;
+        for (name, expr) in &instance.subs {
+            ctx.locals.push((
+                name.clone(),
+                Local::Subst {
+                    expr,
+                    module: here,
+                    scope: outer,
+                },
+            ));
+        }
+        ctx.locals.len()
+    }
+
+    /// Evaluate a body with its parameters bound and the caller's locals
+    /// hidden, which is the one rule operator application has to follow.
+    fn run(
+        &self,
+        name: &str,
+        body: &'m Expr,
+        scope: usize,
+        params: &[Param],
+        bindings: Vec<Local<'m>>,
+        ctx: &mut Ctx<'m, '_>,
+    ) -> Result<Value> {
+        if ctx.depth >= MAX_DEPTH {
+            return Err(Error::Malformed(format!(
+                "`{name}` recursed more than {MAX_DEPTH} deep"
+            )));
+        }
+        let hidden = ctx.locals.split_off(scope);
+        for (param, binding) in params.iter().zip(bindings) {
+            ctx.locals.push((param.name.clone(), binding));
+        }
+        ctx.depth += 1;
+        let out = self.eval(body, ctx);
+        ctx.depth -= 1;
+        ctx.locals.truncate(scope);
+        ctx.locals.extend(hidden);
+        out
     }
 
     fn call(
@@ -344,30 +616,19 @@ impl<'m> Evaluator<'m> {
                 args.len()
             )));
         }
-        if ctx.depth >= MAX_DEPTH {
-            return Err(Error::Malformed(format!(
-                "`{}` recursed more than {MAX_DEPTH} deep",
-                def.name
-            )));
-        }
-        // An operator sees its own parameters and the scope it was written in,
-        // never the locals of whoever called it.
-        let hidden = ctx.locals.split_off(scope);
-        for (param, arg) in def.params.iter().zip(args) {
-            ctx.locals
-                .push((param.name.clone(), Local::Val(arg.clone())));
-        }
-        ctx.depth += 1;
-        let out = self.eval(&def.body, ctx);
-        ctx.depth -= 1;
-        ctx.locals.truncate(scope);
-        ctx.locals.extend(hidden);
-        out
+        let bindings = args.iter().cloned().map(Local::Val).collect();
+        self.run(&def.name, &def.body, scope, &def.params, bindings, ctx)
     }
 
     // -------------------------------------------------------------- operators
 
     fn unary(&self, op: Op, inner: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+        if let Some((module, def)) = self.spec.definition(ctx.module, op.symbol())
+            && def.params.len() == 1
+        {
+            let values = vec![self.eval(inner, ctx)?];
+            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &values, ctx));
+        }
         match op {
             Op::Not => Ok(Value::Bool(!self.eval_bool(inner, ctx)?)),
             Op::Minus => match self.eval(inner, ctx)? {
@@ -433,6 +694,14 @@ impl<'m> Evaluator<'m> {
                 ));
             }
             _ => {}
+        }
+        // `\prec`, `\oplus`, `&` and the rest have a symbol and a precedence
+        // but no meaning until a specification gives them one.
+        if let Op::User(symbol) = op
+            && let Some((module, def)) = self.spec.definition(ctx.module, symbol)
+        {
+            let values = vec![self.eval(lhs, ctx)?, self.eval(rhs, ctx)?];
+            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &values, ctx));
         }
         let left = self.eval(lhs, ctx)?;
         let right = self.eval(rhs, ctx)?;
@@ -754,6 +1023,28 @@ impl<'m> Evaluator<'m> {
         entries.insert(key, replacement);
         Ok(Value::function(entries))
     }
+}
+
+/// The operator a bare symbol names, for `FoldSet(+, 0, S)`.
+fn symbol_operator(name: &str) -> Option<Op> {
+    const CANDIDATES: &[Op] = &[
+        Op::Plus,
+        Op::Minus,
+        Op::Times,
+        Op::Div,
+        Op::Mod,
+        Op::Pow,
+        Op::Cup,
+        Op::Cap,
+        Op::SetMinus,
+        Op::Concat,
+        Op::AtAt,
+        Op::And,
+        Op::Or,
+        Op::Eq,
+        Op::DotDot,
+    ];
+    CANDIDATES.iter().copied().find(|op| op.symbol() == name)
 }
 
 fn lookup<'m>(name: &str, ctx: &Ctx<'m, '_>) -> Option<Local<'m>> {

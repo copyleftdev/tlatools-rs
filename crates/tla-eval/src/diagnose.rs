@@ -72,7 +72,7 @@ impl<'m> Evaluator<'m> {
     /// diagnosis.
     pub fn why_not(&self, name: &str, from: &State, to: &State) -> Result<Vec<Blocked>> {
         let body = self.body_of(name)?;
-        let mut ctx = Self::ctx(from, Some(to));
+        let mut ctx = self.ctx(from, Some(to));
         let mut found = Probe::default();
         self.probe(body, &mut ctx, None, &mut found, 0)?;
         if found.allowed {
@@ -131,7 +131,7 @@ impl<'m> Evaluator<'m> {
             }
             Expr::Apply(head, args) => {
                 if let Expr::Ident(name) = &**head
-                    && let Some(def) = self.spec.module.definition(name)
+                    && let Some((_, def)) = self.spec.definition(ctx.module, name)
                 {
                     return self.enter(def, args, ctx, found, depth);
                 }
@@ -139,7 +139,7 @@ impl<'m> Evaluator<'m> {
                 Ok(())
             }
             Expr::Ident(name) => {
-                if let Some(def) = self.spec.module.definition(name)
+                if let Some((_, def)) = self.spec.definition(ctx.module, name)
                     && def.params.is_empty()
                 {
                     return self.enter(def, &[], ctx, found, depth);
