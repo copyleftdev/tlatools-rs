@@ -10,6 +10,13 @@ question is often not "what states can this system reach?" but "is *this*
 transition one the specification permits?", and TLC cannot be asked that
 directly.
 
+**Reads 425 of the 430 specifications** in the public
+[TLA+ examples](https://github.com/tlaplus/Examples) corpus and the standard
+modules shipped with `tla2tools` — user-defined operators, TLAPS proofs, nested
+modules, higher-order parameters and all. `cargo run --example audit -p
+tla-syntax -- $(find CORPUS -name '*.tla')` reproduces the count and lists
+whatever still fails.
+
 ## Why an evaluator and not a checker
 
 The motivating consumer is [`tla-for-ai`](../tla-for-ai), a benchmark whose

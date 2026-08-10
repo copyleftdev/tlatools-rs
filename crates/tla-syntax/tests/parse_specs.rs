@@ -54,7 +54,8 @@ fn declarations_are_collected() {
 fn operator_definitions_keep_their_parameters() {
     let m = parse_module(&fixture("Paxos.tla")).expect("parses");
     let d = m.definition("Phase2a").expect("Phase2a is defined");
-    assert_eq!(d.params, ["b", "v"]);
+    let names: Vec<&str> = d.params.iter().map(|p| p.name.as_str()).collect();
+    assert_eq!(names, ["b", "v"]);
 }
 
 /// A bulleted list is scoped by the column of its bullets, so the trailing

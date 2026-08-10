@@ -1,4 +1,4 @@
-use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, QuantKind, Unit};
+use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
 use crate::error::{Error, Result};
 use crate::lexer::lex;
 use crate::token::{Kw, Op, Tok, Token};
@@ -129,7 +129,13 @@ impl Parser {
             self.advance();
         }
         self.advance();
-        self.advance();
+        self.module_body()
+    }
+
+    /// Everything from `MODULE` to the terminator. Modules nest, so this is
+    /// reached both at the top of a file and part-way through one.
+    fn module_body(&mut self) -> Result<Module> {
+        self.expect(&Tok::Kw(Kw::Module))?;
         let name = self.expect_ident()?;
         self.expect(&Tok::Separator)?;
 
@@ -139,6 +145,11 @@ impl Parser {
             while self.eat(&Tok::Separator) {}
             match self.peek() {
                 Tok::ModuleEnd | Tok::Eof => break,
+                Tok::Kw(Kw::Module) => {
+                    let inner = self.module_body()?;
+                    self.expect(&Tok::ModuleEnd)?;
+                    units.push(Unit::Inner(Box::new(inner)));
+                }
                 Tok::Kw(Kw::Extends) => {
                     self.advance();
                     extends.push(self.expect_ident()?);
@@ -157,6 +168,13 @@ impl Parser {
     }
 
     fn unit(&mut self) -> Result<Unit> {
+        self.fences.push(1);
+        let parsed = self.unit_body();
+        self.fences.pop();
+        parsed
+    }
+
+    fn unit_body(&mut self) -> Result<Unit> {
         let local = self.eat(&Tok::Kw(Kw::Local));
         match self.peek().clone() {
             Tok::Kw(Kw::Constant) => {
@@ -177,11 +195,25 @@ impl Parser {
             }
             Tok::Kw(Kw::Assume) => {
                 self.advance();
-                Ok(Unit::Assume(self.expr(0)?))
+                self.skip_label();
+                match self.recover(|p| p.expr(0)) {
+                    Some(e) => Ok(Unit::Assume(e)),
+                    None => Ok(Unit::Opaque),
+                }
             }
             Tok::Kw(Kw::Theorem) => {
                 self.advance();
-                Ok(Unit::Theorem(self.expr(0)?))
+                self.skip_label();
+                let statement = self.recover(|p| p.expr(0));
+                self.skip_proof();
+                match statement {
+                    Some(e) => Ok(Unit::Theorem(e)),
+                    None => Ok(Unit::Opaque),
+                }
+            }
+            Tok::Kw(Kw::Proof) => {
+                self.skip_proof();
+                Ok(Unit::Opaque)
             }
             Tok::Kw(Kw::Instance) => {
                 let (module, subs) = self.instance_tail()?;
@@ -191,27 +223,164 @@ impl Parser {
                     subs,
                 })
             }
-            Tok::Ident(name) => {
+            // `op a == e`, and the `-.` spelling that distinguishes prefix
+            // minus from the infix one.
+            Tok::Op(op) => {
                 self.advance();
-                let params = self.opt_params()?;
+                self.eat(&Tok::Dot);
+                let operand = self.param()?;
                 self.expect(&Tok::DefEq)?;
-                if matches!(self.peek(), Tok::Kw(Kw::Instance)) {
-                    let (module, subs) = self.instance_tail()?;
-                    return Ok(Unit::Instance {
-                        name: Some(name),
-                        module,
-                        subs,
-                    });
-                }
-                let body = self.expr(0)?;
                 Ok(Unit::Def(Def {
-                    name,
-                    params,
-                    body,
+                    name: op.symbol().to_string(),
+                    params: vec![operand],
+                    body: self.expr(0)?,
                     local,
                 }))
             }
+            Tok::Ident(name) => self.named_definition(name, local),
             other => Err(self.err(format!("expected a declaration, found {other:?}"))),
+        }
+    }
+
+    /// Everything that can follow a name at the head of a definition: an
+    /// ordinary or operator definition, a function definition, an instance, or
+    /// a definition of an infix or postfix operator whose left operand this is.
+    fn named_definition(&mut self, name: String, local: bool) -> Result<Unit> {
+        self.advance();
+
+        if let Tok::Op(op) = self.peek().clone() {
+            self.advance();
+            let left = Param::value(name);
+            let params = if self.eat(&Tok::DefEq) {
+                vec![left]
+            } else {
+                let right = self.param()?;
+                self.expect(&Tok::DefEq)?;
+                vec![left, right]
+            };
+            return Ok(Unit::Def(Def {
+                name: op.symbol().to_string(),
+                params,
+                body: self.expr(0)?,
+                local,
+            }));
+        }
+
+        // `f[x \in S] == e` defines a function, and may refer to `f` inside.
+        if matches!(self.peek(), Tok::LBrack) {
+            self.advance();
+            let bounds = self.bracketed(|p| p.bounds(&Tok::RBrack))?;
+            self.expect(&Tok::RBrack)?;
+            self.expect(&Tok::DefEq)?;
+            let body = self.expr(0)?;
+            return Ok(Unit::Def(Def {
+                name,
+                params: Vec::new(),
+                body: Expr::FnDef {
+                    bounds,
+                    body: Box::new(body),
+                },
+                local,
+            }));
+        }
+
+        let params = self.opt_params()?;
+        self.expect(&Tok::DefEq)?;
+        if matches!(self.peek(), Tok::Kw(Kw::Instance)) {
+            let (module, subs) = self.instance_tail()?;
+            return Ok(Unit::Instance {
+                name: Some(name),
+                module,
+                subs,
+            });
+        }
+        Ok(Unit::Def(Def {
+            name,
+            params,
+            body: self.expr(0)?,
+            local,
+        }))
+    }
+
+    /// `THEOREM Name == ...` names the theorem; the name carries no meaning
+    /// for evaluation, so it is read and dropped.
+    fn skip_label(&mut self) {
+        if matches!(self.peek(), Tok::Ident(_)) && matches!(self.peek_at(1), Tok::DefEq) {
+            self.advance();
+            self.advance();
+        }
+    }
+
+    /// Try something, and rewind rather than fail if it does not work.
+    fn recover<T>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Option<T> {
+        let mark = self.pos;
+        let fences = self.fences.len();
+        let Ok(value) = f(self) else {
+            self.pos = mark;
+            self.fences.truncate(fences);
+            self.skip_to_unit();
+            return None;
+        };
+        Some(value)
+    }
+
+    /// Skip a TLAPS proof.
+    ///
+    /// Proofs are checked by a prover, not by an evaluator, so this crate
+    /// recognises them in order to get past them. A proof runs until the next
+    /// token that can only begin a new module unit.
+    fn skip_proof(&mut self) {
+        if !self.at_proof() {
+            return;
+        }
+        while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+            if self.at_unit_start() {
+                return;
+            }
+            self.advance();
+        }
+    }
+
+    /// Advance to whatever comes after something that could not be read.
+    fn skip_to_unit(&mut self) {
+        self.advance();
+        while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+            if self.at_unit_start() {
+                return;
+            }
+            self.advance();
+        }
+    }
+
+    fn at_proof(&self) -> bool {
+        matches!(self.peek(), Tok::Kw(Kw::Proof))
+            // A proof step is written `<1>2.`, which reaches us as `<`, a
+            // number or name, then `>`.
+            || (matches!(self.peek(), Tok::Op(Op::Lt))
+                && matches!(self.peek_at(2), Tok::Op(Op::Gt)))
+    }
+
+    /// Does a new module unit begin here? Only tokens in the first column can,
+    /// which is what keeps a proof's own keywords from ending it early.
+    fn at_unit_start(&self) -> bool {
+        if self.col() != 1 {
+            return false;
+        }
+        match self.peek() {
+            Tok::Kw(
+                Kw::Variable
+                | Kw::Constant
+                | Kw::Assume
+                | Kw::Theorem
+                | Kw::Local
+                | Kw::Instance
+                | Kw::Recursive,
+            ) => true,
+            Tok::Ident(_) => matches!(
+                self.peek_at(1),
+                Tok::DefEq | Tok::LParen | Tok::LBrack | Tok::Op(_)
+            ),
+            _ => false,
         }
     }
 
@@ -241,11 +410,11 @@ impl Parser {
         Ok(Decl { name, arity })
     }
 
-    fn opt_params(&mut self) -> Result<Vec<String>> {
+    fn opt_params(&mut self) -> Result<Vec<Param>> {
         let mut params = Vec::new();
         if self.eat(&Tok::LParen) {
             loop {
-                params.push(self.expect_ident()?);
+                params.push(self.param()?);
                 if !self.eat(&Tok::Comma) {
                     break;
                 }
@@ -253,6 +422,26 @@ impl Parser {
             self.expect(&Tok::RParen)?;
         }
         Ok(params)
+    }
+
+    /// A formal parameter: a name, or `f(_, _)` for one that is itself an
+    /// operator and so has to be applied rather than used as a value.
+    fn param(&mut self) -> Result<Param> {
+        let name = self.expect_ident()?;
+        let mut arity = 0;
+        if self.eat(&Tok::LParen) {
+            loop {
+                if !self.eat(&Tok::Underscore) {
+                    self.expect_ident()?;
+                }
+                arity += 1;
+                if !self.eat(&Tok::Comma) {
+                    break;
+                }
+            }
+            self.expect(&Tok::RParen)?;
+        }
+        Ok(Param { name, arity })
     }
 
     fn instance_tail(&mut self) -> Result<(String, Vec<(String, Expr)>)> {
@@ -275,10 +464,17 @@ impl Parser {
     // ------------------------------------------------------------ expression
 
     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
-        if let Tok::Op(op @ (Op::And | Op::Or)) = *self.peek() {
-            return self.junction(op);
-        }
-        let mut lhs = self.prefix()?;
+        // A bulleted list is an operand, not a whole expression: after
+        //
+        //     /\ TypeOK
+        //     /\ OneVote
+        //     => chosen = {}
+        //
+        // the `=>` ends the list and then applies to it.
+        let mut lhs = match *self.peek() {
+            Tok::Op(op @ (Op::And | Op::Or)) => self.junction(op)?,
+            _ => self.prefix()?,
+        };
         loop {
             if self.fenced() {
                 break;
@@ -314,13 +510,17 @@ impl Parser {
     }
 
     fn prefix(&mut self) -> Result<Expr> {
+        if let Some(labelled) = self.skip_expression_label() {
+            return labelled;
+        }
         let op = match *self.peek() {
-            Tok::Op(o @ (Op::Forall | Op::Exists)) => {
+            Tok::Op(o @ (Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) => {
                 self.advance();
-                let kind = if o == Op::Forall {
-                    QuantKind::Forall
-                } else {
-                    QuantKind::Exists
+                let kind = match o {
+                    Op::Forall => QuantKind::Forall,
+                    Op::Exists => QuantKind::Exists,
+                    Op::TemporalForall => QuantKind::TemporalForall,
+                    _ => QuantKind::TemporalExists,
                 };
                 let bounds = self.bounds(&Tok::Colon)?;
                 self.expect(&Tok::Colon)?;
@@ -351,6 +551,40 @@ impl Parser {
         Ok(Expr::Unary(op, Box::new(operand)))
     }
 
+    /// A label names a subexpression so a proof can refer to it. It has no
+    /// bearing on the expression's value, so it is dropped.
+    fn skip_expression_label(&mut self) -> Option<Result<Expr>> {
+        if !matches!(self.peek(), Tok::Ident(_)) {
+            return None;
+        }
+        let mut ahead = 1;
+        if matches!(self.peek_at(1), Tok::LParen) {
+            let mut depth = 0usize;
+            loop {
+                match self.peek_at(ahead) {
+                    Tok::LParen => depth += 1,
+                    Tok::RParen => {
+                        depth -= 1;
+                        if depth == 0 {
+                            ahead += 1;
+                            break;
+                        }
+                    }
+                    Tok::Eof => return None,
+                    _ => {}
+                }
+                ahead += 1;
+            }
+        }
+        if !matches!(self.peek_at(ahead), Tok::ColonColon) {
+            return None;
+        }
+        for _ in 0..=ahead {
+            self.advance();
+        }
+        Some(self.expr(0))
+    }
+
     fn postfix(&mut self) -> Result<Expr> {
         let mut e = self.primary()?;
         loop {
@@ -361,6 +595,11 @@ impl Parser {
                 Tok::Prime => {
                     self.advance();
                     e = Expr::Prime(Box::new(e));
+                }
+                Tok::Op(op) if op.is_postfix() => {
+                    let op = *op;
+                    self.advance();
+                    e = Expr::Unary(op, Box::new(e));
                 }
                 Tok::Dot => {
                     self.advance();
@@ -379,11 +618,30 @@ impl Parser {
                     e = Expr::Apply(Box::new(e), args);
                 }
                 Tok::Bang => {
-                    let Expr::Ident(instance) = e else {
-                        return Err(self.err("`!` must follow an instance name"));
+                    let instance = match &e {
+                        Expr::Ident(name) => name.clone(),
+                        Expr::Qualified { instance, name, .. } => format!("{instance}!{name}"),
+                        Expr::Apply(head, _) => head.to_string(),
+                        _ => return Err(self.err("`!` must follow an instance name")),
                     };
                     self.advance();
-                    let name = self.expect_ident()?;
+                    // `Inv!2` picks the second conjunct of `Inv`, and `Inv!:`
+                    // its whole body; both are proof notation, not values.
+                    let name = match self.peek().clone() {
+                        Tok::Num(n) => {
+                            self.advance();
+                            n.to_string()
+                        }
+                        Tok::Op(op) => {
+                            self.advance();
+                            op.symbol().to_string()
+                        }
+                        Tok::Colon => {
+                            self.advance();
+                            String::new()
+                        }
+                        _ => self.expect_ident()?,
+                    };
                     let mut args = Vec::new();
                     if self.eat(&Tok::LParen) {
                         args = self.bracketed(|p| p.expr_list(&Tok::RParen))?;
@@ -407,6 +665,18 @@ impl Parser {
             return Ok(out);
         }
         loop {
+            // `FoldSet(+, 0, S)` passes the operator itself, not an
+            // application of it.
+            if let Tok::Op(op) = *self.peek()
+                && (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) == close)
+            {
+                self.advance();
+                out.push(Expr::Ident(op.symbol().to_string()));
+                if !self.eat(&Tok::Comma) {
+                    return Ok(out);
+                }
+                continue;
+            }
             out.push(self.expr(0)?);
             if !self.eat(&Tok::Comma) {
                 return Ok(out);
@@ -446,16 +716,17 @@ impl Parser {
             Tok::Kw(Kw::Let) => {
                 let mut defs = Vec::new();
                 while !matches!(self.peek(), Tok::Kw(Kw::In)) {
-                    let name = self.expect_ident()?;
-                    let params = self.opt_params()?;
-                    self.expect(&Tok::DefEq)?;
-                    let body = self.expr(0)?;
-                    defs.push(Def {
-                        name,
-                        params,
-                        body,
-                        local: false,
-                    });
+                    if self.eat(&Tok::Kw(Kw::Recursive)) {
+                        self.decl_list()?;
+                        continue;
+                    }
+                    let Tok::Ident(name) = self.peek().clone() else {
+                        return Err(self.err("expected a definition inside LET"));
+                    };
+                    match self.named_definition(name, false)? {
+                        Unit::Def(def) => defs.push(def),
+                        _ => return Err(self.err("only definitions may appear inside LET")),
+                    }
                 }
                 self.advance();
                 let body = self.expr(0)?;
@@ -477,13 +748,31 @@ impl Parser {
                 })
             }
             Tok::Kw(Kw::Case) => self.case_form(),
+            Tok::Kw(Kw::Lambda) => {
+                let mut params = vec![self.param()?];
+                while self.eat(&Tok::Comma) {
+                    params.push(self.param()?);
+                }
+                self.expect(&Tok::Colon)?;
+                Ok(Expr::Lambda {
+                    params,
+                    body: Box::new(self.expr(0)?),
+                })
+            }
+            // `WF_vars` arrives as one word, but `WF_<<a, b>>` leaves the
+            // subscript for the parser to read.
             Tok::Fair { strong, subscript } => {
+                let subscript = if subscript.is_empty() {
+                    self.postfix()?
+                } else {
+                    Expr::Ident(subscript)
+                };
                 self.expect(&Tok::LParen)?;
                 let action = self.bracketed(|p| p.expr(0))?;
                 self.expect(&Tok::RParen)?;
                 Ok(Expr::Fairness {
                     strong,
-                    subscript: Box::new(Expr::Ident(subscript)),
+                    subscript: Box::new(subscript),
                     action: Box::new(action),
                 })
             }
@@ -503,18 +792,16 @@ impl Parser {
                 self.expect(&Tok::Arrow)?;
                 arms.push((guard, self.expr(0)?));
             }
-            if !(*self.peek() == Tok::Op(Op::Or) && other.is_none()) {
-                break;
+            if other.is_some() || !self.eat(&Tok::Op(Op::Always)) {
+                return Ok(Expr::Case { arms, other });
             }
-            self.advance();
         }
-        Ok(Expr::Case { arms, other })
     }
 
     fn tuple_or_action(&mut self) -> Result<Expr> {
         let items = self.bracketed(|p| p.expr_list(&Tok::RTup))?;
         self.expect(&Tok::RTup)?;
-        if self.eat(&Tok::Underscore) {
+        if self.at_subscript() {
             if items.len() != 1 {
                 return Err(self.err("`<<A>>_v` takes a single action"));
             }
@@ -527,50 +814,71 @@ impl Parser {
         Ok(Expr::Tuple(items))
     }
 
+    /// Is a `_v` subscript coming? Identifiers may begin with an underscore,
+    /// so `[A]_vars` reaches the parser as one token, not two.
+    fn at_subscript(&self) -> bool {
+        match self.peek() {
+            Tok::Underscore => true,
+            Tok::Ident(name) => name.starts_with('_'),
+            _ => false,
+        }
+    }
+
     /// The `v` of `[A]_v`, parsed tightly so it cannot swallow what follows.
     fn subscript(&mut self) -> Result<Expr> {
+        if let Tok::Ident(name) = self.peek()
+            && let Some(rest) = name.strip_prefix('_')
+            && !rest.is_empty()
+        {
+            let subscript = Expr::Ident(rest.to_string());
+            self.advance();
+            return Ok(subscript);
+        }
+        self.expect(&Tok::Underscore)?;
         self.postfix()
     }
 
+    /// `{a, b}`, `{x \in S : P}` and `{e : x \in S}` are told apart by what
+    /// follows their first expression rather than by scanning ahead: a
+    /// `CHOOSE` inside the braces has a `:` of its own, and a lookahead
+    /// cannot tell whose it is.
     fn brace_form(&mut self) -> Result<Expr> {
         if self.eat(&Tok::RBrace) {
             return Ok(Expr::SetEnum(Vec::new()));
         }
-        let shape = self.shape();
-        self.bracketed(|p| match shape {
-            Shape::Colon { bounded: true } => {
-                let mut bounds = p.bounds(&Tok::Colon)?;
-                p.expect(&Tok::Colon)?;
-                let pred = p.expr(0)?;
-                p.expect(&Tok::RBrace)?;
-                if bounds.len() != 1 {
-                    return Err(p.err("a set filter takes exactly one bound variable"));
+        self.bracketed(|p| {
+            let first = p.expr(0)?;
+            if p.eat(&Tok::Colon) {
+                if let Some(bound) = as_bound(&first) {
+                    let pred = p.expr(0)?;
+                    p.expect(&Tok::RBrace)?;
+                    return Ok(Expr::SetFilter {
+                        bound: Box::new(bound),
+                        pred: Box::new(pred),
+                    });
                 }
-                Ok(Expr::SetFilter {
-                    bound: Box::new(bounds.remove(0)),
-                    pred: Box::new(pred),
-                })
-            }
-            Shape::Colon { bounded: false } => {
-                let expr = p.expr(0)?;
-                p.expect(&Tok::Colon)?;
                 let bounds = p.bounds(&Tok::RBrace)?;
                 p.expect(&Tok::RBrace)?;
-                Ok(Expr::SetMap {
-                    expr: Box::new(expr),
+                return Ok(Expr::SetMap {
+                    expr: Box::new(first),
                     bounds,
-                })
+                });
             }
-            _ => {
-                let items = p.expr_list(&Tok::RBrace)?;
-                p.expect(&Tok::RBrace)?;
-                Ok(Expr::SetEnum(items))
+            let mut items = vec![first];
+            while p.eat(&Tok::Comma) {
+                items.push(p.expr(0)?);
             }
+            p.expect(&Tok::RBrace)?;
+            Ok(Expr::SetEnum(items))
         })
     }
 
     fn bracket_form(&mut self) -> Result<Expr> {
-        let shape = self.shape();
+        let shape = if self.subscript_follows_bracket() {
+            Shape::Closed
+        } else {
+            self.shape()
+        };
         let inner = self.bracketed(|p| match shape {
             Shape::MapsTo { bounded: true } => {
                 let bounds = p.bounds(&Tok::MapsTo)?;
@@ -621,7 +929,6 @@ impl Parser {
         if shape != Shape::Closed {
             return Ok(inner);
         }
-        self.expect(&Tok::Underscore)?;
         let subscript = self.subscript()?;
         Ok(Expr::ActionBox {
             action: Box::new(inner),
@@ -648,8 +955,13 @@ impl Parser {
             let mut path = Vec::new();
             loop {
                 if self.eat(&Tok::LBrack) {
-                    path.push(ExceptPath::Index(self.expr(0)?));
+                    let indices = self.bracketed(|p| p.expr_list(&Tok::RBrack))?;
                     self.expect(&Tok::RBrack)?;
+                    path.push(ExceptPath::Index(if indices.len() == 1 {
+                        indices.into_iter().next().expect("length checked")
+                    } else {
+                        Expr::Tuple(indices)
+                    }));
                 } else if self.eat(&Tok::Dot) {
                     path.push(ExceptPath::Field(self.expect_ident()?));
                 } else {
@@ -704,6 +1016,34 @@ impl Parser {
         }
     }
 
+    /// Is this `[A]_v`? A quantifier inside the brackets puts a `:` where a
+    /// record set would have one, so the only reliable sign is the subscript
+    /// after the closing bracket.
+    fn subscript_follows_bracket(&self) -> bool {
+        let mut depth = 0usize;
+        for (offset, t) in self.toks[self.pos..].iter().enumerate() {
+            match &t.tok {
+                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+                Tok::RBrack if depth == 0 => {
+                    return match &self.peek_at(offset + 1) {
+                        Tok::Underscore => true,
+                        Tok::Ident(name) => name.starts_with('_'),
+                        _ => false,
+                    };
+                }
+                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+                    if depth == 0 {
+                        return false;
+                    }
+                    depth -= 1;
+                }
+                Tok::Eof => return false,
+                _ => {}
+            }
+        }
+        false
+    }
+
     /// Look ahead past a just-consumed `[` or `{` to the first delimiter that
     /// identifies the construct, ignoring anything nested inside brackets.
     fn shape(&self) -> Shape {
@@ -730,4 +1070,31 @@ impl Parser {
         }
         Shape::Closed
     }
+}
+
+/// Read `x \in S` back as the bound it is, so `{x \in S : P}` can be told from
+/// `{e : x \in S}` once the first expression has already been parsed.
+fn as_bound(e: &Expr) -> Option<Bound> {
+    let Expr::Binary(Op::In, lhs, domain) = e else {
+        return None;
+    };
+    let (names, destructure) = match &**lhs {
+        Expr::Ident(name) => (vec![name.clone()], false),
+        Expr::Tuple(items) => {
+            let mut names = Vec::with_capacity(items.len());
+            for item in items {
+                let Expr::Ident(name) = item else {
+                    return None;
+                };
+                names.push(name.clone());
+            }
+            (names, true)
+        }
+        _ => return None,
+    };
+    Some(Bound {
+        names,
+        domain: Some((**domain).clone()),
+        destructure,
+    })
 }

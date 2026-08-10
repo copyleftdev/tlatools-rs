@@ -51,6 +51,11 @@ pub enum Unit {
     },
     Assume(Expr),
     Theorem(Expr),
+    /// A module declared inside another one.
+    Inner(Box<Module>),
+    /// A unit the evaluator has no use for and the parser did not keep: a
+    /// TLAPS proof, or a theorem stated in the `ASSUME ... PROVE` form.
+    Opaque,
 }
 
 /// A declared name together with its arity; zero for a plain constant.
@@ -63,9 +68,26 @@ pub struct Decl {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Def {
     pub name: String,
-    pub params: Vec<String>,
+    pub params: Vec<Param>,
     pub body: Expr,
     pub local: bool,
+}
+
+/// A formal parameter. Arity is zero for an ordinary one and positive for an
+/// operator parameter, which is declared as `f(_)` and must be applied.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Param {
+    pub name: String,
+    pub arity: usize,
+}
+
+impl Param {
+    pub fn value(name: impl Into<String>) -> Self {
+        Self {
+            name: name.into(),
+            arity: 0,
+        }
+    }
 }
 
 /// One `x, y \in S` group of a quantifier, function or set constructor.
@@ -88,6 +110,16 @@ impl Bound {
 pub enum QuantKind {
     Forall,
     Exists,
+    /// `\AA` and `\EE`, which quantify over a hidden *variable* rather than a
+    /// value, and so describe behaviours rather than states.
+    TemporalForall,
+    TemporalExists,
+}
+
+impl QuantKind {
+    pub fn is_temporal(self) -> bool {
+        matches!(self, Self::TemporalForall | Self::TemporalExists)
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -173,6 +205,11 @@ pub enum Expr {
         arms: Vec<(Expr, Expr)>,
         other: Option<Box<Expr>>,
     },
+    /// `LAMBDA x, y : e` — an operator written where one is expected.
+    Lambda {
+        params: Vec<Param>,
+        body: Box<Expr>,
+    },
     /// `[A]_vars`
     ActionBox {
         action: Box<Expr>,
@@ -241,6 +278,7 @@ impl Expr {
             Expr::Choose { bound, body } => {
                 bound.mentions_next_state() || body.mentions_next_state()
             }
+            Expr::Lambda { body, .. } => body.mentions_next_state(),
             Expr::Let { defs, body } => {
                 body.mentions_next_state() || defs.iter().any(|d| d.body.mentions_next_state())
             }

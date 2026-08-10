@@ -18,6 +18,9 @@ pub enum Kw {
     With,
     Local,
     Recursive,
+    Lambda,
+    /// A keyword that only appears inside a TLAPS proof.
+    Proof,
     Except,
     True,
     False,
@@ -44,11 +47,15 @@ impl Kw {
             "CASE" => Self::Case,
             "OTHER" => Self::Other,
             "ASSUME" | "ASSUMPTION" => Self::Assume,
-            "THEOREM" => Self::Theorem,
             "INSTANCE" => Self::Instance,
             "WITH" => Self::With,
             "LOCAL" => Self::Local,
             "RECURSIVE" => Self::Recursive,
+            "LAMBDA" => Self::Lambda,
+            "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+            "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+            | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+            | "NEW" | "ONLY" => Self::Proof,
             "EXCEPT" => Self::Except,
             "TRUE" => Self::True,
             "FALSE" => Self::False,
@@ -102,6 +109,92 @@ pub enum Op {
     BigUnion,
     Enabled,
     Unchanged,
+    /// `P ~> Q`: temporal leads-to.
+    LeadsTo,
+    /// `\AA x : F` and `\EE x : F`: quantification over a hidden variable.
+    TemporalForall,
+    TemporalExists,
+    /// An operator the language reserves a symbol and a precedence for but
+    /// gives no meaning to. Every one of these exists to be defined by a
+    /// specification; `\prec`, `\oplus` and `&` are all of them.
+    User(&'static str),
+}
+
+/// The symbols TLA+ sets aside for specifications to define, with the
+/// precedence the language fixes for each. Taken from the operator table in
+/// *Specifying Systems*; the left binding power is used, which is what matters
+/// for reading an expression back the way it was written.
+pub(crate) const USER_OPERATORS: &[(&str, u8)] = &[
+    ("\\prec", 5),
+    ("\\preceq", 5),
+    ("\\succ", 5),
+    ("\\succeq", 5),
+    ("\\sqsubset", 5),
+    ("\\sqsubseteq", 5),
+    ("\\sqsupset", 5),
+    ("\\sqsupseteq", 5),
+    ("\\subset", 5),
+    ("\\supset", 5),
+    ("\\ll", 5),
+    ("\\gg", 5),
+    ("\\sim", 5),
+    ("\\simeq", 5),
+    ("\\approx", 5),
+    ("\\asymp", 5),
+    ("\\cong", 5),
+    ("\\doteq", 5),
+    ("\\propto", 5),
+    ("\\cdot", 5),
+    ("|-", 5),
+    ("-|", 5),
+    ("|=", 5),
+    ("=|", 5),
+    ("::=", 5),
+    ("<:", 7),
+    (":=", 5),
+    ("\\sqcap", 9),
+    ("\\sqcup", 9),
+    ("\\uplus", 9),
+    ("\\oplus", 10),
+    ("\\ominus", 11),
+    ("(+)", 10),
+    ("(-)", 11),
+    ("(.)", 13),
+    ("(/)", 13),
+    ("(\\X)", 13),
+    ("\\odot", 13),
+    ("\\oslash", 13),
+    ("\\otimes", 13),
+    ("\\star", 13),
+    ("\\bullet", 13),
+    ("\\bigcirc", 13),
+    ("\\wr", 14),
+    ("&", 13),
+    ("&&", 13),
+    ("|", 10),
+    ("||", 10),
+    ("$", 9),
+    ("$$", 9),
+    ("??", 9),
+    ("%%", 11),
+    ("##", 9),
+    ("!!", 9),
+    ("^^", 14),
+    ("++", 10),
+    ("**", 13),
+    ("//", 13),
+    ("/", 13),
+    ("^+", 15),
+    ("^*", 15),
+    ("^#", 15),
+    ("-+->", 2),
+];
+
+pub(crate) fn user_operator(symbol: &str) -> Option<Op> {
+    USER_OPERATORS
+        .iter()
+        .find(|(name, _)| *name == symbol)
+        .map(|(name, _)| Op::User(name))
 }
 
 impl Op {
@@ -113,7 +206,7 @@ impl Op {
     pub fn infix_prec(self) -> Option<u8> {
         Some(match self {
             Self::Implies => 1,
-            Self::Equiv => 2,
+            Self::Equiv | Self::LeadsTo => 2,
             Self::Or => 3,
             Self::And => 4,
             Self::Eq
@@ -134,8 +227,21 @@ impl Op {
             Self::Times | Self::Div | Self::Mod | Self::Cartesian => 11,
             Self::Concat => 12,
             Self::Pow => 13,
+            Self::User(_) if self.is_postfix() => return None,
+            Self::User(symbol) => {
+                return USER_OPERATORS
+                    .iter()
+                    .find(|(name, _)| *name == symbol)
+                    .map(|(_, prec)| *prec);
+            }
             _ => return None,
         })
+    }
+
+    /// `s^+`, `s^*` and `s^#` follow their operand rather than sitting
+    /// between two, so they are never infix.
+    pub fn is_postfix(self) -> bool {
+        matches!(self, Self::User("^+" | "^*" | "^#"))
     }
 
     pub fn is_right_assoc(self) -> bool {
@@ -184,6 +290,10 @@ impl Op {
             Self::BigUnion => "UNION",
             Self::Enabled => "ENABLED",
             Self::Unchanged => "UNCHANGED",
+            Self::LeadsTo => "~>",
+            Self::TemporalForall => "\\AA",
+            Self::TemporalExists => "\\EE",
+            Self::User(symbol) => symbol,
         }
     }
 
@@ -233,6 +343,8 @@ pub enum Tok {
     RTup,
     Comma,
     Colon,
+    /// The `::` of a labelled expression.
+    ColonColon,
     Dot,
     Bang,
     /// The `@` of an `EXCEPT` update, standing for the value being replaced.

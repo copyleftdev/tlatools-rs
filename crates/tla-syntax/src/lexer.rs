@@ -1,5 +1,5 @@
 use crate::error::{Error, Result};
-use crate::token::{Kw, Op, Tok, Token};
+use crate::token::{self, Kw, Op, Tok, Token};
 
 pub fn lex(src: &str) -> Result<Vec<Token>> {
     Lexer::new(src).run()
@@ -13,12 +13,36 @@ struct Lexer {
     out: Vec<Token>,
 }
 
+/// Where the module actually begins.
+///
+/// A `.tla` file is a module surrounded by prose: an explanation above the
+/// header, notes and shell transcripts below the terminator. That text is not
+/// TLA+ and must not be lexed as it — plenty of it contains `$`, `&` and `/`,
+/// which are not characters the language allows loose.
+fn module_start(src: &str) -> (usize, u32) {
+    let mut offset = 0;
+    for (index, text) in src.split_inclusive('\n').enumerate() {
+        let trimmed = text.trim_start();
+        if trimmed.starts_with("----")
+            && trimmed
+                .trim_start_matches('-')
+                .trim_start()
+                .starts_with("MODULE")
+        {
+            return (offset, u32::try_from(index).unwrap_or(u32::MAX) + 1);
+        }
+        offset += text.len();
+    }
+    (0, 1)
+}
+
 impl Lexer {
     fn new(src: &str) -> Self {
+        let (offset, line) = module_start(src);
         Self {
-            chars: src.chars().collect(),
+            chars: src[offset..].chars().collect(),
             pos: 0,
-            line: 1,
+            line,
             col: 1,
             out: Vec::new(),
         }
@@ -67,12 +91,24 @@ impl Lexer {
     }
 
     fn run(mut self) -> Result<Vec<Token>> {
+        // Modules nest, so the file ends at the terminator that closes the
+        // outermost one, not at the first one seen.
+        let mut depth = 0usize;
         loop {
             self.skip_trivia()?;
             let (line, col) = (self.line, self.col);
             let Some(c) = self.peek() else { break };
             let tok = self.scan(c)?;
+            match tok {
+                Tok::Kw(Kw::Module) => depth += 1,
+                Tok::ModuleEnd => depth = depth.saturating_sub(1),
+                _ => {}
+            }
+            let closed = matches!(tok, Tok::ModuleEnd) && depth == 0;
             self.out.push(Token { tok, line, col });
+            if closed {
+                break;
+            }
         }
         self.out.push(Token {
             tok: Tok::Eof,
@@ -125,7 +161,14 @@ impl Lexer {
         if c.is_ascii_digit() {
             return self.scan_number();
         }
-        if c.is_ascii_alphabetic() {
+        // A lone `_` is the placeholder in `Op(_, _)`; followed by more, it is
+        // an ordinary identifier, and `]_vars` is disambiguated by the parser.
+        if c.is_ascii_alphabetic()
+            || (c == '_'
+                && self
+                    .at(1)
+                    .is_some_and(|n| n.is_ascii_alphanumeric() || n == '_'))
+        {
             return Ok(self.scan_word());
         }
         match c {
@@ -139,19 +182,25 @@ impl Lexer {
             '|' => {
                 if self.starts_with("|->") {
                     self.advance(3);
-                    Ok(Tok::MapsTo)
-                } else {
-                    Err(self.err("stray `|`"))
+                    return Ok(Tok::MapsTo);
                 }
+                self.user_symbol()
+                    .map_or_else(|| Err(self.err("stray `|`")), Ok)
             }
             ':' => {
                 if self.starts_with(":>") {
                     self.advance(2);
-                    Ok(Tok::Op(Op::OneTo))
-                } else {
-                    self.bump();
-                    Ok(Tok::Colon)
+                    return Ok(Tok::Op(Op::OneTo));
                 }
+                if let Some(tok) = self.user_symbol() {
+                    return Ok(tok);
+                }
+                if self.starts_with("::") {
+                    self.advance(2);
+                    return Ok(Tok::ColonColon);
+                }
+                self.bump();
+                Ok(Tok::Colon)
             }
             '@' => {
                 if self.starts_with("@@") {
@@ -162,6 +211,18 @@ impl Lexer {
                     Ok(Tok::At)
                 }
             }
+            '~' => {
+                if self.starts_with("~>") {
+                    self.advance(2);
+                    Ok(Tok::Op(Op::LeadsTo))
+                } else {
+                    self.bump();
+                    Ok(Tok::Op(Op::Not))
+                }
+            }
+            '&' | '$' | '?' | '%' | '#' | '!' | '^' | '(' | '+' | '*' => self
+                .user_symbol()
+                .map_or_else(|| self.scan_punctuation(c), Ok),
             '.' => {
                 if self.starts_with("..") {
                     self.advance(2);
@@ -180,34 +241,68 @@ impl Lexer {
                     Ok(Tok::LBrack)
                 }
             }
+            _ => self.scan_punctuation(c),
+        }
+    }
+
+    fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+        let at = (self.line, self.col);
+        self.bump();
+        Ok(match c {
+            '(' => Tok::LParen,
+            ')' => Tok::RParen,
+            ']' => Tok::RBrack,
+            '{' => Tok::LBrace,
+            '}' => Tok::RBrace,
+            ',' => Tok::Comma,
+            '!' => Tok::Bang,
+            '\'' => Tok::Prime,
+            '_' => Tok::Underscore,
+            '#' => Tok::Op(Op::Neq),
+            '+' => Tok::Op(Op::Plus),
+            '*' => Tok::Op(Op::Times),
+            '%' => Tok::Op(Op::Mod),
+            '^' => Tok::Op(Op::Pow),
             _ => {
-                self.bump();
-                Ok(match c {
-                    '(' => Tok::LParen,
-                    ')' => Tok::RParen,
-                    ']' => Tok::RBrack,
-                    '{' => Tok::LBrace,
-                    '}' => Tok::RBrace,
-                    ',' => Tok::Comma,
-                    '!' => Tok::Bang,
-                    '\'' => Tok::Prime,
-                    '_' => Tok::Underscore,
-                    '~' => Tok::Op(Op::Not),
-                    '#' => Tok::Op(Op::Neq),
-                    '+' => Tok::Op(Op::Plus),
-                    '*' => Tok::Op(Op::Times),
-                    '%' => Tok::Op(Op::Mod),
-                    '^' => Tok::Op(Op::Pow),
-                    _ => return Err(self.err(format!("unexpected character {c:?}"))),
-                })
+                return Err(Error::lex(
+                    format!("unexpected character {c:?}"),
+                    at.0,
+                    at.1,
+                ));
+            }
+        })
+    }
+
+    /// The longest symbol from the language's user-definable operator table
+    /// that starts here. The named `\`-operators are matched elsewhere.
+    fn user_symbol(&mut self) -> Option<Tok> {
+        let mut best: Option<&'static str> = None;
+        for (symbol, _) in token::USER_OPERATORS {
+            if symbol.starts_with('\\') || !self.starts_with(symbol) {
+                continue;
+            }
+            if best.is_none_or(|found| symbol.len() > found.len()) {
+                best = Some(symbol);
             }
         }
+        let symbol = best?;
+        self.advance(symbol.chars().count());
+        Some(Tok::Op(Op::User(symbol)))
     }
 
     fn scan_number(&mut self) -> Result<Tok> {
         let start = self.pos;
         while self.peek().is_some_and(|c| c.is_ascii_digit()) {
             self.bump();
+        }
+        // `1aMessage` is a name, not a number followed by one: TLA+ only asks
+        // that an identifier contain a letter, not that it begin with one.
+        if self
+            .peek()
+            .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
+        {
+            self.pos = start;
+            return Ok(self.scan_word());
         }
         let text: String = self.chars[start..self.pos].iter().collect();
         text.parse()
@@ -226,10 +321,10 @@ impl Lexer {
         let word: String = self.chars[start..self.pos].iter().collect();
 
         // `WF_vars` is one word to the lexer but an operator plus a subscript.
+        // `WF_vars` is one word; `WF_<<a, b>>` is the same operator with a
+        // subscript the lexer cannot see, so the name is left empty.
         for (prefix, strong) in [("WF_", false), ("SF_", true)] {
-            if let Some(rest) = word.strip_prefix(prefix)
-                && !rest.is_empty()
-            {
+            if let Some(rest) = word.strip_prefix(prefix) {
                 return Tok::Fair {
                     strong,
                     subscript: rest.to_string(),
@@ -294,15 +389,23 @@ impl Lexer {
         Err(self.err("`===` is neither a definition nor a module terminator"))
     }
 
+    /// A run of four or more dashes is a separator, so the operators spelled
+    /// with dashes have to be recognised around it rather than before it.
     fn scan_dashes(&mut self) -> Tok {
+        if self.starts_with("-+->") {
+            self.advance(4);
+            return Tok::Op(Op::User("-+->"));
+        }
         let run = self.run_of('-');
         if run >= 4 {
             self.advance(run);
             return Tok::Separator;
         }
-        if self.at(1) == Some('>') {
-            self.advance(2);
-            return Tok::Arrow;
+        for (text, tok) in [("->", Tok::Arrow), ("-|", Tok::Op(Op::User("-|")))] {
+            if self.starts_with(text) {
+                self.advance(2);
+                return tok;
+            }
         }
         self.bump();
         Tok::Op(Op::Minus)
@@ -345,7 +448,8 @@ impl Lexer {
             self.advance(2);
             return Ok(Tok::Op(Op::Neq));
         }
-        Err(self.err("stray `/`"))
+        self.user_symbol()
+            .map_or_else(|| Err(self.err("stray `/`")), Ok)
     }
 
     fn scan_backslash(&mut self) -> Result<Tok> {
@@ -382,7 +486,12 @@ impl Lexer {
             "neq" => Op::Neq,
             "A" | "forall" => Op::Forall,
             "E" | "exists" => Op::Exists,
-            _ => return Err(self.err(format!("unknown operator `\\{name}`"))),
+            "AA" => Op::TemporalForall,
+            "EE" => Op::TemporalExists,
+            _ => match token::user_operator(&format!("\\{name}")) {
+                Some(op) => op,
+                None => return Err(self.err(format!("unknown operator `\\{name}`"))),
+            },
         };
         self.advance(1 + name.len());
         Ok(Tok::Op(op))

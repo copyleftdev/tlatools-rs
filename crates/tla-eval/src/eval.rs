@@ -239,6 +239,9 @@ impl<'m> Evaluator<'m> {
                 }
                 self.unchanged(subscript, ctx)
             }
+            Expr::Lambda { .. } => Err(Error::Malformed(
+                "a LAMBDA is an operator, and can only be passed to one".to_string(),
+            )),
             Expr::ActionAngle { .. } | Expr::Fairness { .. } => Err(Error::NotGround(
                 "a fairness or angle-bracket formula is about behaviours, not about one step"
                     .to_string(),
@@ -351,7 +354,8 @@ impl<'m> Evaluator<'m> {
         // never the locals of whoever called it.
         let hidden = ctx.locals.split_off(scope);
         for (param, arg) in def.params.iter().zip(args) {
-            ctx.locals.push((param.clone(), Local::Val(arg.clone())));
+            ctx.locals
+                .push((param.name.clone(), Local::Val(arg.clone())));
         }
         ctx.depth += 1;
         let out = self.eval(&def.body, ctx);

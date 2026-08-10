@@ -13,7 +13,7 @@
 use std::collections::BTreeMap;
 
 use tla_syntax::token::Op;
-use tla_syntax::{Def, Expr, QuantKind};
+use tla_syntax::{Def, Expr, Param, QuantKind};
 
 use crate::error::Result;
 use crate::eval::{Ctx, Evaluator, Local, State, push};
@@ -176,7 +176,7 @@ impl<'m> Evaluator<'m> {
         // whoever called it -- the same rule evaluation follows.
         let hidden = std::mem::take(&mut ctx.locals);
         for (param, value) in def.params.iter().zip(values) {
-            ctx.locals.push((param.clone(), Local::Val(value)));
+            ctx.locals.push((param.name.clone(), Local::Val(value)));
         }
         let walked = self.probe(&def.body, ctx, Some(&label), found, depth + 1);
         ctx.locals = hidden;
@@ -237,14 +237,14 @@ fn conjuncts(e: &Expr) -> Vec<&Expr> {
     }
 }
 
-fn render_call(name: &str, params: &[String], values: &[Value]) -> String {
+fn render_call(name: &str, params: &[Param], values: &[Value]) -> String {
     if params.is_empty() {
         return name.to_string();
     }
     let bindings: Vec<String> = params
         .iter()
         .zip(values)
-        .map(|(param, value)| format!("{param} = {value}"))
+        .map(|(param, value)| format!("{} = {value}", param.name))
         .collect();
     format!("{name}({})", bindings.join(", "))
 }

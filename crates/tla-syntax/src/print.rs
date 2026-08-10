@@ -7,7 +7,7 @@
 
 use std::fmt;
 
-use crate::ast::{Bound, Def, ExceptPath, Expr, QuantKind};
+use crate::ast::{Bound, Def, ExceptPath, Expr, Param, QuantKind};
 use crate::token::Op;
 
 /// The binding power of the constructs that run to the end of the expression.
@@ -39,12 +39,14 @@ impl fmt::Display for Bound {
 fn precedence(e: &Expr) -> u8 {
     match e {
         Expr::Binary(op, ..) => op.infix_prec().unwrap_or(TRAILING),
+        Expr::Unary(op, _) if op.is_postfix() => ATOM,
         Expr::Unary(op, _) => op.prefix_prec().saturating_sub(1),
         Expr::Quant { .. }
         | Expr::Choose { .. }
         | Expr::Let { .. }
         | Expr::If { .. }
-        | Expr::Case { .. } => TRAILING,
+        | Expr::Case { .. }
+        | Expr::Lambda { .. } => TRAILING,
         _ => ATOM,
     }
 }
@@ -97,6 +99,10 @@ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 write!(f, "({})", list(args))
             }
         }
+        Expr::Unary(op, operand) if op.is_postfix() => {
+            write(operand, ATOM, f)?;
+            f.write_str(op.symbol())
+        }
         Expr::Unary(op, operand) => {
             f.write_str(op.symbol())?;
             if op.is_word() {
@@ -146,6 +152,8 @@ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             let symbol = match kind {
                 QuantKind::Forall => Op::Forall,
                 QuantKind::Exists => Op::Exists,
+                QuantKind::TemporalForall => Op::TemporalForall,
+                QuantKind::TemporalExists => Op::TemporalExists,
             };
             write!(f, "{} {} : {body}", symbol.symbol(), bounds_list(bounds))
         }
@@ -169,15 +177,16 @@ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             f.write_str("CASE ")?;
             for (i, (guard, result)) in arms.iter().enumerate() {
                 if i > 0 {
-                    f.write_str(" \\/ ")?;
+                    f.write_str(" [] ")?;
                 }
                 write!(f, "{guard} -> {result}")?;
             }
             match other {
-                Some(value) => write!(f, " \\/ OTHER -> {value}"),
+                Some(value) => write!(f, " [] OTHER -> {value}"),
                 None => Ok(()),
             }
         }
+        Expr::Lambda { params, body } => write!(f, "LAMBDA {} : {body}", params_list(params)),
         Expr::ActionBox { action, subscript } => write!(f, "[{action}]_{subscript}"),
         Expr::ActionAngle { action, subscript } => write!(f, "<<{action}>>_{subscript}"),
         Expr::Fairness {
@@ -195,10 +204,29 @@ impl fmt::Display for Def {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(&self.name)?;
         if !self.params.is_empty() {
-            write!(f, "({})", self.params.join(", "))?;
+            write!(f, "({})", params_list(&self.params))?;
         }
         write!(f, " == {}", self.body)
     }
+}
+
+impl fmt::Display for Param {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.name)?;
+        if self.arity > 0 {
+            let holes = vec!["_"; self.arity].join(", ");
+            write!(f, "({holes})")?;
+        }
+        Ok(())
+    }
+}
+
+fn params_list(params: &[Param]) -> String {
+    params
+        .iter()
+        .map(ToString::to_string)
+        .collect::<Vec<_>>()
+        .join(", ")
 }
 
 fn list(items: &[Expr]) -> String {
