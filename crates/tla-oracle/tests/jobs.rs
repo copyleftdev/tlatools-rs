@@ -156,3 +156,38 @@ fn the_status_names_match_the_harness_vocabulary() {
     .expect("the report encodes");
     assert_eq!(rendered["status"], "contract_violation");
 }
+
+/// The report says what the implementation looked as though it was trying to
+/// do, which is the part a model checker cannot supply.
+#[test]
+fn a_refinement_failure_names_the_action_that_came_closest() {
+    let states = r#"[
+        {"buf": [],        "nextVal": 1, "received": []},
+        {"buf": [1],       "nextVal": 2, "received": []},
+        {"buf": [1, 2],    "nextVal": 3, "received": []},
+        {"buf": [1, 2, 3], "nextVal": 4, "received": []}
+    ]"#;
+    let edges = r#"[[0,1,"put"],[1,2,"put"],[2,3,"overfill"]]"#;
+    let report = check(&job(states, edges, "{}"));
+
+    let closest = report.blocked.first().expect("an action came close");
+    assert_eq!(closest.action, "Put");
+    assert_eq!(closest.conjunct, "Len(buf) < Capacity");
+    assert!(!closest.about_next_state, "capacity is a guard");
+    assert!(
+        report.detail.contains("`Put`") && report.detail.contains("not available"),
+        "{}",
+        report.detail
+    );
+}
+
+#[test]
+fn a_passing_check_carries_no_diagnosis() {
+    let report = check(&job(WALK, r#"[[0,1,"put"],[1,2,"get"]]"#, "{}"));
+    assert!(report.blocked.is_empty());
+    let rendered = serde_json::to_value(&report).expect("the report encodes");
+    assert!(
+        rendered.get("blocked").is_none(),
+        "an empty list is omitted"
+    );
+}

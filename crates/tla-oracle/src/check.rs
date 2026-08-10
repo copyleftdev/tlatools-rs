@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value as Json;
-use tla_eval::{Error as EvalError, Evaluator, Spec, State, Value};
+use tla_eval::{Blocked, Error as EvalError, Evaluator, Spec, State, Value};
 use tla_syntax::{Expr, parse_expression};
 
 use crate::schema::{Schema, decode, decode_state};
@@ -72,6 +72,37 @@ pub struct EdgeReport {
     pub label: String,
 }
 
+/// How close one action came to permitting the rejected step.
+#[derive(Debug, Clone, Serialize)]
+pub struct BlockedReport {
+    pub action: String,
+    pub satisfied: usize,
+    pub total: usize,
+    pub conjunct: String,
+    /// True when the action was available and produced the wrong next state;
+    /// false when it was not available at all.
+    pub about_next_state: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+}
+
+impl From<Blocked> for BlockedReport {
+    fn from(b: Blocked) -> Self {
+        Self {
+            action: b.action,
+            satisfied: b.satisfied,
+            total: b.total,
+            conjunct: b.conjunct,
+            about_next_state: b.about_next_state,
+            error: b.error,
+        }
+    }
+}
+
+/// Beyond a handful, the list stops being a diagnosis and becomes a dump of
+/// every action the specification has.
+const MAX_BLOCKED: usize = 4;
+
 #[derive(Debug, Clone, Copy, Default, Serialize)]
 pub struct Stats {
     pub states: usize,
@@ -88,6 +119,9 @@ pub struct Report {
     pub edge: Option<EdgeReport>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outcome: Option<String>,
+    /// For a refinement failure: which actions came closest, closest first.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub blocked: Vec<BlockedReport>,
     pub stats: Stats,
 }
 
@@ -102,6 +136,7 @@ impl Report {
             detail: detail.into(),
             edge: None,
             outcome: None,
+            blocked: Vec::new(),
             stats,
         }
     }
@@ -207,21 +242,22 @@ fn check_edges(
         match evaluator.step_allowed(&job.next_op, from, to) {
             Ok(true) => {}
             Ok(false) => {
-                let mut report = Report::of(
-                    Status::Refines,
-                    format!(
-                        "no action of the specification takes {} to {}",
-                        render(from),
-                        render(to)
-                    ),
-                    *stats,
-                );
+                let blocked: Vec<BlockedReport> = evaluator
+                    .why_not(&job.next_op, from, to)
+                    .unwrap_or_default()
+                    .into_iter()
+                    .take(MAX_BLOCKED)
+                    .map(BlockedReport::from)
+                    .collect();
+                let mut report =
+                    Report::of(Status::Refines, explain(from, to, blocked.first()), *stats);
                 report.edge = Some(EdgeReport {
                     index,
                     source: *source,
                     target: *target,
                     label: label.clone(),
                 });
+                report.blocked = blocked;
                 return Some(report);
             }
             Err(e) => {
@@ -320,6 +356,28 @@ fn parse_outcomes(job: &Job) -> Result<Vec<(String, Expr)>, String> {
                 .map_err(|e| format!("outcome `{name}`: {e}"))
         })
         .collect()
+}
+
+/// The refinement failure in words, naming what the implementation looked as
+/// though it was trying to do.
+fn explain(from: &State, to: &State, closest: Option<&BlockedReport>) -> String {
+    let head = format!(
+        "no action of the specification takes {} to {}",
+        render(from),
+        render(to)
+    );
+    let Some(near) = closest else {
+        return head;
+    };
+    let why = if near.about_next_state {
+        "which was available here but does not produce that state"
+    } else {
+        "which was not available here"
+    };
+    format!(
+        "{head}. The closest was `{}`, {why}: `{}` does not hold ({} of its {} conjuncts do)",
+        near.action, near.conjunct, near.satisfied, near.total
+    )
 }
 
 fn render(state: &State) -> String {

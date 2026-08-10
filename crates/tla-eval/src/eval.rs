@@ -19,7 +19,7 @@ pub type State = BTreeMap<String, Value>;
 
 #[derive(Debug)]
 pub struct Spec {
-    module: Module,
+    pub(crate) module: Module,
     variables: BTreeSet<String>,
     constants: BTreeSet<String>,
 }
@@ -55,12 +55,12 @@ impl Spec {
 
 #[derive(Debug)]
 pub struct Evaluator<'m> {
-    spec: &'m Spec,
+    pub(crate) spec: &'m Spec,
     constants: BTreeMap<String, Value>,
 }
 
 #[derive(Clone)]
-enum Local<'m> {
+pub(crate) enum Local<'m> {
     Val(Value),
     /// A `LET` definition, together with how much of the local stack it may
     /// see — everything pushed after that is the caller's, not its own.
@@ -70,13 +70,13 @@ enum Local<'m> {
     },
 }
 
-struct Ctx<'m, 'a> {
-    state: &'a State,
-    next: Option<&'a State>,
-    primed: bool,
-    locals: Vec<(String, Local<'m>)>,
-    at: Vec<Value>,
-    depth: usize,
+pub(crate) struct Ctx<'m, 'a> {
+    pub(crate) state: &'a State,
+    pub(crate) next: Option<&'a State>,
+    pub(crate) primed: bool,
+    pub(crate) locals: Vec<(String, Local<'m>)>,
+    pub(crate) at: Vec<Value>,
+    pub(crate) depth: usize,
 }
 
 impl<'m> Evaluator<'m> {
@@ -117,7 +117,7 @@ impl<'m> Evaluator<'m> {
         self.eval(expr, &mut Self::ctx(from, to))
     }
 
-    fn body_of(&self, name: &str) -> Result<&'m Expr> {
+    pub(crate) fn body_of(&self, name: &str) -> Result<&'m Expr> {
         let def = self
             .spec
             .module
@@ -133,7 +133,7 @@ impl<'m> Evaluator<'m> {
         }
     }
 
-    fn ctx<'a>(state: &'a State, next: Option<&'a State>) -> Ctx<'m, 'a> {
+    pub(crate) fn ctx<'a>(state: &'a State, next: Option<&'a State>) -> Ctx<'m, 'a> {
         Ctx {
             state,
             next,
@@ -146,7 +146,7 @@ impl<'m> Evaluator<'m> {
 
     // ------------------------------------------------------------ evaluation
 
-    fn eval(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+    pub(crate) fn eval(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
         match e {
             Expr::Num(n) => Ok(Value::Int(*n)),
             Expr::Str(s) => Ok(Value::Str(s.clone())),
@@ -246,7 +246,7 @@ impl<'m> Evaluator<'m> {
         }
     }
 
-    fn eval_bool(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<bool> {
+    pub(crate) fn eval_bool(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<bool> {
         match self.eval(e, ctx)? {
             Value::Bool(b) => Ok(b),
             other => type_error(format!("expected a boolean, got {other}")),
@@ -643,7 +643,7 @@ impl<'m> Evaluator<'m> {
     /// All the ways the bound variables can be assigned. A later bound's
     /// domain may mention an earlier bound's variable, so they are evaluated
     /// with the bindings so far in scope.
-    fn expand(
+    pub(crate) fn expand(
         &self,
         bounds: &'m [Bound],
         ctx: &mut Ctx<'m, '_>,
@@ -760,7 +760,7 @@ fn lookup<'m>(name: &str, ctx: &Ctx<'m, '_>) -> Option<Local<'m>> {
         .map(|(_, local)| local.clone())
 }
 
-fn push(ctx: &mut Ctx<'_, '_>, binding: &[(String, Value)]) -> usize {
+pub(crate) fn push(ctx: &mut Ctx<'_, '_>, binding: &[(String, Value)]) -> usize {
     let restore = ctx.locals.len();
     for (name, value) in binding {
         ctx.locals.push((name.clone(), Local::Val(value.clone())));

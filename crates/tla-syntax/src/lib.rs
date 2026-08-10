@@ -9,6 +9,7 @@ pub mod ast;
 pub mod error;
 mod lexer;
 mod parser;
+mod print;
 pub mod token;
 
 pub use ast::{Bound, Decl, Def, ExceptPath, Expr, Module, QuantKind, Unit};

@@ -450,3 +450,93 @@ fn a_missing_constant_is_reported_before_evaluation() {
         tla_eval::Evaluator::new(&m, BTreeMap::new()).expect_err("both constants are missing");
     assert!(format!("{err}").contains("Capacity"), "{err}");
 }
+
+// ------------------------------------------------ why a step was not allowed
+
+/// The point of evaluating rather than searching: the oracle can say which
+/// action the implementation was reaching for and which clause of it failed.
+/// A model checker cannot, because it never evaluates the specification at the
+/// offending pair of states.
+#[test]
+fn the_closest_action_and_its_blocking_guard_are_named() {
+    let m = spec("RaftElection");
+    let e = evaluator(
+        &m,
+        &[("Server", strs(["s1", "s2", "s3"])), ("MaxTerm", n(2))],
+    );
+    let one_vote = raft_state(
+        [1, 0, 0],
+        ["candidate", "follower", "follower"],
+        ["s1", "none", "none"],
+        [strs(["s1"]), set([]), set([])],
+    );
+    let crowned = raft_state(
+        [1, 0, 0],
+        ["leader", "follower", "follower"],
+        ["s1", "none", "none"],
+        [strs(["s1"]), set([]), set([])],
+    );
+
+    let blocked = e.why_not("Next", &one_vote, &crowned).unwrap();
+    let closest = blocked.first().expect("some action came close");
+    assert_eq!(closest.action, r#"BecomeLeader(c = "s1")"#);
+    assert_eq!(
+        closest.conjunct,
+        "Cardinality(votesGranted[c]) * 2 > Cardinality(Server)"
+    );
+    assert!(!closest.about_next_state, "the majority rule is a guard");
+    assert_eq!((closest.satisfied, closest.total), (3, 4));
+}
+
+/// Counting every satisfied conjunct rather than stopping at the first failure
+/// is what puts the right action first: `Timeout` also fails here, and fails
+/// later in its own list, but wants far more changed than `BecomeLeader` does.
+#[test]
+fn closeness_is_measured_over_all_of_an_actions_conjuncts() {
+    let m = spec("BoundedBuffer");
+    let e = evaluator(&m, &[("Capacity", n(2)), ("MaxItems", n(3))]);
+
+    let full = buffer_state(seq([n(1), n(2)]), 3, seq([]));
+    let over = buffer_state(seq([n(1), n(2), n(3)]), 4, seq([]));
+    let blocked = e.why_not("Next", &full, &over).unwrap();
+
+    let closest = &blocked[0];
+    assert_eq!(closest.action, "Put");
+    assert_eq!(closest.conjunct, "Len(buf) < Capacity");
+    assert_eq!((closest.satisfied, closest.total), (4, 5));
+    // Put's very first conjunct is the one that fails, so a prefix count would
+    // have scored it zero and ranked Get -- which is not what was attempted --
+    // above it.
+    assert_eq!(blocked[1].action, "Get");
+}
+
+/// An action whose guard holds but whose effect does not is a different
+/// mistake from one that was never available, and is reported as such.
+#[test]
+fn a_wrong_effect_is_distinguished_from_an_unmet_guard() {
+    let m = spec("BoundedBuffer");
+    let e = evaluator(&m, &[("Capacity", n(2)), ("MaxItems", n(3))]);
+
+    let one = buffer_state(seq([n(1)]), 2, seq([]));
+    let lifo_from_single = buffer_state(seq([n(1)]), 2, seq([n(1)]));
+    let blocked = e.why_not("Next", &one, &lifo_from_single).unwrap();
+
+    let get = blocked
+        .iter()
+        .find(|b| b.action == "Get")
+        .expect("Get is a candidate");
+    assert!(
+        get.about_next_state,
+        "Get was available; it is the state it produced that is wrong: {}",
+        get.conjunct
+    );
+}
+
+#[test]
+fn an_allowed_step_has_nothing_to_explain() {
+    let m = spec("BoundedBuffer");
+    let e = evaluator(&m, &[("Capacity", n(2)), ("MaxItems", n(3))]);
+    let empty = buffer_state(seq([]), 1, seq([]));
+    let one = buffer_state(seq([n(1)]), 2, seq([]));
+    assert!(e.why_not("Next", &empty, &one).unwrap().is_empty());
+}

@@ -141,6 +141,70 @@ impl Op {
     pub fn is_right_assoc(self) -> bool {
         matches!(self, Self::Implies | Self::Pow)
     }
+
+    /// How the operator is written. Where TLA+ offers several spellings the
+    /// ASCII one is chosen, so printed output can be re-read by the parser.
+    pub fn symbol(self) -> &'static str {
+        match self {
+            Self::Implies => "=>",
+            Self::Equiv => "<=>",
+            Self::Or => "\\/",
+            Self::And => "/\\",
+            Self::Eq => "=",
+            Self::Neq => "#",
+            Self::Lt => "<",
+            Self::Gt => ">",
+            Self::Le => "<=",
+            Self::Ge => ">=",
+            Self::In => "\\in",
+            Self::NotIn => "\\notin",
+            Self::Subseteq => "\\subseteq",
+            Self::Supseteq => "\\supseteq",
+            Self::AtAt => "@@",
+            Self::OneTo => ":>",
+            Self::Cup => "\\cup",
+            Self::Cap => "\\cap",
+            Self::SetMinus => "\\",
+            Self::DotDot => "..",
+            Self::Plus => "+",
+            Self::Minus => "-",
+            Self::Times => "*",
+            Self::Div => "\\div",
+            Self::Mod => "%",
+            Self::Cartesian => "\\X",
+            Self::Concat => "\\o",
+            Self::Pow => "^",
+            Self::Not => "~",
+            Self::Always => "[]",
+            Self::Eventually => "<>",
+            Self::Forall => "\\A",
+            Self::Exists => "\\E",
+            Self::Domain => "DOMAIN",
+            Self::Subset => "SUBSET",
+            Self::BigUnion => "UNION",
+            Self::Enabled => "ENABLED",
+            Self::Unchanged => "UNCHANGED",
+        }
+    }
+
+    /// How tightly the operator holds its operand when used as a prefix, and
+    /// so how tightly it binds as a node in printed output.
+    pub fn prefix_prec(self) -> u8 {
+        match self {
+            Self::Minus => 11,
+            Self::Domain | Self::Subset | Self::BigUnion => 9,
+            _ => 5,
+        }
+    }
+
+    /// True for the word-shaped prefix operators, which need a space before
+    /// their operand where the symbolic ones do not.
+    pub fn is_word(self) -> bool {
+        matches!(
+            self,
+            Self::Domain | Self::Subset | Self::BigUnion | Self::Enabled | Self::Unchanged
+        )
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -30,10 +30,12 @@
 //! ```
 
 mod builtin;
+mod diagnose;
 mod error;
 mod eval;
 mod value;
 
+pub use diagnose::Blocked;
 pub use error::{Error, Result};
 pub use eval::{Evaluator, MAX_ELEMENTS, Spec, State};
 pub use value::{Infinite, Value};

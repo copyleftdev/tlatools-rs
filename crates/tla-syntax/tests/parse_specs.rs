@@ -150,3 +150,26 @@ fn flatten(e: &Expr, op: tla_syntax::token::Op) -> Vec<&Expr> {
         other => vec![other],
     }
 }
+
+/// The printer exists so a counterexample can quote the guard that blocked an
+/// action. It is only trustworthy if what it writes means what it read, so
+/// every definition in every fixture is printed and parsed back.
+#[test]
+fn printing_round_trips_through_the_parser() {
+    for name in all_fixtures() {
+        let module = parse_module(&fixture(&name)).expect("parses");
+        for unit in &module.units {
+            let tla_syntax::Unit::Def(def) = unit else {
+                continue;
+            };
+            let printed = def.body.to_string();
+            let reparsed = tla_syntax::parse_expression(&printed)
+                .unwrap_or_else(|e| panic!("{name}: {} printed as `{printed}`: {e}", def.name));
+            assert_eq!(
+                reparsed, def.body,
+                "{name}: {} did not survive printing as `{printed}`",
+                def.name
+            );
+        }
+    }
+}

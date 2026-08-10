@@ -85,7 +85,14 @@ than guessed: `[]P`, `WF_v(A)` and `ENABLED A` return an error naming why.
 
 **Phase 2 — the oracle.** Complete. `tla-oracle` decides all three obligations
 from a state graph, and `tlatools check` is a JSON-in, JSON-out command the
-existing Python harness can call in place of TLC.
+existing Python harness can call in place of TLC. A rejected step is reported
+with the action that came closest to permitting it and the clause that blocked
+it.
+
+The one obligation still left to TLC is `spec_check`, which model-checks a
+trusted specification against its own invariants. That is a genuine
+reachability question, and no ground evaluator answers it — the division is
+deliberate, not a gap.
 
 ## Does it decide what TLC decides?
 
@@ -113,6 +120,35 @@ Exploration is the benchmark's own Python worker and is unchanged, which is why
 it appears in both rows; it now dominates. The honest claim is about the
 deciding step, and it is not really a claim about Rust — TLC was being asked to
 search a state space in order to answer a question about two known states.
+
+## What the extra information buys
+
+Matching TLC's verdict is the floor. Evaluating rather than searching also
+answers a question a model checker structurally cannot, because it never
+evaluates the specification at the offending pair of states: **what was the
+implementation trying to do, and what stopped it?**
+
+`Next` is a disjunction of actions and an action is a conjunction of a guard and
+an effect, so a rejected step has a best explanation — the action that came
+closest, and its first clause that does not hold. Running the benchmark's own
+mutants through it:
+
+| mutant | closest action | blocked on |
+| --- | --- | --- |
+| `raft/m01_no_majority_required` | `BecomeLeader(c = "s1")` | `Cardinality(votesGranted[c]) * 2 > Cardinality(Server)` |
+| `bounded_buffer/m02_off_by_one_capacity` | `Put` | `Len(buf) < Capacity` |
+| `two_phase_commit/m01_commit_without_all_prepared` | `TMCommit` | `tmPrepared = RM` |
+
+Each names the injected bug exactly. Compare TLC on the same edge, which can
+only report that a trace stuttered at index `tv_p`.
+
+Two details make it land on the right action. Closeness counts *every* conjunct
+that holds, not the prefix before the first failure — otherwise `Put`, whose
+very first conjunct is the one that fails, scores zero and loses to an action
+nobody was attempting. And a failing conjunct that constrains the successor
+state is reported differently from one that does not: the first says the action
+was available but produced the wrong state, the second says it was not available
+at all.
 
 ## Layout
 

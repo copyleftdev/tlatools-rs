@@ -15,5 +15,5 @@
 mod check;
 mod schema;
 
-pub use check::{ConstantSpec, Edge, EdgeReport, Job, Report, Stats, Status, check};
+pub use check::{BlockedReport, ConstantSpec, Edge, EdgeReport, Job, Report, Stats, Status, check};
 pub use schema::{DecodeError, Schema, decode, decode_state};
