@@ -1,0 +1,16 @@
+crates/tla-eval/src/diagnose.rs:49:62: replace * with + in Blocked::closer_than
+crates/tla-eval/src/diagnose.rs:121:13: delete match arm Expr::Let{defs, body} in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:105:58: replace + with * in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:106:58: replace + with * in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:115:76: replace + with * in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:123:34: replace + with - in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:123:34: replace + with * in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:128:72: replace + with - in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:128:72: replace + with * in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:181:76: replace + with - in Evaluator<'m>::enter
+crates/tla-eval/src/diagnose.rs:181:76: replace + with * in Evaluator<'m>::enter
+crates/tla-eval/src/diagnose.rs:221:31: replace match guard existing.closer_than(&candidate).is_ge() with true in Evaluator<'m>::record
+crates/tla-eval/src/eval.rs:197:34: replace + with * in Evaluator<'m>::eval
+crates/tla-eval/src/eval.rs:598:19: replace -= with /= in Evaluator<'m>::run
+crates/tla-eval/src/eval.rs:598:19: replace -= with += in Evaluator<'m>::run
+crates/tla-eval/src/eval.rs:633:39: delete ! in Evaluator<'m>::unary

@@ -1,0 +1,63 @@
+
+*** crates/tla-syntax/src/lexer.rs:168:17: replace && with || in Lexer::scan
+
+*** mutation diff:
+--- crates/tla-syntax/src/lexer.rs
++++ replace && with || in Lexer::scan
+@@ -160,17 +160,17 @@
+     fn scan(&mut self, c: char) -> Result<Tok> {
+         if c.is_ascii_digit() {
+             return self.scan_number();
+         }
+         // A lone `_` is the placeholder in `Op(_, _)`; followed by more, it is
+         // an ordinary identifier, and `]_vars` is disambiguated by the parser.
+         if c.is_ascii_alphabetic()
+             || (c == '_'
+-                && self
++                || /* ~ changed by cargo-mutants ~ */ self
+                     .at(1)
+                     .is_some_and(|n| n.is_ascii_alphanumeric() || n == '_'))
+         {
+             return Ok(self.scan_word());
+         }
+         match c {
+             '"' => self.scan_string(),
+             '=' => self.scan_equals(),
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/lexer.rs` has changed (1786401681.178293522s, 1s after last build at 1786401680.789269699s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+
+running 23 tests
+test a_module_may_contain_another ... ok
+test a_named_theorem_keeps_its_statement ... ok
+test a_name_may_begin_with_a_digit_or_an_underscore ... ok
+test labels_are_read_and_dropped ... ok
+test prefix_and_postfix_operators_can_be_defined ... ok
+test an_operator_may_follow_a_bulleted_list ... ok
+test prose_outside_the_module_is_not_lexed ... ok
+
+*** result: Timeout

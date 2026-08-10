@@ -5,9 +5,12 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+keywords = ["tla", "tlaplus", "evaluator", "formal-methods", "specification"]
+categories = ["development-tools", "parser-implementations"]
+readme = "../../README.md"
 
 [dependencies]
-tla-syntax = { path = "../tla-syntax" }
+tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 
 [lints]
 workspace = true

@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace == with != in lookup
+@@ -1046,17 +1046,17 @@
+     ];
+     CANDIDATES.iter().copied().find(|op| op.symbol() == name)
+ }
+ 
+ fn lookup<'m>(name: &str, ctx: &Ctx<'m, '_>) -> Option<Local<'m>> {
+     ctx.locals
+         .iter()
+         .rev()
+-        .find(|(n, _)| n == name)
++        .find(|(n, _)| n != /* ~ changed by cargo-mutants ~ */ name)
+         .map(|(_, local)| local.clone())
+ }
+ 
+ pub(crate) fn push(ctx: &mut Ctx<'_, '_>, binding: &[(String, Value)]) -> usize {
+     let restore = ctx.locals.len();
+     for (name, value) in binding {
+         ctx.locals.push((name.clone(), Local::Val(value.clone())));
+     }

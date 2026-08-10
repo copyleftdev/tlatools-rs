@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::err -> Error with Default::default()
+@@ -82,17 +82,17 @@
+         let mut n = 0;
+         while self.at(n) == Some(c) {
+             n += 1;
+         }
+         n
+     }
+ 
+     fn err(&self, msg: impl Into<String>) -> Error {
+-        Error::lex(msg, self.line, self.col)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn run(mut self) -> Result<Vec<Token>> {
+         // Modules nest, so the file ends at the terminator that closes the
+         // outermost one, not at the first one seen.
+         let mut depth = 0usize;
+         loop {
+             self.skip_trivia()?;

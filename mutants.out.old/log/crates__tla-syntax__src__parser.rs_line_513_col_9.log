@@ -1,0 +1,104 @@
+
+*** crates/tla-syntax/src/parser.rs:513:9: replace Parser::prefix -> Result<Expr> with Ok(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::prefix -> Result<Expr> with Ok(Default::default())
+@@ -505,55 +505,17 @@
+         Ok(if op == Op::And {
+             Expr::conjunction(items)
+         } else {
+             Expr::disjunction(items)
+         })
+     }
+ 
+     fn prefix(&mut self) -> Result<Expr> {
+-        if let Some(labelled) = self.skip_expression_label() {
+-            return labelled;
+-        }
+-        let op = match *self.peek() {
+-            Tok::Op(o @ (Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) => {
+-                self.advance();
+-                let kind = match o {
+-                    Op::Forall => QuantKind::Forall,
+-                    Op::Exists => QuantKind::Exists,
+-                    Op::TemporalForall => QuantKind::TemporalForall,
+-                    _ => QuantKind::TemporalExists,
+-                };
+-                let bounds = self.bounds(&Tok::Colon)?;
+-                self.expect(&Tok::Colon)?;
+-                let body = self.expr(0)?;
+-                return Ok(Expr::Quant {
+-                    kind,
+-                    bounds,
+-                    body: Box::new(body),
+-                });
+-            }
+-            Tok::Op(o @ (Op::Not | Op::Always | Op::Eventually | Op::Minus)) => o,
+-            Tok::Kw(Kw::Domain) => Op::Domain,
+-            Tok::Kw(Kw::Subset) => Op::Subset,
+-            Tok::Kw(Kw::Union) => Op::BigUnion,
+-            Tok::Kw(Kw::Enabled) => Op::Enabled,
+-            Tok::Kw(Kw::Unchanged) => Op::Unchanged,
+-            _ => return self.postfix(),
+-        };
+-        self.advance();
+-        // Every prefix operator here binds tighter than `/\`, so `[][A]_v /\ B`
+-        // is a conjunction of two formulas rather than `[]` over both.
+-        let operand_prec = match op {
+-            Op::Minus => 11,
+-            Op::Domain | Op::Subset | Op::BigUnion => 9,
+-            _ => 5,
+-        };
+-        let operand = self.expr(operand_prec)?;
+-        Ok(Expr::Unary(op, Box::new(operand)))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// A label names a subexpression so a proof can refer to it. It has no
+     /// bearing on the expression's value, so it is dropped.
+     fn skip_expression_label(&mut self) -> Option<Result<Expr>> {
+         if !matches!(self.peek(), Tok::Ident(_)) {
+             return None;
+         }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786401738.337793717s, 1s after last build at 1786401737.995772773s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+warning: unused import: `QuantKind`
+ --> crates/tla-syntax/src/parser.rs:1:69
+  |
+1 | use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
+  |                                                                     ^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0277]: the trait bound `Expr: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:513:12
+    |
+513 |         Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+    |            ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Expr`
+   --> crates/tla-syntax/src/ast.rs:132:1
+    |
+132 | pub enum Expr {
+    | ^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+warning: `tla-syntax` (lib) generated 1 warning (1 duplicate)
+error: could not compile `tla-syntax` (lib) due to 1 previous error; 1 warning emitted
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+warning: `tla-syntax` (lib test) generated 1 warning
+error: could not compile `tla-syntax` (lib test) due to 1 previous error; 1 warning emitted
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

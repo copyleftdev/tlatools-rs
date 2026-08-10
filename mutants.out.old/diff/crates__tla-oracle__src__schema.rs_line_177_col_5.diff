@@ -1,0 +1,24 @@
+--- crates/tla-oracle/src/schema.rs
++++ replace array -> Result<&'a Vec<Json>> with Ok(Box::leak(Box::new(vec![])))
+@@ -169,20 +169,17 @@
+             name.clone(),
+             decode(&given[name], field, &format!("{path}.{name}"))?,
+         );
+     }
+     Ok(state)
+ }
+ 
+ fn array<'a>(json: &'a Json, path: &str) -> Result<&'a Vec<Json>> {
+-    json.as_array().map_or_else(
+-        || fail(path, format!("expected an array, got {}", kind_of(json))),
+-        Ok,
+-    )
++    Ok(Box::leak(Box::new(vec![]))) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn object<'a>(json: &'a Json, path: &str) -> Result<&'a serde_json::Map<String, Json>> {
+     json.as_object().map_or_else(
+         || fail(path, format!("expected an object, got {}", kind_of(json))),
+         Ok,
+     )
+ }

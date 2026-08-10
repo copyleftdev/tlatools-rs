@@ -1,0 +1,29 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::field_list -> Result<Vec<(String, Expr)>> with Ok(vec![(String::new(), Default::default())])
+@@ -932,25 +932,17 @@
+         let subscript = self.subscript()?;
+         Ok(Expr::ActionBox {
+             action: Box::new(inner),
+             subscript: Box::new(subscript),
+         })
+     }
+ 
+     fn field_list(&mut self, sep: &Tok) -> Result<Vec<(String, Expr)>> {
+-        let mut out = Vec::new();
+-        loop {
+-            let name = self.expect_ident()?;
+-            self.expect(sep)?;
+-            out.push((name, self.expr(0)?));
+-            if !self.eat(&Tok::Comma) {
+-                return Ok(out);
+-            }
+-        }
++        Ok(vec![(String::new(), Default::default())]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn except_updates(&mut self) -> Result<Vec<(Vec<ExceptPath>, Expr)>> {
+         let mut out = Vec::new();
+         loop {
+             self.expect(&Tok::Bang)?;
+             let mut path = Vec::new();
+             loop {

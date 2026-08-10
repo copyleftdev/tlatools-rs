@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace >= with < in Lexer::scan_equals
+@@ -357,17 +357,17 @@
+                 }
+                 Some(c) => s.push(c),
+             }
+         }
+     }
+ 
+     fn scan_equals(&mut self) -> Result<Tok> {
+         let run = self.run_of('=');
+-        if run >= 4 {
++        if run < /* ~ changed by cargo-mutants ~ */ 4 {
+             self.advance(run);
+             return Ok(Tok::ModuleEnd);
+         }
+         if run == 2 {
+             self.advance(2);
+             return Ok(Tok::DefEq);
+         }
+         if run == 1 {

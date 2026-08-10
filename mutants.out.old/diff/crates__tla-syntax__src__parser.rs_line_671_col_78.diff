@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace == with != in Parser::expr_list
+@@ -663,17 +663,17 @@
+         let mut out = Vec::new();
+         if self.peek() == close {
+             return Ok(out);
+         }
+         loop {
+             // `FoldSet(+, 0, S)` passes the operator itself, not an
+             // application of it.
+             if let Tok::Op(op) = *self.peek()
+-                && (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) == close)
++                && (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) != /* ~ changed by cargo-mutants ~ */ close)
+             {
+                 self.advance();
+                 out.push(Expr::Ident(op.symbol().to_string()));
+                 if !self.eat(&Tok::Comma) {
+                     return Ok(out);
+                 }
+                 continue;
+             }

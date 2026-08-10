@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/builtin.rs
++++ delete match arm "Int" in constant
+@@ -96,17 +96,17 @@
+         _ => Err(Error::Undefined(name.to_string())),
+     }
+ }
+ 
+ /// Nullary names the standard modules provide.
+ pub fn constant(name: &str) -> Option<Value> {
+     Some(match name {
+         "Nat" => Value::Infinite(Infinite::Nat),
+-        "Int" => Value::Infinite(Infinite::Int),
++         /* ~ changed by cargo-mutants ~ */
+         "STRING" => Value::Infinite(Infinite::Strings),
+         "BOOLEAN" => Value::Set(BTreeSet::from([Value::Bool(false), Value::Bool(true)])),
+         _ => return None,
+     })
+ }
+ 
+ /// A `SubSeq` range, already clamped to `1..=len`, as a Rust slice range.
+ fn index_range(lo: i64, hi: i64) -> (usize, usize) {

@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace >= with < in Evaluator<'m>::run
+@@ -579,17 +579,17 @@
+         &self,
+         name: &str,
+         body: &'m Expr,
+         scope: usize,
+         params: &[Param],
+         bindings: Vec<Local<'m>>,
+         ctx: &mut Ctx<'m, '_>,
+     ) -> Result<Value> {
+-        if ctx.depth >= MAX_DEPTH {
++        if ctx.depth < /* ~ changed by cargo-mutants ~ */ MAX_DEPTH {
+             return Err(Error::Malformed(format!(
+                 "`{name}` recursed more than {MAX_DEPTH} deep"
+             )));
+         }
+         let hidden = ctx.locals.split_off(scope);
+         for (param, binding) in params.iter().zip(bindings) {
+             ctx.locals.push((param.name.clone(), binding));
+         }

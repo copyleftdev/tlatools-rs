@@ -1,0 +1,459 @@
+
+*** crates/tla-syntax/src/lexer.rs:96:9: replace Lexer::run -> Result<Vec<Token>> with Ok(vec![])
+
+*** mutation diff:
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::run -> Result<Vec<Token>> with Ok(vec![])
+@@ -88,39 +88,17 @@
+ 
+     fn err(&self, msg: impl Into<String>) -> Error {
+         Error::lex(msg, self.line, self.col)
+     }
+ 
+     fn run(mut self) -> Result<Vec<Token>> {
+         // Modules nest, so the file ends at the terminator that closes the
+         // outermost one, not at the first one seen.
+-        let mut depth = 0usize;
+-        loop {
+-            self.skip_trivia()?;
+-            let (line, col) = (self.line, self.col);
+-            let Some(c) = self.peek() else { break };
+-            let tok = self.scan(c)?;
+-            match tok {
+-                Tok::Kw(Kw::Module) => depth += 1,
+-                Tok::ModuleEnd => depth = depth.saturating_sub(1),
+-                _ => {}
+-            }
+-            let closed = matches!(tok, Tok::ModuleEnd) && depth == 0;
+-            self.out.push(Token { tok, line, col });
+-            if closed {
+-                break;
+-            }
+-        }
+-        self.out.push(Token {
+-            tok: Tok::Eof,
+-            line: self.line,
+-            col: self.col,
+-        });
+-        Ok(self.out)
++        Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn skip_trivia(&mut self) -> Result<()> {
+         loop {
+             match self.peek() {
+                 Some(c) if c.is_whitespace() => {
+                     self.bump();
+                 }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+warning: variable does not need to be mutable
+  --> crates/tla-syntax/src/lexer.rs:93:12
+   |
+93 |     fn run(mut self) -> Result<Vec<Token>> {
+   |            ----^^^^
+   |            |
+   |            help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `chars`, `pos`, `line`, `col`, and `out` are never read
+  --> crates/tla-syntax/src/lexer.rs:9:5
+   |
+ 8 | struct Lexer {
+   |        ----- fields in this struct
+ 9 |     chars: Vec<char>,
+   |     ^^^^^
+10 |     pos: usize,
+   |     ^^^
+11 |     line: u32,
+   |     ^^^^
+12 |     col: u32,
+   |     ^^^
+13 |     out: Vec<Token>,
+   |     ^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple methods are never used
+   --> crates/tla-syntax/src/lexer.rs:51:8
+    |
+ 39 | impl Lexer {
+    | ---------- methods in this implementation
+...
+ 51 |     fn peek(&self) -> Option<char> {
+    |        ^^^^
+...
+ 55 |     fn at(&self, offset: usize) -> Option<char> {
+    |        ^^
+...
+ 59 |     fn bump(&mut self) -> Option<char> {
+    |        ^^^^
+...
+ 71 |     fn advance(&mut self, n: usize) {
+    |        ^^^^^^^
+...
+ 77 |     fn starts_with(&self, s: &str) -> bool {
+    |        ^^^^^^^^^^^
+...
+ 81 |     fn run_of(&self, c: char) -> usize {
+    |        ^^^^^^
+...
+ 89 |     fn err(&self, msg: impl Into<String>) -> Error {
+    |        ^^^
+...
+ 99 |     fn skip_trivia(&mut self) -> Result<()> {
+    |        ^^^^^^^^^^^
+...
+116 |     fn skip_block_comment(&mut self) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^^
+...
+138 |     fn scan(&mut self, c: char) -> Result<Tok> {
+    |        ^^^^
+...
+226 |     fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+    |        ^^^^^^^^^^^^^^^^
+...
+256 |     fn user_symbol(&mut self) -> Option<Tok> {
+    |        ^^^^^^^^^^^
+...
+271 |     fn scan_number(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+291 |     fn scan_word(&mut self) -> Tok {
+    |        ^^^^^^^^^
+...
+318 |     fn scan_string(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+341 |     fn scan_equals(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+372 |     fn scan_dashes(&mut self) -> Tok {
+    |        ^^^^^^^^^^^
+...
+392 |     fn scan_lt(&mut self) -> Tok {
+    |        ^^^^^^^
+...
+409 |     fn scan_gt(&mut self) -> Tok {
+    |        ^^^^^^^
+...
+420 |     fn scan_slash(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^
+...
+433 |     fn scan_backslash(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^^^^
+
+warning: function `user_operator` is never used
+   --> crates/tla-syntax/src/token.rs:193:15
+    |
+193 | pub(crate) fn user_operator(symbol: &str) -> Option<Op> {
+    |               ^^^^^^^^^^^^^
+
+warning: `tla-syntax` (lib test) generated 4 warnings (4 duplicates)
+warning: `tla-syntax` (lib) generated 4 warnings (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s
+  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
+warning: variable does not need to be mutable
+  --> crates/tla-syntax/src/lexer.rs:93:12
+   |
+93 |     fn run(mut self) -> Result<Vec<Token>> {
+   |            ----^^^^
+   |            |
+   |            help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `chars`, `pos`, `line`, `col`, and `out` are never read
+  --> crates/tla-syntax/src/lexer.rs:9:5
+   |
+ 8 | struct Lexer {
+   |        ----- fields in this struct
+ 9 |     chars: Vec<char>,
+   |     ^^^^^
+10 |     pos: usize,
+   |     ^^^
+11 |     line: u32,
+   |     ^^^^
+12 |     col: u32,
+   |     ^^^
+13 |     out: Vec<Token>,
+   |     ^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple methods are never used
+   --> crates/tla-syntax/src/lexer.rs:51:8
+    |
+ 39 | impl Lexer {
+    | ---------- methods in this implementation
+...
+ 51 |     fn peek(&self) -> Option<char> {
+    |        ^^^^
+...
+ 55 |     fn at(&self, offset: usize) -> Option<char> {
+    |        ^^
+...
+ 59 |     fn bump(&mut self) -> Option<char> {
+    |        ^^^^
+...
+ 71 |     fn advance(&mut self, n: usize) {
+    |        ^^^^^^^
+...
+ 77 |     fn starts_with(&self, s: &str) -> bool {
+    |        ^^^^^^^^^^^
+...
+ 81 |     fn run_of(&self, c: char) -> usize {
+    |        ^^^^^^
+...
+ 89 |     fn err(&self, msg: impl Into<String>) -> Error {
+    |        ^^^
+...
+ 99 |     fn skip_trivia(&mut self) -> Result<()> {
+    |        ^^^^^^^^^^^
+...
+116 |     fn skip_block_comment(&mut self) -> Result<()> {
+    |        ^^^^^^^^^^^^^^^^^^
+...
+138 |     fn scan(&mut self, c: char) -> Result<Tok> {
+    |        ^^^^
+...
+226 |     fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+    |        ^^^^^^^^^^^^^^^^
+...
+256 |     fn user_symbol(&mut self) -> Option<Tok> {
+    |        ^^^^^^^^^^^
+...
+271 |     fn scan_number(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+291 |     fn scan_word(&mut self) -> Tok {
+    |        ^^^^^^^^^
+...
+318 |     fn scan_string(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+341 |     fn scan_equals(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^
+...
+372 |     fn scan_dashes(&mut self) -> Tok {
+    |        ^^^^^^^^^^^
+...
+392 |     fn scan_lt(&mut self) -> Tok {
+    |        ^^^^^^^
+...
+409 |     fn scan_gt(&mut self) -> Tok {
+    |        ^^^^^^^
+...
+420 |     fn scan_slash(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^
+...
+433 |     fn scan_backslash(&mut self) -> Result<Tok> {
+    |        ^^^^^^^^^^^^^^
+
+warning: function `user_operator` is never used
+   --> crates/tla-syntax/src/token.rs:193:15
+    |
+193 | pub(crate) fn user_operator(symbol: &str) -> Option<Op> {
+    |               ^^^^^^^^^^^^^
+
+warning: `tla-syntax` (lib) generated 4 warnings (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+warning: `tla-syntax` (lib test) generated 4 warnings (4 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+
+running 23 tests
+test a_choose_inside_braces_is_not_a_set_filter ... FAILED
+test a_function_may_be_defined_by_its_graph ... FAILED
+test a_module_may_contain_another ... FAILED
+test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
+test a_named_theorem_keeps_its_statement ... FAILED
+test a_postfix_operator_binds_to_what_precedes_it ... FAILED
+test a_fairness_subscript_may_be_a_tuple ... FAILED
+test a_proof_is_skipped_and_the_module_continues ... FAILED
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
+test an_action_subscript_is_recognised_past_an_inner_colon ... FAILED
+test an_infix_operator_can_be_defined ... FAILED
+test an_operator_may_be_passed_as_an_argument ... FAILED
+test an_operator_may_follow_a_bulleted_list ... FAILED
+test case_arms_are_separated_by_boxes ... FAILED
+test except_accepts_several_indices_at_once ... FAILED
+test higher_order_parameters_record_their_arity ... FAILED
+test instance_names_may_be_chained_and_take_arguments ... FAILED
+test labels_are_read_and_dropped ... FAILED
+test prefix_and_postfix_operators_can_be_defined ... FAILED
+test prose_outside_the_module_is_not_lexed ... FAILED
+test set_filters_and_set_maps_are_told_apart ... FAILED
+test the_new_forms_round_trip ... FAILED
+test temporal_quantifiers_parse_and_are_marked_as_such ... FAILED
+
+failures:
+
+---- a_choose_inside_braces_is_not_a_set_filter stdout ----
+
+thread 'a_choose_inside_braces_is_not_a_set_filter' (4179406) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_function_may_be_defined_by_its_graph stdout ----
+
+thread 'a_function_may_be_defined_by_its_graph' (4179408) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_module_may_contain_another stdout ----
+
+thread 'a_module_may_contain_another' (4179410) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
+
+thread 'a_name_may_begin_with_a_digit_or_an_underscore' (4179411) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_named_theorem_keeps_its_statement stdout ----
+
+thread 'a_named_theorem_keeps_its_statement' (4179412) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_postfix_operator_binds_to_what_precedes_it stdout ----
+
+thread 'a_postfix_operator_binds_to_what_precedes_it' (4179413) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_fairness_subscript_may_be_a_tuple stdout ----
+
+thread 'a_fairness_subscript_may_be_a_tuple' (4179407) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_proof_is_skipped_and_the_module_continues stdout ----
+
+thread 'a_proof_is_skipped_and_the_module_continues' (4179414) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
+
+thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (4179409) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- an_action_subscript_is_recognised_past_an_inner_colon stdout ----
+
+thread 'an_action_subscript_is_recognised_past_an_inner_colon' (4179415) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- an_infix_operator_can_be_defined stdout ----
+
+thread 'an_infix_operator_can_be_defined' (4179416) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- an_operator_may_be_passed_as_an_argument stdout ----
+
+thread 'an_operator_may_be_passed_as_an_argument' (4179417) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- an_operator_may_follow_a_bulleted_list stdout ----
+
+thread 'an_operator_may_follow_a_bulleted_list' (4179418) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- case_arms_are_separated_by_boxes stdout ----
+
+thread 'case_arms_are_separated_by_boxes' (4179419) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- except_accepts_several_indices_at_once stdout ----
+
+thread 'except_accepts_several_indices_at_once' (4179420) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- higher_order_parameters_record_their_arity stdout ----
+
+thread 'higher_order_parameters_record_their_arity' (4179421) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- instance_names_may_be_chained_and_take_arguments stdout ----
+
+thread 'instance_names_may_be_chained_and_take_arguments' (4179422) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- labels_are_read_and_dropped stdout ----
+
+thread 'labels_are_read_and_dropped' (4179423) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- prefix_and_postfix_operators_can_be_defined stdout ----
+
+thread 'prefix_and_postfix_operators_can_be_defined' (4179424) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- prose_outside_the_module_is_not_lexed stdout ----
+
+thread 'prose_outside_the_module_is_not_lexed' (4179425) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- set_filters_and_set_maps_are_told_apart stdout ----
+
+thread 'set_filters_and_set_maps_are_told_apart' (4179426) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- the_new_forms_round_trip stdout ----
+
+thread 'the_new_forms_round_trip' (4179428) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+---- temporal_quantifiers_parse_and_are_marked_as_such stdout ----
+
+thread 'temporal_quantifiers_parse_and_are_marked_as_such' (4179427) panicked at crates/tla-syntax/src/parser.rs:51:19:
+index out of bounds: the len is 0 but the index is 0
+
+
+failures:
+    a_choose_inside_braces_is_not_a_set_filter
+    a_fairness_subscript_may_be_a_tuple
+    a_function_may_be_defined_by_its_graph
+    a_lambda_may_be_passed_where_an_operator_is_wanted
+    a_module_may_contain_another
+    a_name_may_begin_with_a_digit_or_an_underscore
+    a_named_theorem_keeps_its_statement
+    a_postfix_operator_binds_to_what_precedes_it
+    a_proof_is_skipped_and_the_module_continues
+    an_action_subscript_is_recognised_past_an_inner_colon
+    an_infix_operator_can_be_defined
+    an_operator_may_be_passed_as_an_argument
+    an_operator_may_follow_a_bulleted_list
+    case_arms_are_separated_by_boxes
+    except_accepts_several_indices_at_once
+    higher_order_parameters_record_their_arity
+    instance_names_may_be_chained_and_take_arguments
+    labels_are_read_and_dropped
+    prefix_and_postfix_operators_can_be_defined
+    prose_outside_the_module_is_not_lexed
+    set_filters_and_set_maps_are_told_apart
+    temporal_quantifiers_parse_and_are_marked_as_such
+    the_new_forms_round_trip
+
+test result: FAILED. 0 passed; 23 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p tla-syntax --test grammar`
+
+*** result: Failure(101)

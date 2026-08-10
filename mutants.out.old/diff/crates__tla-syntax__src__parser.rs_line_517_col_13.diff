@@ -1,0 +1,37 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Op(o @(Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) in Parser::prefix
+@@ -509,33 +509,17 @@
+         })
+     }
+ 
+     fn prefix(&mut self) -> Result<Expr> {
+         if let Some(labelled) = self.skip_expression_label() {
+             return labelled;
+         }
+         let op = match *self.peek() {
+-            Tok::Op(o @ (Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) => {
+-                self.advance();
+-                let kind = match o {
+-                    Op::Forall => QuantKind::Forall,
+-                    Op::Exists => QuantKind::Exists,
+-                    Op::TemporalForall => QuantKind::TemporalForall,
+-                    _ => QuantKind::TemporalExists,
+-                };
+-                let bounds = self.bounds(&Tok::Colon)?;
+-                self.expect(&Tok::Colon)?;
+-                let body = self.expr(0)?;
+-                return Ok(Expr::Quant {
+-                    kind,
+-                    bounds,
+-                    body: Box::new(body),
+-                });
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             Tok::Op(o @ (Op::Not | Op::Always | Op::Eventually | Op::Minus)) => o,
+             Tok::Kw(Kw::Domain) => Op::Domain,
+             Tok::Kw(Kw::Subset) => Op::Subset,
+             Tok::Kw(Kw::Union) => Op::BigUnion,
+             Tok::Kw(Kw::Enabled) => Op::Enabled,
+             Tok::Kw(Kw::Unchanged) => Op::Unchanged,
+             _ => return self.postfix(),
+         };

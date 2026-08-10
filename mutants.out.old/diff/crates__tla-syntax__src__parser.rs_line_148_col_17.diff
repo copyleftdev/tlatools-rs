@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Kw(Kw::Module) in Parser::module_body
+@@ -140,21 +140,17 @@
+         self.expect(&Tok::Separator)?;
+ 
+         let mut extends = Vec::new();
+         let mut units = Vec::new();
+         loop {
+             while self.eat(&Tok::Separator) {}
+             match self.peek() {
+                 Tok::ModuleEnd | Tok::Eof => break,
+-                Tok::Kw(Kw::Module) => {
+-                    let inner = self.module_body()?;
+-                    self.expect(&Tok::ModuleEnd)?;
+-                    units.push(Unit::Inner(Box::new(inner)));
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 Tok::Kw(Kw::Extends) => {
+                     self.advance();
+                     extends.push(self.expect_ident()?);
+                     while self.eat(&Tok::Comma) {
+                         extends.push(self.expect_ident()?);
+                     }
+                 }
+                 _ => units.push(self.unit()?),

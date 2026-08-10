@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace += with -= in Parser::skip_expression_label
+@@ -568,17 +568,17 @@
+                         if depth == 0 {
+                             ahead += 1;
+                             break;
+                         }
+                     }
+                     Tok::Eof => return None,
+                     _ => {}
+                 }
+-                ahead += 1;
++                ahead -= /* ~ changed by cargo-mutants ~ */ 1;
+             }
+         }
+         if !matches!(self.peek_at(ahead), Tok::ColonColon) {
+             return None;
+         }
+         for _ in 0..=ahead {
+             self.advance();
+         }

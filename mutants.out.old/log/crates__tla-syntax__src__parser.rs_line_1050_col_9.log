@@ -1,0 +1,80 @@
+
+*** crates/tla-syntax/src/parser.rs:1050:9: replace Parser::shape -> Shape with Default::default()
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::shape -> Shape with Default::default()
+@@ -1042,38 +1042,17 @@
+             }
+         }
+         false
+     }
+ 
+     /// Look ahead past a just-consumed `[` or `{` to the first delimiter that
+     /// identifies the construct, ignoring anything nested inside brackets.
+     fn shape(&self) -> Shape {
+-        let mut depth = 0usize;
+-        let mut saw_in = false;
+-        for t in &self.toks[self.pos..] {
+-            match &t.tok {
+-                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+-                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+-                    if depth == 0 {
+-                        return Shape::Closed;
+-                    }
+-                    depth -= 1;
+-                }
+-                Tok::Eof => break,
+-                _ if depth > 0 => {}
+-                Tok::Op(Op::In) => saw_in = true,
+-                Tok::MapsTo => return Shape::MapsTo { bounded: saw_in },
+-                Tok::Colon => return Shape::Colon { bounded: saw_in },
+-                Tok::Arrow => return Shape::Arrow,
+-                Tok::Kw(Kw::Except) => return Shape::Except,
+-                _ => {}
+-            }
+-        }
+-        Shape::Closed
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// Read `x \in S` back as the bound it is, so `{x \in S : P}` can be told from
+ /// `{e : x \in S}` once the first expression has already been parsed.
+ fn as_bound(e: &Expr) -> Option<Bound> {
+     let Expr::Binary(Op::In, lhs, domain) = e else {
+         return None;
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786401759.886113241s, 344021067ns after last build at 1786401759.542092174s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+error[E0277]: the trait bound `Shape: Default` is not satisfied
+    --> crates/tla-syntax/src/parser.rs:1050:9
+     |
+1050 |         Default::default() /* ~ changed by cargo-mutants ~ */
+     |         ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Shape`
+     |
+help: consider annotating `Shape` with `#[derive(Default)]`
+     |
+  33 + #[derive(Default)]
+  34 | enum Shape {
+     |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

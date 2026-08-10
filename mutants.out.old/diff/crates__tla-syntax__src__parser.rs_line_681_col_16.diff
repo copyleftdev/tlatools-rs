@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::expr_list
+@@ -673,17 +673,17 @@
+                 self.advance();
+                 out.push(Expr::Ident(op.symbol().to_string()));
+                 if !self.eat(&Tok::Comma) {
+                     return Ok(out);
+                 }
+                 continue;
+             }
+             out.push(self.expr(0)?);
+-            if !self.eat(&Tok::Comma) {
++            if  /* ~ changed by cargo-mutants ~ */self.eat(&Tok::Comma) {
+                 return Ok(out);
+             }
+         }
+     }
+ 
+     fn primary(&mut self) -> Result<Expr> {
+         let at = self.pos;
+         match self.advance() {

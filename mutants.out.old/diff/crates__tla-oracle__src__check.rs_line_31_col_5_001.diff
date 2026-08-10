@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/check.rs
++++ replace init_default -> String with "xyzzy".into()
+@@ -23,17 +23,17 @@
+     #[serde(default)]
+     pub edges: Vec<Edge>,
+     /// Predicates over `Reached`, the set of states the implementation visited.
+     #[serde(default)]
+     pub outcomes: BTreeMap<String, String>,
+ }
+ 
+ fn init_default() -> String {
+-    "Init".to_string()
++    "xyzzy".into() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn next_default() -> String {
+     "Next".to_string()
+ }
+ 
+ #[derive(Debug, Clone, Deserialize)]
+ pub struct ConstantSpec {

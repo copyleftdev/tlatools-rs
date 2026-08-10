@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "ELSE" in Kw::lookup
+@@ -37,17 +37,17 @@
+             "MODULE" => Self::Module,
+             "EXTENDS" => Self::Extends,
+             "CONSTANT" | "CONSTANTS" => Self::Constant,
+             "VARIABLE" | "VARIABLES" => Self::Variable,
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+-            "ELSE" => Self::Else,
++             /* ~ changed by cargo-mutants ~ */
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,

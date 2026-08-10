@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/value.rs
++++ delete match arm (Value::Func(map), k) in Value::apply
+@@ -111,17 +111,17 @@
+ 
+     pub fn apply(&self, key: &Value) -> Option<Value> {
+         match (self, key) {
+             (Value::Seq(items), Value::Int(i)) => usize::try_from(*i)
+                 .ok()?
+                 .checked_sub(1)
+                 .and_then(|i| items.get(i).cloned()),
+             (Value::Record(fields), Value::Str(k)) => fields.get(k).cloned(),
+-            (Value::Func(map), k) => map.get(k).cloned(),
++             /* ~ changed by cargo-mutants ~ */
+             _ => None,
+         }
+     }
+ 
+     pub fn type_name(&self) -> &'static str {
+         match self {
+             Value::Bool(_) => "a boolean",
+             Value::Int(_) => "an integer",

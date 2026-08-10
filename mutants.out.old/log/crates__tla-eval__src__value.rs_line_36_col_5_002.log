@@ -1,0 +1,149 @@
+
+*** crates/tla-eval/src/value.rs:36:5: replace count -> i64 with -1
+
+*** mutation diff:
+--- crates/tla-eval/src/value.rs
++++ replace count -> i64 with -1
+@@ -28,17 +28,17 @@
+     Strings,
+     /// `Seq(S)` — every finite sequence over `S`.
+     Sequences(Box<Value>),
+ }
+ 
+ /// A length or cardinality as a TLA+ integer. No collection can hold more than
+ /// `isize::MAX` elements, so this never loses information.
+ pub(crate) fn count(n: usize) -> i64 {
+-    i64::try_from(n).expect("no collection exceeds isize::MAX elements")
++    -1 /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ impl Value {
+     pub fn set(items: impl IntoIterator<Item = Value>) -> Value {
+         Value::Set(items.into_iter().collect())
+     }
+ 
+     pub fn string(s: impl Into<String>) -> Value {
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-eval@0.1.0
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+       Dirty tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval): the file `crates/tla-eval/src/spec.rs` has changed (1786401635.248480984s, 1s after last build at 1786401634.761451161s)
+   Compiling tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=30c97671448b5d79 -C extra-filename=-ecdad261fb53d0a2 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+warning: unused variable: `n`
+  --> crates/tla-eval/src/value.rs:35:21
+   |
+35 | pub(crate) fn count(n: usize) -> i64 {
+   |                     ^ help: if this is intentional, prefix it with an underscore: `_n`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tla-eval` (lib test) generated 1 warning (run `cargo fix --lib -p tla-eval --tests` to apply 1 suggestion)
+warning: `tla-eval` (lib) generated 1 warning (1 duplicate)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name evaluate_specs --edition=2024 crates/tla-eval/tests/evaluate_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fa93390e31c446f5 -C extra-filename=-7aa4b9899970176d --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name modules --edition=2024 crates/tla-eval/tests/modules.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=f6ec955a438c0e78 -C extra-filename=-3a02f88cdd03a5e2 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.30s
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/modules-3a02f88cdd03a5e2`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-eval@0.1.0
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+warning: unused variable: `n`
+  --> crates/tla-eval/src/value.rs:35:21
+   |
+35 | pub(crate) fn count(n: usize) -> i64 {
+   |                     ^ help: if this is intentional, prefix it with an underscore: `_n`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tla-eval` (lib) generated 1 warning (run `cargo fix --lib -p tla-eval` to apply 1 suggestion)
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
+warning: `tla-eval` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
+
+running 20 tests
+test a_missing_constant_is_reported_before_evaluation ... ok
+test a_temporal_formula_is_refused_rather_than_guessed ... ok
+test an_action_evaluated_as_a_predicate_says_so ... ok
+test an_allowed_step_has_nothing_to_explain ... ok
+test bank_transfer_conserves_and_refuses_overdraft ... FAILED
+test a_wrong_effect_is_distinguished_from_an_unmet_guard ... FAILED
+test bounded_buffer_rejects_lifo ... FAILED
+test bounded_buffer_accepts_the_protocol ... FAILED
+test bounded_buffer_rejects_overfilling ... FAILED
+test closeness_is_measured_over_all_of_an_actions_conjuncts ... FAILED
+test paxos_rejects_a_proposal_without_a_quorum ... ok
+test two_phase_accepts_prepare_and_abort ... ok
+test raft_rejects_a_second_vote_in_the_same_term ... ok
+test ring_election_rejects_forwarding_a_smaller_id ... ok
+test two_phase_rejects_commit_before_every_rm_prepared ... ok
+test raft_rejects_a_leader_without_a_majority ... FAILED
+test paxos_accepts_a_first_phase ... ok
+test the_closest_action_and_its_blocking_guard_are_named ... ok
+test ring_election_builds_its_initial_state ... ok
+test raft_accepts_an_election ... ok
+
+failures:
+
+---- bank_transfer_conserves_and_refuses_overdraft stdout ----
+
+thread 'bank_transfer_conserves_and_refuses_overdraft' (4127336) panicked at crates/tla-eval/tests/evaluate_specs.rs:283:5:
+assertion failed: e.holds_at("Conserved", &init).unwrap()
+
+---- a_wrong_effect_is_distinguished_from_an_unmet_guard stdout ----
+
+thread 'a_wrong_effect_is_distinguished_from_an_unmet_guard' (4127333) panicked at crates/tla-eval/tests/evaluate_specs.rs:528:5:
+Get was available; it is the state it produced that is wrong: Len(buf) > 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- bounded_buffer_rejects_lifo stdout ----
+
+thread 'bounded_buffer_rejects_lifo' (4127338) panicked at crates/tla-eval/tests/evaluate_specs.rs:49:5:
+assertion failed: e.step_allowed("Next", &full, &fifo).unwrap()
+
+---- bounded_buffer_accepts_the_protocol stdout ----
+
+thread 'bounded_buffer_accepts_the_protocol' (4127337) panicked at crates/tla-eval/tests/evaluate_specs.rs:35:5:
+Get
+
+---- bounded_buffer_rejects_overfilling stdout ----
+
+thread 'bounded_buffer_rejects_overfilling' (4127339) panicked at crates/tla-eval/tests/evaluate_specs.rs:60:5:
+assertion failed: !e.step_allowed("Next", &full, &over).unwrap()
+
+---- closeness_is_measured_over_all_of_an_actions_conjuncts stdout ----
+
+thread 'closeness_is_measured_over_all_of_an_actions_conjuncts' (4127340) panicked at crates/tla-eval/tests/evaluate_specs.rs:503:27:
+index out of bounds: the len is 0 but the index is 0
+
+---- raft_rejects_a_leader_without_a_majority stdout ----
+
+thread 'raft_rejects_a_leader_without_a_majority' (4127344) panicked at crates/tla-eval/tests/evaluate_specs.rs:239:5:
+assertion failed: e.step_allowed("Next", &two_votes, &legal).unwrap()
+
+
+failures:
+    a_wrong_effect_is_distinguished_from_an_unmet_guard
+    bank_transfer_conserves_and_refuses_overdraft
+    bounded_buffer_accepts_the_protocol
+    bounded_buffer_rejects_lifo
+    bounded_buffer_rejects_overfilling
+    closeness_is_measured_over_all_of_an_actions_conjuncts
+    raft_rejects_a_leader_without_a_majority
+
+test result: FAILED. 13 passed; 7 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p tla-eval --test evaluate_specs`
+
+*** result: Failure(101)

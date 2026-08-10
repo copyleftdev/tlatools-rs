@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Expr::conjunction -> Expr with Default::default()
+@@ -296,17 +296,17 @@
+                     .any(|(g, r)| g.mentions_next_state() || r.mentions_next_state())
+                     || other.as_ref().is_some_and(|o| o.mentions_next_state())
+             }
+             Expr::Num(_) | Expr::Str(_) | Expr::Bool(_) | Expr::Ident(_) | Expr::At => false,
+         }
+     }
+ 
+     pub fn conjunction(items: Vec<Expr>) -> Expr {
+-        Self::fold(items, Op::And)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn disjunction(items: Vec<Expr>) -> Expr {
+         Self::fold(items, Op::Or)
+     }
+ 
+     fn fold(items: Vec<Expr>, op: Op) -> Expr {
+         let mut iter = items.into_iter();

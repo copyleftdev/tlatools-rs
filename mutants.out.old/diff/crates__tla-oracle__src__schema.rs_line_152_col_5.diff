@@ -1,0 +1,42 @@
+--- crates/tla-oracle/src/schema.rs
++++ replace decode_state -> Result<tla_eval::State> with Ok(Default::default())
+@@ -144,38 +144,17 @@
+ }
+ 
+ /// Read a whole state: exactly the specification's variables, nothing else.
+ pub fn decode_state(
+     json: &Json,
+     schema: &BTreeMap<String, Schema>,
+     path: &str,
+ ) -> Result<tla_eval::State> {
+-    let given = object(json, path)?;
+-    let expected: BTreeSet<&String> = schema.keys().collect();
+-    let actual: BTreeSet<&String> = given.keys().collect();
+-    if expected != actual {
+-        return fail(
+-            path,
+-            format!(
+-                "state keys must be exactly the specification's variables \
+-                 (missing={:?}, unexpected={:?})",
+-                sorted_diff(&expected, &actual),
+-                sorted_diff(&actual, &expected)
+-            ),
+-        );
+-    }
+-    let mut state = tla_eval::State::new();
+-    for (name, field) in schema {
+-        state.insert(
+-            name.clone(),
+-            decode(&given[name], field, &format!("{path}.{name}"))?,
+-        );
+-    }
+-    Ok(state)
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn array<'a>(json: &'a Json, path: &str) -> Result<&'a Vec<Json>> {
+     json.as_array().map_or_else(
+         || fail(path, format!("expected an array, got {}", kind_of(json))),
+         Ok,
+     )
+ }

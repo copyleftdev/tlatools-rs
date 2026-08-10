@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace && with || in Evaluator<'m>::unary
+@@ -619,17 +619,17 @@
+         let bindings = args.iter().cloned().map(Local::Val).collect();
+         self.run(&def.name, &def.body, scope, &def.params, bindings, ctx)
+     }
+ 
+     // -------------------------------------------------------------- operators
+ 
+     fn unary(&self, op: Op, inner: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         if let Some((module, def)) = self.spec.definition(ctx.module, op.symbol())
+-            && def.params.len() == 1
++            || /* ~ changed by cargo-mutants ~ */ def.params.len() == 1
+         {
+             let values = vec![self.eval(inner, ctx)?];
+             return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &values, ctx));
+         }
+         match op {
+             Op::Not => Ok(Value::Bool(!self.eval_bool(inner, ctx)?)),
+             Op::Minus => match self.eval(inner, ctx)? {
+                 Value::Int(n) => Ok(Value::Int(-n)),

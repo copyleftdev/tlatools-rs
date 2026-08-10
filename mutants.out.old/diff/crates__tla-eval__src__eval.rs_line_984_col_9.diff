@@ -1,0 +1,32 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::product -> Result<()> with Ok(())
+@@ -976,28 +976,17 @@
+         &self,
+         names: &[String],
+         items: &[Value],
+         rest: &'m [Bound],
+         ctx: &mut Ctx<'m, '_>,
+         current: &mut Vec<(String, Value)>,
+         out: &mut Vec<Vec<(String, Value)>>,
+     ) -> Result<()> {
+-        let Some((name, more)) = names.split_first() else {
+-            return self.expand_into(rest, ctx, current, out);
+-        };
+-        for item in items {
+-            let restore = ctx.locals.len();
+-            current.push((name.clone(), item.clone()));
+-            ctx.locals.push((name.clone(), Local::Val(item.clone())));
+-            self.product(more, items, rest, ctx, current, out)?;
+-            current.pop();
+-            ctx.locals.truncate(restore);
+-        }
+-        Ok(())
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// One `![a][b] = e` update. `@` inside `e` is the value being replaced.
+     fn update(
+         &self,
+         base: Value,
+         path: &'m [ExceptPath],
+         rhs: &'m Expr,

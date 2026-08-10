@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace == with != in Expr::mentions_next_state
+@@ -234,17 +234,17 @@
+     /// it does — the two call for different advice when one of them fails.
+     pub fn mentions_next_state(&self) -> bool {
+         match self {
+             Expr::Prime(_)
+             | Expr::ActionBox { .. }
+             | Expr::ActionAngle { .. }
+             | Expr::Fairness { .. } => true,
+             Expr::Unary(op, inner) => {
+-                *op == Op::Unchanged || *op == Op::Enabled || inner.mentions_next_state()
++                *op == Op::Unchanged || *op != /* ~ changed by cargo-mutants ~ */ Op::Enabled || inner.mentions_next_state()
+             }
+             Expr::Binary(_, lhs, rhs) => lhs.mentions_next_state() || rhs.mentions_next_state(),
+             Expr::Apply(head, args) | Expr::FnApply(head, args) => {
+                 head.mentions_next_state() || args.iter().any(Expr::mentions_next_state)
+             }
+             Expr::Field(inner, _) => inner.mentions_next_state(),
+             Expr::Qualified { args, .. } => args.iter().any(Expr::mentions_next_state),
+             Expr::Tuple(items) | Expr::SetEnum(items) => {

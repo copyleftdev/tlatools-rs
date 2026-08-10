@@ -1,0 +1,98 @@
+
+*** crates/tla-eval/src/eval.rs:626:9: replace Evaluator<'m>::unary -> Result<Value> with Ok(Default::default())
+
+*** mutation diff:
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::unary -> Result<Value> with Ok(Default::default())
+@@ -618,58 +618,17 @@
+         }
+         let bindings = args.iter().cloned().map(Local::Val).collect();
+         self.run(&def.name, &def.body, scope, &def.params, bindings, ctx)
+     }
+ 
+     // -------------------------------------------------------------- operators
+ 
+     fn unary(&self, op: Op, inner: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        if let Some((module, def)) = self.spec.definition(ctx.module, op.symbol())
+-            && def.params.len() == 1
+-        {
+-            let values = vec![self.eval(inner, ctx)?];
+-            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &values, ctx));
+-        }
+-        match op {
+-            Op::Not => Ok(Value::Bool(!self.eval_bool(inner, ctx)?)),
+-            Op::Minus => match self.eval(inner, ctx)? {
+-                Value::Int(n) => Ok(Value::Int(-n)),
+-                other => type_error(format!("cannot negate {other}")),
+-            },
+-            Op::Domain => {
+-                let v = self.eval(inner, ctx)?;
+-                v.domain()
+-                    .map(Value::Set)
+-                    .ok_or_else(|| Error::Type(format!("DOMAIN of {v}, which is not a function")))
+-            }
+-            Op::Subset => {
+-                let v = self.eval(inner, ctx)?;
+-                powerset(&elements(&v)?)
+-            }
+-            Op::BigUnion => {
+-                let v = self.eval(inner, ctx)?;
+-                let mut out = BTreeSet::new();
+-                for member in elements(&v)? {
+-                    out.extend(elements(&member)?);
+-                }
+-                Ok(Value::Set(out))
+-            }
+-            Op::Unchanged => self.unchanged(inner, ctx),
+-            Op::Enabled => Err(Error::NotGround(
+-                "ENABLED asks whether some successor state exists, which needs a search"
+-                    .to_string(),
+-            )),
+-            Op::Always | Op::Eventually => Err(Error::NotGround(
+-                "a temporal formula is about behaviours, not about one state".to_string(),
+-            )),
+-            other => Err(Error::Malformed(format!(
+-                "{other:?} is not a prefix operator"
+-            ))),
+-        }
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn unchanged(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let before = self.eval(e, ctx)?;
+         let after = self.primed(e, ctx)?;
+         Ok(Value::Bool(before == after))
+     }
+ 
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-eval@0.1.0
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+       Dirty tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-eval): the file `crates/tla-eval/src/eval.rs` has changed (1786401619.320505626s, 1s after last build at 1786401618.882478803s)
+   Compiling tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-eval)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=30c97671448b5d79 -C extra-filename=-ecdad261fb53d0a2 --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+error[E0277]: the trait bound `Value: Default` is not satisfied
+   --> crates/tla-eval/src/eval.rs:626:12
+    |
+626 |         Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+    |            ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Value`
+   --> crates/tla-eval/src/value.rs:12:1
+    |
+ 12 | pub enum Value {
+    | ^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-eval` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=30c97671448b5d79 -C extra-filename=-ecdad261fb53d0a2 --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-eval` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta` (exit status: 1)
+
+*** result: Failure(101)

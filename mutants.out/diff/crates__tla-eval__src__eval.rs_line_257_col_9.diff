@@ -1,0 +1,26 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::key -> Result<Value> with Ok(Default::default())
+@@ -249,22 +249,17 @@
+         }
+     }
+ 
+     fn eval_all(&self, items: &'m [Expr], ctx: &mut Ctx<'m, '_>) -> Result<Vec<Value>> {
+         items.iter().map(|e| self.eval(e, ctx)).collect()
+     }
+ 
+     fn key(&self, args: &'m [Expr], ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        let mut values = self.eval_all(args, ctx)?;
+-        Ok(if values.len() == 1 {
+-            values.remove(0)
+-        } else {
+-            Value::Seq(values)
+-        })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn primed(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let saved = ctx.primed;
+         ctx.primed = true;
+         let out = self.eval(e, ctx);
+         ctx.primed = saved;
+         out

@@ -1,0 +1,27 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Module::variables -> impl Iterator<Item =&String> with ::std::iter::empty()
+@@ -21,23 +21,17 @@
+             .filter_map(|u| match u {
+                 Unit::Constants(ds) => Some(ds),
+                 _ => None,
+             })
+             .flatten()
+     }
+ 
+     pub fn variables(&self) -> impl Iterator<Item = &String> {
+-        self.units
+-            .iter()
+-            .filter_map(|u| match u {
+-                Unit::Variables(vs) => Some(vs),
+-                _ => None,
+-            })
+-            .flatten()
++        ::std::iter::empty() /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub enum Unit {
+     Constants(Vec<Decl>),
+     Variables(Vec<String>),
+     Recursive(Vec<Decl>),

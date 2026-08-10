@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Unit::Def(def) in Parser::primary
+@@ -719,17 +719,17 @@
+                     if self.eat(&Tok::Kw(Kw::Recursive)) {
+                         self.decl_list()?;
+                         continue;
+                     }
+                     let Tok::Ident(name) = self.peek().clone() else {
+                         return Err(self.err("expected a definition inside LET"));
+                     };
+                     match self.named_definition(name, false)? {
+-                        Unit::Def(def) => defs.push(def),
++                         /* ~ changed by cargo-mutants ~ */
+                         _ => return Err(self.err("only definitions may appear inside LET")),
+                     }
+                 }
+                 self.advance();
+                 let body = self.expr(0)?;
+                 Ok(Expr::Let {
+                     defs,
+                     body: Box::new(body),

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace != with == in Parser::bracket_form
+@@ -921,17 +921,17 @@
+                 })
+             }
+             Shape::Closed => {
+                 let action = p.expr(0)?;
+                 p.expect(&Tok::RBrack)?;
+                 Ok(action)
+             }
+         })?;
+-        if shape != Shape::Closed {
++        if shape == /* ~ changed by cargo-mutants ~ */ Shape::Closed {
+             return Ok(inner);
+         }
+         let subscript = self.subscript()?;
+         Ok(Expr::ActionBox {
+             action: Box::new(inner),
+             subscript: Box::new(subscript),
+         })
+     }

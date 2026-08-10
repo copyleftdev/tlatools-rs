@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace + with * in Evaluator<'m>::probe
+@@ -97,17 +97,17 @@
+         found: &mut Probe,
+         depth: usize,
+     ) -> Result<()> {
+         if depth >= MAX_DEPTH {
+             return Ok(());
+         }
+         match e {
+             Expr::Binary(Op::Or, lhs, rhs) => {
+-                self.probe(lhs, ctx, label, found, depth + 1)?;
++                self.probe(lhs, ctx, label, found, depth * /* ~ changed by cargo-mutants ~ */ 1)?;
+                 self.probe(rhs, ctx, label, found, depth + 1)
+             }
+             Expr::Quant {
+                 kind: QuantKind::Exists,
+                 bounds,
+                 body,
+             } => {
+                 for binding in self.expand(bounds, ctx)? {

@@ -179,4 +179,23 @@ tools/               corpus runners for this oracle and for TLC
 ```bash
 cargo test
 cargo clippy --all-targets
+cargo mutants                    # are the tests worth having?
+cargo run --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')
+cargo run --example depth -p tla-syntax -- $(find CORPUS -name '*.tla')
 ```
+
+`examples/depth.rs` is where the recursion limit comes from: it reports how
+deeply real specifications nest and how far the parser gets on a small stack,
+and the constant is set from those two numbers rather than chosen.
+
+## What it will not do
+
+- **Integers are 64-bit.** TLA+'s are unbounded. Arithmetic that would overflow
+  reports an error rather than wrapping, so nothing is silently wrong, but a
+  specification that genuinely needs big numbers is out of reach.
+- **Temporal formulas are refused, not evaluated.** `[]P`, `<>P`, `WF_v(A)` and
+  `ENABLED A` are about behaviours; this crate is about states and steps.
+- **Proofs are skipped, not checked.** TLAPS proof syntax is recognised so the
+  module around it can be read.
+- **Enumeration is bounded** at 2²⁰ elements, and reports the limit rather than
+  exhausting memory.

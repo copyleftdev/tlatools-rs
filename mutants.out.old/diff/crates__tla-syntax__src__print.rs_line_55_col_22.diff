@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/print.rs
++++ replace < with == in write
+@@ -47,17 +47,17 @@
+         | Expr::If { .. }
+         | Expr::Case { .. }
+         | Expr::Lambda { .. } => TRAILING,
+         _ => ATOM,
+     }
+ }
+ 
+ fn write(e: &Expr, min: u8, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-    if precedence(e) < min {
++    if precedence(e) == /* ~ changed by cargo-mutants ~ */ min {
+         write!(f, "(")?;
+         write(e, TRAILING, f)?;
+         return write!(f, ")");
+     }
+     bare(e, f)
+ }
+ 
+ #[expect(

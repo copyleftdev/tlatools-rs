@@ -1,0 +1,74 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::named_definition -> Result<Unit> with Ok(Default::default())
+@@ -241,70 +241,17 @@
+             other => Err(self.err(format!("expected a declaration, found {other:?}"))),
+         }
+     }
+ 
+     /// Everything that can follow a name at the head of a definition: an
+     /// ordinary or operator definition, a function definition, an instance, or
+     /// a definition of an infix or postfix operator whose left operand this is.
+     fn named_definition(&mut self, name: String, local: bool) -> Result<Unit> {
+-        self.advance();
+-
+-        if let Tok::Op(op) = self.peek().clone() {
+-            self.advance();
+-            let left = Param::value(name);
+-            let params = if self.eat(&Tok::DefEq) {
+-                vec![left]
+-            } else {
+-                let right = self.param()?;
+-                self.expect(&Tok::DefEq)?;
+-                vec![left, right]
+-            };
+-            return Ok(Unit::Def(Def {
+-                name: op.symbol().to_string(),
+-                params,
+-                body: self.expr(0)?,
+-                local,
+-            }));
+-        }
+-
+-        // `f[x \in S] == e` defines a function, and may refer to `f` inside.
+-        if matches!(self.peek(), Tok::LBrack) {
+-            self.advance();
+-            let bounds = self.bracketed(|p| p.bounds(&Tok::RBrack))?;
+-            self.expect(&Tok::RBrack)?;
+-            self.expect(&Tok::DefEq)?;
+-            let body = self.expr(0)?;
+-            return Ok(Unit::Def(Def {
+-                name,
+-                params: Vec::new(),
+-                body: Expr::FnDef {
+-                    bounds,
+-                    body: Box::new(body),
+-                },
+-                local,
+-            }));
+-        }
+-
+-        let params = self.opt_params()?;
+-        self.expect(&Tok::DefEq)?;
+-        if matches!(self.peek(), Tok::Kw(Kw::Instance)) {
+-            let (module, subs) = self.instance_tail()?;
+-            return Ok(Unit::Instance {
+-                name: Some(name),
+-                module,
+-                subs,
+-            });
+-        }
+-        Ok(Unit::Def(Def {
+-            name,
+-            params,
+-            body: self.expr(0)?,
+-            local,
+-        }))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// `THEOREM Name == ...` names the theorem; the name carries no meaning
+     /// for evaluation, so it is read and dropped.
+     fn skip_label(&mut self) {
+         if matches!(self.peek(), Tok::Ident(_)) && matches!(self.peek_at(1), Tok::DefEq) {
+             self.advance();
+             self.advance();

@@ -1,0 +1,29 @@
+--- crates/tla-eval/src/value.rs
++++ replace Value::type_name -> &'static str with ""
+@@ -117,25 +117,17 @@
+                 .and_then(|i| items.get(i).cloned()),
+             (Value::Record(fields), Value::Str(k)) => fields.get(k).cloned(),
+             (Value::Func(map), k) => map.get(k).cloned(),
+             _ => None,
+         }
+     }
+ 
+     pub fn type_name(&self) -> &'static str {
+-        match self {
+-            Value::Bool(_) => "a boolean",
+-            Value::Int(_) => "an integer",
+-            Value::Str(_) => "a string",
+-            Value::Seq(_) => "a sequence",
+-            Value::Set(_) | Value::Infinite(_) => "a set",
+-            Value::Record(_) => "a record",
+-            Value::Func(_) => "a function",
+-        }
++        "" /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn is_set(&self) -> bool {
+         matches!(self, Value::Set(_) | Value::Infinite(_))
+     }
+ }
+ 
+ impl fmt::Display for Value {

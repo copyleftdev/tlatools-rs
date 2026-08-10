@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "CHOOSE" in Kw::lookup
+@@ -38,17 +38,17 @@
+             "EXTENDS" => Self::Extends,
+             "CONSTANT" | "CONSTANTS" => Self::Constant,
+             "VARIABLE" | "VARIABLES" => Self::Variable,
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+             "ELSE" => Self::Else,
+-            "CHOOSE" => Self::Choose,
++             /* ~ changed by cargo-mutants ~ */
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+             "LAMBDA" => Self::Lambda,

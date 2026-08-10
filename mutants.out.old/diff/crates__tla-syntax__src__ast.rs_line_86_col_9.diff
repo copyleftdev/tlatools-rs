@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Param::value -> Self with Default::default()
+@@ -78,20 +78,17 @@
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct Param {
+     pub name: String,
+     pub arity: usize,
+ }
+ 
+ impl Param {
+     pub fn value(name: impl Into<String>) -> Self {
+-        Self {
+-            name: name.into(),
+-            arity: 0,
+-        }
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// One `x, y \in S` group of a quantifier, function or set constructor.
+ #[derive(Debug, Clone, PartialEq, Eq)]
+ pub struct Bound {
+     pub names: Vec<String>,
+     /// Absent for the unbounded forms, as in `\E x : P`.

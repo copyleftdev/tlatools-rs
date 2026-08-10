@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace == with != in Lexer::run_of
+@@ -75,17 +75,17 @@
+     }
+ 
+     fn starts_with(&self, s: &str) -> bool {
+         s.chars().enumerate().all(|(i, c)| self.at(i) == Some(c))
+     }
+ 
+     fn run_of(&self, c: char) -> usize {
+         let mut n = 0;
+-        while self.at(n) == Some(c) {
++        while self.at(n) != /* ~ changed by cargo-mutants ~ */ Some(c) {
+             n += 1;
+         }
+         n
+     }
+ 
+     fn err(&self, msg: impl Into<String>) -> Error {
+         Error::lex(msg, self.line, self.col)
+     }

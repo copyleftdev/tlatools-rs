@@ -1,0 +1,28 @@
+--- crates/tla-oracle/src/check.rs
++++ replace parse_outcomes -> Result<Vec<(String, Expr)>, String> with Ok(vec![("xyzzy".into(), Default::default())])
+@@ -343,24 +343,17 @@
+         .enumerate()
+         .map(|(i, json)| {
+             decode_state(json, &job.schema, &format!("state[{i}]")).map_err(|e| e.to_string())
+         })
+         .collect()
+ }
+ 
+ fn parse_outcomes(job: &Job) -> Result<Vec<(String, Expr)>, String> {
+-    job.outcomes
+-        .iter()
+-        .map(|(name, src)| {
+-            parse_expression(src)
+-                .map(|e| (name.clone(), e))
+-                .map_err(|e| format!("outcome `{name}`: {e}"))
+-        })
+-        .collect()
++    Ok(vec![("xyzzy".into(), Default::default())]) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ /// The refinement failure in words, naming what the implementation looked as
+ /// though it was trying to do.
+ fn explain(from: &State, to: &State, closest: Option<&BlockedReport>) -> String {
+     let head = format!(
+         "no action of the specification takes {} to {}",
+         render(from),

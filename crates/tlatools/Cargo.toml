@@ -5,13 +5,19 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+keywords = ["tla", "tlaplus", "cli", "formal-methods", "verification"]
+categories = ["development-tools", "parser-implementations"]
+readme = "../../README.md"
 
 [[bin]]
 name = "tlatools"
 path = "src/main.rs"
 
 [dependencies]
-tla-oracle = { path = "../tla-oracle" }
+tla-oracle = { path = "../tla-oracle", version = "0.1.0" }
+serde_json = { workspace = true }
+
+[dev-dependencies]
 serde_json = { workspace = true }
 
 [lints]

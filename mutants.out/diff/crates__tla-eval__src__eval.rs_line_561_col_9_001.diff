@@ -1,0 +1,33 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::bind_substitutions -> usize with 1
+@@ -553,29 +553,17 @@
+         // written in, so they are bound before the arguments are read.
+         let scope = Self::bind_substitutions(found, ctx);
+         let out = self.in_module(module, ctx, |me, ctx| me.invoke(def, scope, args, ctx));
+         ctx.locals.truncate(scope);
+         out
+     }
+ 
+     fn bind_substitutions(instance: &'m crate::spec::Instance, ctx: &mut Ctx<'m, '_>) -> usize {
+-        let outer = ctx.locals.len();
+-        let here = ctx.module;
+-        for (name, expr) in &instance.subs {
+-            ctx.locals.push((
+-                name.clone(),
+-                Local::Subst {
+-                    expr,
+-                    module: here,
+-                    scope: outer,
+-                },
+-            ));
+-        }
+-        ctx.locals.len()
++        1 /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Evaluate a body with its parameters bound and the caller's locals
+     /// hidden, which is the one rule operator application has to follow.
+     fn run(
+         &self,
+         name: &str,
+         body: &'m Expr,

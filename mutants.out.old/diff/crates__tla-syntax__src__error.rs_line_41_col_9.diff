@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/error.rs
++++ replace <impl fmt::Display for Error>::fmt -> fmt::Result with Ok(Default::default())
+@@ -33,21 +33,13 @@
+             line,
+             col,
+         }
+     }
+ }
+ 
+ impl fmt::Display for Error {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-        let stage = match self.stage {
+-            Stage::Lex => "lex",
+-            Stage::Parse => "parse",
+-        };
+-        write!(
+-            f,
+-            "{stage} error at {}:{}: {}",
+-            self.line, self.col, self.message
+-        )
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ impl std::error::Error for Error {}

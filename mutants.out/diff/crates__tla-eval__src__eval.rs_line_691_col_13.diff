@@ -1,0 +1,25 @@
+--- crates/tla-eval/src/eval.rs
++++ delete match arm Op::Implies in Evaluator<'m>::binary
+@@ -683,21 +683,17 @@
+                     self.eval_bool(lhs, ctx)? && self.eval_bool(rhs, ctx)?,
+                 ));
+             }
+             Op::Or => {
+                 return Ok(Value::Bool(
+                     self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,
+                 ));
+             }
+-            Op::Implies => {
+-                return Ok(Value::Bool(
+-                    !self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,
+-                ));
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             _ => {}
+         }
+         // `\prec`, `\oplus`, `&` and the rest have a symbol and a precedence
+         // but no meaning until a specification gives them one.
+         if let Op::User(symbol) = op
+             && let Some((module, def)) = self.spec.definition(ctx.module, symbol)
+         {
+             let values = vec![self.eval(lhs, ctx)?, self.eval(rhs, ctx)?];

@@ -1,0 +1,62 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::unary -> Result<Value> with Ok(Default::default())
+@@ -618,58 +618,17 @@
+         }
+         let bindings = args.iter().cloned().map(Local::Val).collect();
+         self.run(&def.name, &def.body, scope, &def.params, bindings, ctx)
+     }
+ 
+     // -------------------------------------------------------------- operators
+ 
+     fn unary(&self, op: Op, inner: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        if let Some((module, def)) = self.spec.definition(ctx.module, op.symbol())
+-            && def.params.len() == 1
+-        {
+-            let values = vec![self.eval(inner, ctx)?];
+-            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &values, ctx));
+-        }
+-        match op {
+-            Op::Not => Ok(Value::Bool(!self.eval_bool(inner, ctx)?)),
+-            Op::Minus => match self.eval(inner, ctx)? {
+-                Value::Int(n) => Ok(Value::Int(-n)),
+-                other => type_error(format!("cannot negate {other}")),
+-            },
+-            Op::Domain => {
+-                let v = self.eval(inner, ctx)?;
+-                v.domain()
+-                    .map(Value::Set)
+-                    .ok_or_else(|| Error::Type(format!("DOMAIN of {v}, which is not a function")))
+-            }
+-            Op::Subset => {
+-                let v = self.eval(inner, ctx)?;
+-                powerset(&elements(&v)?)
+-            }
+-            Op::BigUnion => {
+-                let v = self.eval(inner, ctx)?;
+-                let mut out = BTreeSet::new();
+-                for member in elements(&v)? {
+-                    out.extend(elements(&member)?);
+-                }
+-                Ok(Value::Set(out))
+-            }
+-            Op::Unchanged => self.unchanged(inner, ctx),
+-            Op::Enabled => Err(Error::NotGround(
+-                "ENABLED asks whether some successor state exists, which needs a search"
+-                    .to_string(),
+-            )),
+-            Op::Always | Op::Eventually => Err(Error::NotGround(
+-                "a temporal formula is about behaviours, not about one state".to_string(),
+-            )),
+-            other => Err(Error::Malformed(format!(
+-                "{other:?} is not a prefix operator"
+-            ))),
+-        }
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn unchanged(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let before = self.eval(e, ctx)?;
+         let after = self.primed(e, ctx)?;
+         Ok(Value::Bool(before == after))
+     }
+ 

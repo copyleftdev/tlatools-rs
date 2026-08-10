@@ -1,0 +1,23 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '&' | '$' | '?' | '%' | '#' | '!' | '^' | '(' | '+' | '*' in Lexer::scan
+@@ -215,19 +215,17 @@
+                 if self.starts_with("~>") {
+                     self.advance(2);
+                     Ok(Tok::Op(Op::LeadsTo))
+                 } else {
+                     self.bump();
+                     Ok(Tok::Op(Op::Not))
+                 }
+             }
+-            '&' | '$' | '?' | '%' | '#' | '!' | '^' | '(' | '+' | '*' => self
+-                .user_symbol()
+-                .map_or_else(|| self.scan_punctuation(c), Ok),
++             /* ~ changed by cargo-mutants ~ */
+             '.' => {
+                 if self.starts_with("..") {
+                     self.advance(2);
+                     Ok(Tok::Op(Op::DotDot))
+                 } else {
+                     self.bump();
+                     Ok(Tok::Dot)
+                 }

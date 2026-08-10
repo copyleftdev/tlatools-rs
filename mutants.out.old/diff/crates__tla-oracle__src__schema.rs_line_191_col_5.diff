@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/schema.rs
++++ replace sorted_diff -> Vec<String> with vec![]
+@@ -183,17 +183,17 @@
+ fn object<'a>(json: &'a Json, path: &str) -> Result<&'a serde_json::Map<String, Json>> {
+     json.as_object().map_or_else(
+         || fail(path, format!("expected an object, got {}", kind_of(json))),
+         Ok,
+     )
+ }
+ 
+ fn sorted_diff(a: &BTreeSet<&String>, b: &BTreeSet<&String>) -> Vec<String> {
+-    a.difference(b).map(|s| (*s).clone()).collect()
++    vec![] /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn kind_of(json: &Json) -> &'static str {
+     match json {
+         Json::Null => "null",
+         Json::Bool(_) => "a boolean",
+         Json::Number(_) => "a number",
+         Json::String(_) => "a string",

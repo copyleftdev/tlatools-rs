@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete ! in Lexer::skip_trivia
+@@ -120,17 +120,17 @@
+ 
+     fn skip_trivia(&mut self) -> Result<()> {
+         loop {
+             match self.peek() {
+                 Some(c) if c.is_whitespace() => {
+                     self.bump();
+                 }
+                 Some('\\') if self.at(1) == Some('*') => {
+-                    while !matches!(self.peek(), None | Some('\n')) {
++                    while  /* ~ changed by cargo-mutants ~ */matches!(self.peek(), None | Some('\n')) {
+                         self.bump();
+                     }
+                 }
+                 Some('(') if self.at(1) == Some('*') => self.skip_block_comment()?,
+                 _ => return Ok(()),
+             }
+         }
+     }

@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace Spec::declares_variable -> bool with false
+@@ -113,17 +113,17 @@
+         self.definition(self.root, name).is_some()
+     }
+ 
+     pub(crate) fn root(&self) -> usize {
+         self.root
+     }
+ 
+     pub(crate) fn declares_variable(&self, module: usize, name: &str) -> bool {
+-        self.facts[module].variables.contains(name)
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub(crate) fn declares_constant(&self, module: usize, name: &str) -> bool {
+         self.facts[module].constants.contains(name)
+     }
+ 
+     /// Find a definition, following `EXTENDS`. The module it was found in
+     /// comes back with it, because that is the scope its body must be read in.

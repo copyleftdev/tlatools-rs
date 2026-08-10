@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::param
+@@ -430,17 +430,17 @@
+         let name = self.expect_ident()?;
+         let mut arity = 0;
+         if self.eat(&Tok::LParen) {
+             loop {
+                 if !self.eat(&Tok::Underscore) {
+                     self.expect_ident()?;
+                 }
+                 arity += 1;
+-                if !self.eat(&Tok::Comma) {
++                if  /* ~ changed by cargo-mutants ~ */self.eat(&Tok::Comma) {
+                     break;
+                 }
+             }
+             self.expect(&Tok::RParen)?;
+         }
+         Ok(Param { name, arity })
+     }
+ 

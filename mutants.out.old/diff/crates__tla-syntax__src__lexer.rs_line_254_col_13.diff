@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm ']' in Lexer::scan_punctuation
+@@ -246,17 +246,17 @@
+     }
+ 
+     fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+         let at = (self.line, self.col);
+         self.bump();
+         Ok(match c {
+             '(' => Tok::LParen,
+             ')' => Tok::RParen,
+-            ']' => Tok::RBrack,
++             /* ~ changed by cargo-mutants ~ */
+             '{' => Tok::LBrace,
+             '}' => Tok::RBrace,
+             ',' => Tok::Comma,
+             '!' => Tok::Bang,
+             '\'' => Tok::Prime,
+             '_' => Tok::Underscore,
+             '#' => Tok::Op(Op::Neq),
+             '+' => Tok::Op(Op::Plus),

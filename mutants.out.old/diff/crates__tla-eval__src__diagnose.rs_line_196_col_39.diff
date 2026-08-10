@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace += with -= in Evaluator<'m>::record
+@@ -188,17 +188,17 @@
+         let parts = conjuncts(e);
+         let mut satisfied = 0;
+         let mut first_failure = None;
+         for part in &parts {
+             // A conjunct after a failed guard may not be evaluable at all --
+             // `Head(buf)` once `Len(buf) > 0` is false. That is a failure to
+             // satisfy it, not a reason to abandon the whole diagnosis.
+             match self.eval_bool(part, ctx) {
+-                Ok(true) => satisfied += 1,
++                Ok(true) => satisfied -= /* ~ changed by cargo-mutants ~ */ 1,
+                 Ok(false) => {
+                     first_failure.get_or_insert((*part, None));
+                 }
+                 Err(e) => {
+                     first_failure.get_or_insert((*part, Some(e.to_string())));
+                 }
+             }
+         }

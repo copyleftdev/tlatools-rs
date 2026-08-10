@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::decl_list -> Result<Vec<Decl>> with Ok(vec![Default::default()])
+@@ -380,21 +380,17 @@
+                 self.peek_at(1),
+                 Tok::DefEq | Tok::LParen | Tok::LBrack | Tok::Op(_)
+             ),
+             _ => false,
+         }
+     }
+ 
+     fn decl_list(&mut self) -> Result<Vec<Decl>> {
+-        let mut out = vec![self.decl()?];
+-        while self.eat(&Tok::Comma) {
+-            out.push(self.decl()?);
+-        }
+-        Ok(out)
++        Ok(vec![Default::default()]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn decl(&mut self) -> Result<Decl> {
+         let name = self.expect_ident()?;
+         let mut arity = 0;
+         if self.eat(&Tok::LParen) {
+             loop {
+                 if !self.eat(&Tok::Underscore) {

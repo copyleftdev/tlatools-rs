@@ -1,0 +1,156 @@
+
+*** crates/tla-syntax/src/lexer.rs:178:13: delete match arm '<' in Lexer::scan
+
+*** mutation diff:
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '<' in Lexer::scan
+@@ -170,17 +170,17 @@
+                     .is_some_and(|n| n.is_ascii_alphanumeric() || n == '_'))
+         {
+             return Ok(self.scan_word());
+         }
+         match c {
+             '"' => self.scan_string(),
+             '=' => self.scan_equals(),
+             '-' => Ok(self.scan_dashes()),
+-            '<' => Ok(self.scan_lt()),
++             /* ~ changed by cargo-mutants ~ */
+             '>' => Ok(self.scan_gt()),
+             '\\' => self.scan_backslash(),
+             '/' => self.scan_slash(),
+             '|' => {
+                 if self.starts_with("|->") {
+                     self.advance(3);
+                     return Ok(Tok::MapsTo);
+                 }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/lexer.rs` has changed (1786401696.665241874s, 386023639ns after last build at 1786401696.279218235s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
+warning: method `scan_lt` is never used
+   --> crates/tla-syntax/src/lexer.rs:414:8
+    |
+ 39 | impl Lexer {
+    | ---------- method in this implementation
+...
+414 |     fn scan_lt(&mut self) -> Tok {
+    |        ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tla-syntax` (lib test) generated 1 warning
+warning: `tla-syntax` (lib) generated 1 warning (1 duplicate)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.34s
+  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
+warning: method `scan_lt` is never used
+   --> crates/tla-syntax/src/lexer.rs:414:8
+    |
+ 39 | impl Lexer {
+    | ---------- method in this implementation
+...
+414 |     fn scan_lt(&mut self) -> Tok {
+    |        ^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `tla-syntax` (lib) generated 1 warning
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax)
+warning: `tla-syntax` (lib test) generated 1 warning (1 duplicate)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+
+running 23 tests
+test a_fairness_subscript_may_be_a_tuple ... FAILED
+test a_choose_inside_braces_is_not_a_set_filter ... ok
+test a_function_may_be_defined_by_its_graph ... ok
+test a_name_may_begin_with_a_digit_or_an_underscore ... ok
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... ok
+test a_module_may_contain_another ... ok
+test a_named_theorem_keeps_its_statement ... ok
+test a_proof_is_skipped_and_the_module_continues ... FAILED
+test a_postfix_operator_binds_to_what_precedes_it ... ok
+test an_action_subscript_is_recognised_past_an_inner_colon ... ok
+test an_infix_operator_can_be_defined ... FAILED
+test an_operator_may_be_passed_as_an_argument ... ok
+test an_operator_may_follow_a_bulleted_list ... ok
+test case_arms_are_separated_by_boxes ... ok
+test except_accepts_several_indices_at_once ... ok
+test higher_order_parameters_record_their_arity ... ok
+test instance_names_may_be_chained_and_take_arguments ... ok
+test labels_are_read_and_dropped ... ok
+test prefix_and_postfix_operators_can_be_defined ... ok
+test prose_outside_the_module_is_not_lexed ... ok
+test temporal_quantifiers_parse_and_are_marked_as_such ... ok
+test set_filters_and_set_maps_are_told_apart ... ok
+test the_new_forms_round_trip ... FAILED
+
+failures:
+
+---- a_fairness_subscript_may_be_a_tuple stdout ----
+
+thread 'a_fairness_subscript_may_be_a_tuple' (4192945) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:9: unexpected character '<'
+in:
+---- MODULE T ----
+F == WF_<<a, b>>(Next)
+====================
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_proof_is_skipped_and_the_module_continues stdout ----
+
+thread 'a_proof_is_skipped_and_the_module_continues' (4192952) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 3:1: unexpected character '<'
+in:
+---- MODULE T ----
+THEOREM Correct == Spec => []Inv
+<1>1. Init => Inv
+BY DEF Init, Inv
+<1>2. QED
+BY <1>1
+After == 42
+====================
+
+---- an_infix_operator_can_be_defined stdout ----
+
+thread 'an_infix_operator_can_be_defined' (4192954) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:16: unexpected character '<'
+in:
+---- MODULE T ----
+a \prec b == a < b
+====================
+
+---- the_new_forms_round_trip stdout ----
+
+thread 'the_new_forms_round_trip' (4192966) panicked at crates/tla-syntax/tests/grammar.rs:254:33:
+parsing `WF_<<a, b>>(Next)`: lex error at 1:4: unexpected character '<'
+
+
+failures:
+    a_fairness_subscript_may_be_a_tuple
+    a_proof_is_skipped_and_the_module_continues
+    an_infix_operator_can_be_defined
+    the_new_forms_round_trip
+
+test result: FAILED. 19 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p tla-syntax --test grammar`
+
+*** result: Failure(101)

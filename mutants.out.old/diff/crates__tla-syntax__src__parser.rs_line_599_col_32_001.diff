@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace match guard op.is_postfix() with false in Parser::postfix
+@@ -591,17 +591,17 @@
+             if self.fenced() {
+                 break;
+             }
+             match self.peek() {
+                 Tok::Prime => {
+                     self.advance();
+                     e = Expr::Prime(Box::new(e));
+                 }
+-                Tok::Op(op) if op.is_postfix() => {
++                Tok::Op(op) if false /* ~ changed by cargo-mutants ~ */ => {
+                     let op = *op;
+                     self.advance();
+                     e = Expr::Unary(op, Box::new(e));
+                 }
+                 Tok::Dot => {
+                     self.advance();
+                     e = Expr::Field(Box::new(e), self.expect_ident()?);
+                 }

@@ -1,0 +1,43 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::run -> Result<Vec<Token>> with Ok(vec![Default::default()])
+@@ -88,39 +88,17 @@
+ 
+     fn err(&self, msg: impl Into<String>) -> Error {
+         Error::lex(msg, self.line, self.col)
+     }
+ 
+     fn run(mut self) -> Result<Vec<Token>> {
+         // Modules nest, so the file ends at the terminator that closes the
+         // outermost one, not at the first one seen.
+-        let mut depth = 0usize;
+-        loop {
+-            self.skip_trivia()?;
+-            let (line, col) = (self.line, self.col);
+-            let Some(c) = self.peek() else { break };
+-            let tok = self.scan(c)?;
+-            match tok {
+-                Tok::Kw(Kw::Module) => depth += 1,
+-                Tok::ModuleEnd => depth = depth.saturating_sub(1),
+-                _ => {}
+-            }
+-            let closed = matches!(tok, Tok::ModuleEnd) && depth == 0;
+-            self.out.push(Token { tok, line, col });
+-            if closed {
+-                break;
+-            }
+-        }
+-        self.out.push(Token {
+-            tok: Tok::Eof,
+-            line: self.line,
+-            col: self.col,
+-        });
+-        Ok(self.out)
++        Ok(vec![Default::default()]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn skip_trivia(&mut self) -> Result<()> {
+         loop {
+             match self.peek() {
+                 Some(c) if c.is_whitespace() => {
+                     self.bump();
+                 }

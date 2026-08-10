@@ -1,0 +1,88 @@
+
+*** crates/tla-syntax/src/token.rs:36:9: replace Kw::lookup -> Option<Self> with Some(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/token.rs
++++ replace Kw::lookup -> Option<Self> with Some(Default::default())
+@@ -28,49 +28,17 @@
+     Subset,
+     Union,
+     Enabled,
+     Unchanged,
+ }
+ 
+ impl Kw {
+     pub fn lookup(word: &str) -> Option<Self> {
+-        Some(match word {
+-            "MODULE" => Self::Module,
+-            "EXTENDS" => Self::Extends,
+-            "CONSTANT" | "CONSTANTS" => Self::Constant,
+-            "VARIABLE" | "VARIABLES" => Self::Variable,
+-            "LET" => Self::Let,
+-            "IN" => Self::In,
+-            "IF" => Self::If,
+-            "THEN" => Self::Then,
+-            "ELSE" => Self::Else,
+-            "CHOOSE" => Self::Choose,
+-            "CASE" => Self::Case,
+-            "OTHER" => Self::Other,
+-            "ASSUME" | "ASSUMPTION" => Self::Assume,
+-            "INSTANCE" => Self::Instance,
+-            "WITH" => Self::With,
+-            "LOCAL" => Self::Local,
+-            "RECURSIVE" => Self::Recursive,
+-            "LAMBDA" => Self::Lambda,
+-            "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+-            "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+-            | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+-            | "NEW" | "ONLY" => Self::Proof,
+-            "EXCEPT" => Self::Except,
+-            "TRUE" => Self::True,
+-            "FALSE" => Self::False,
+-            "DOMAIN" => Self::Domain,
+-            "SUBSET" => Self::Subset,
+-            "UNION" => Self::Union,
+-            "ENABLED" => Self::Enabled,
+-            "UNCHANGED" => Self::Unchanged,
+-            _ => return None,
+-        })
++        Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub enum Op {
+     Implies,
+     Equiv,
+     Or,
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/print.rs` has changed (1786401769.090676888s, 1s after last build at 1786401768.703653188s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+error[E0277]: the trait bound `Kw: Default` is not satisfied
+  --> crates/tla-syntax/src/token.rs:36:14
+   |
+36 |         Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+   |              ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Kw`
+   |
+help: consider annotating `Kw` with `#[derive(Default)]`
+   |
+ 2 + #[derive(Default)]
+ 3 | pub enum Kw {
+   |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

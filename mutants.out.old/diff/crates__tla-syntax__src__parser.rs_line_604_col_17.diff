@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Dot in Parser::postfix
+@@ -596,20 +596,17 @@
+                     self.advance();
+                     e = Expr::Prime(Box::new(e));
+                 }
+                 Tok::Op(op) if op.is_postfix() => {
+                     let op = *op;
+                     self.advance();
+                     e = Expr::Unary(op, Box::new(e));
+                 }
+-                Tok::Dot => {
+-                    self.advance();
+-                    e = Expr::Field(Box::new(e), self.expect_ident()?);
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 Tok::LBrack => {
+                     self.advance();
+                     let args = self.bracketed(|p| p.expr_list(&Tok::RBrack))?;
+                     self.expect(&Tok::RBrack)?;
+                     e = Expr::FnApply(Box::new(e), args);
+                 }
+                 Tok::LParen if matches!(e, Expr::Ident(_)) => {
+                     self.advance();

@@ -1,0 +1,25 @@
+--- crates/tla-eval/src/eval.rs
++++ replace lookup -> Option<Local<'m>> with Some(Default::default())
+@@ -1043,21 +1043,17 @@
+         Op::Or,
+         Op::Eq,
+         Op::DotDot,
+     ];
+     CANDIDATES.iter().copied().find(|op| op.symbol() == name)
+ }
+ 
+ fn lookup<'m>(name: &str, ctx: &Ctx<'m, '_>) -> Option<Local<'m>> {
+-    ctx.locals
+-        .iter()
+-        .rev()
+-        .find(|(n, _)| n == name)
+-        .map(|(_, local)| local.clone())
++    Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ pub(crate) fn push(ctx: &mut Ctx<'_, '_>, binding: &[(String, Value)]) -> usize {
+     let restore = ctx.locals.len();
+     for (name, value) in binding {
+         ctx.locals.push((name.clone(), Local::Val(value.clone())));
+     }
+     restore

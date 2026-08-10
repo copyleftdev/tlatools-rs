@@ -1,0 +1,48 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::except_updates -> Result<Vec<(Vec<ExceptPath>, Expr)>> with Ok(vec![])
+@@ -944,44 +944,17 @@
+             out.push((name, self.expr(0)?));
+             if !self.eat(&Tok::Comma) {
+                 return Ok(out);
+             }
+         }
+     }
+ 
+     fn except_updates(&mut self) -> Result<Vec<(Vec<ExceptPath>, Expr)>> {
+-        let mut out = Vec::new();
+-        loop {
+-            self.expect(&Tok::Bang)?;
+-            let mut path = Vec::new();
+-            loop {
+-                if self.eat(&Tok::LBrack) {
+-                    let indices = self.bracketed(|p| p.expr_list(&Tok::RBrack))?;
+-                    self.expect(&Tok::RBrack)?;
+-                    path.push(ExceptPath::Index(if indices.len() == 1 {
+-                        indices.into_iter().next().expect("length checked")
+-                    } else {
+-                        Expr::Tuple(indices)
+-                    }));
+-                } else if self.eat(&Tok::Dot) {
+-                    path.push(ExceptPath::Field(self.expect_ident()?));
+-                } else {
+-                    break;
+-                }
+-            }
+-            if path.is_empty() {
+-                return Err(self.err("EXCEPT update needs a `[...]` or `.field` path"));
+-            }
+-            self.expect(&Tok::Op(Op::Eq))?;
+-            out.push((path, self.expr(0)?));
+-            if !self.eat(&Tok::Comma) {
+-                return Ok(out);
+-            }
+-        }
++        Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn bounds(&mut self, terminator: &Tok) -> Result<Vec<Bound>> {
+         let mut out = Vec::new();
+         loop {
+             let mut destructure = false;
+             let mut names = Vec::new();
+             if self.eat(&Tok::LTup) {

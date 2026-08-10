@@ -1,0 +1,32 @@
+--- crates/tla-syntax/src/print.rs
++++ replace precedence -> u8 with 1
+@@ -32,28 +32,17 @@
+         match &self.domain {
+             Some(domain) => write!(f, " \\in {domain}"),
+             None => Ok(()),
+         }
+     }
+ }
+ 
+ fn precedence(e: &Expr) -> u8 {
+-    match e {
+-        Expr::Binary(op, ..) => op.infix_prec().unwrap_or(TRAILING),
+-        Expr::Unary(op, _) if op.is_postfix() => ATOM,
+-        Expr::Unary(op, _) => op.prefix_prec().saturating_sub(1),
+-        Expr::Quant { .. }
+-        | Expr::Choose { .. }
+-        | Expr::Let { .. }
+-        | Expr::If { .. }
+-        | Expr::Case { .. }
+-        | Expr::Lambda { .. } => TRAILING,
+-        _ => ATOM,
+-    }
++    1 /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn write(e: &Expr, min: u8, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+     if precedence(e) < min {
+         write!(f, "(")?;
+         write(e, TRAILING, f)?;
+         return write!(f, ")");
+     }

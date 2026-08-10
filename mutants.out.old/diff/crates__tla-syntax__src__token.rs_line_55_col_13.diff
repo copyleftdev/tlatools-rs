@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" in Kw::lookup
+@@ -47,17 +47,17 @@
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+             "LAMBDA" => Self::Lambda,
+-            "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
++             /* ~ changed by cargo-mutants ~ */
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+             "SUBSET" => Self::Subset,

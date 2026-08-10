@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ delete match arm Unit::Instance{module, ..} in Builder<'_, M>::add
+@@ -207,17 +207,17 @@
+             })
+             .collect();
+         for module in inner {
+             self.add(module)?;
+         }
+ 
+         let mut wanted: Vec<String> = self.modules[position].extends.clone();
+         wanted.extend(self.modules[position].units.iter().filter_map(|u| match u {
+-            Unit::Instance { module, .. } => Some(module.clone()),
++             /* ~ changed by cargo-mutants ~ */
+             _ => None,
+         }));
+         for name in wanted {
+             if BUILT_IN.contains(&name.as_str()) || self.index.contains_key(&name) {
+                 continue;
+             }
+             let Some(src) = self.source.source(&name) else {
+                 return Err(Error::Undefined(format!(

@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::at_proof -> bool with false
+@@ -348,21 +348,17 @@
+             if self.at_unit_start() {
+                 return;
+             }
+             self.advance();
+         }
+     }
+ 
+     fn at_proof(&self) -> bool {
+-        matches!(self.peek(), Tok::Kw(Kw::Proof))
+-            // A proof step is written `<1>2.`, which reaches us as `<`, a
+-            // number or name, then `>`.
+-            || (matches!(self.peek(), Tok::Op(Op::Lt))
+-                && matches!(self.peek_at(2), Tok::Op(Op::Gt)))
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Does a new module unit begin here? Only tokens in the first column can,
+     /// which is what keeps a proof's own keywords from ending it early.
+     fn at_unit_start(&self) -> bool {
+         if self.col() != 1 {
+             return false;
+         }

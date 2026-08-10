@@ -1,0 +1,26 @@
+--- crates/tla-syntax/src/print.rs
++++ replace write -> fmt::Result with Ok(Default::default())
+@@ -47,22 +47,17 @@
+         | Expr::If { .. }
+         | Expr::Case { .. }
+         | Expr::Lambda { .. } => TRAILING,
+         _ => ATOM,
+     }
+ }
+ 
+ fn write(e: &Expr, min: u8, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-    if precedence(e) < min {
+-        write!(f, "(")?;
+-        write(e, TRAILING, f)?;
+-        return write!(f, ")");
+-    }
+-    bare(e, f)
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ #[expect(
+     clippy::too_many_lines,
+     reason = "one arm per syntactic form; splitting it would only scatter the grammar"
+ )]
+ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+     match e {

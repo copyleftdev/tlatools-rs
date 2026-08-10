@@ -1,0 +1,25 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::primed -> Result<Value> with Ok(Default::default())
+@@ -258,21 +258,17 @@
+         Ok(if values.len() == 1 {
+             values.remove(0)
+         } else {
+             Value::Seq(values)
+         })
+     }
+ 
+     fn primed(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        let saved = ctx.primed;
+-        ctx.primed = true;
+-        let out = self.eval(e, ctx);
+-        ctx.primed = saved;
+-        out
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn ident(&self, name: &str, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         if let Some(local) = lookup(name, ctx) {
+             return match local {
+                 Local::Val(v) => Ok(v),
+                 Local::Def { def, scope } => self.call(def, scope, &[], ctx),
+                 Local::Closure { body, scope, .. } => {

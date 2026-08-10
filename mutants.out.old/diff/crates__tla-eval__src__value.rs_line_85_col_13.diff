@@ -1,0 +1,27 @@
+--- crates/tla-eval/src/value.rs
++++ delete match arm Value::Seq(items) in Value::entries
+@@ -77,23 +77,17 @@
+             );
+         }
+         Value::Func(entries)
+     }
+ 
+     /// The function's graph, for values that are functions.
+     pub fn entries(&self) -> Option<BTreeMap<Value, Value>> {
+         match self {
+-            Value::Seq(items) => Some(
+-                items
+-                    .iter()
+-                    .enumerate()
+-                    .map(|(i, v)| (Value::Int(count(i) + 1), v.clone()))
+-                    .collect(),
+-            ),
++             /* ~ changed by cargo-mutants ~ */
+             Value::Record(fields) => Some(
+                 fields
+                     .iter()
+                     .map(|(k, v)| (Value::Str(k.clone()), v.clone()))
+                     .collect(),
+             ),
+             Value::Func(map) => Some(map.clone()),
+             _ => None,

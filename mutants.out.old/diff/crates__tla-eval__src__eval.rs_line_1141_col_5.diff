@@ -1,0 +1,24 @@
+--- crates/tla-eval/src/eval.rs
++++ replace as_int -> Result<i64> with Ok(0)
+@@ -1133,20 +1133,17 @@
+         other => type_error(format!(
+             "expected a set, got {} ({other})",
+             other.type_name()
+         )),
+     }
+ }
+ 
+ fn as_int(v: &Value) -> Result<i64> {
+-    match v {
+-        Value::Int(n) => Ok(*n),
+-        other => type_error(format!("expected an integer, got {other}")),
+-    }
++    Ok(0) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn as_bool(v: &Value) -> Result<bool> {
+     match v {
+         Value::Bool(b) => Ok(*b),
+         other => type_error(format!("expected a boolean, got {other}")),
+     }
+ }

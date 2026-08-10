@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace -= with += in Evaluator<'m>::run
+@@ -590,17 +590,17 @@
+             )));
+         }
+         let hidden = ctx.locals.split_off(scope);
+         for (param, binding) in params.iter().zip(bindings) {
+             ctx.locals.push((param.name.clone(), binding));
+         }
+         ctx.depth += 1;
+         let out = self.eval(body, ctx);
+-        ctx.depth -= 1;
++        ctx.depth += /* ~ changed by cargo-mutants ~ */ 1;
+         ctx.locals.truncate(scope);
+         ctx.locals.extend(hidden);
+         out
+     }
+ 
+     fn call(
+         &self,
+         def: &'m Def,

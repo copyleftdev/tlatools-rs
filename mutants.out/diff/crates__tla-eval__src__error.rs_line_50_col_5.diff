@@ -1,0 +1,14 @@
+--- crates/tla-eval/src/error.rs
++++ replace type_error -> Result<T> with Ok(Default::default())
+@@ -42,10 +42,10 @@
+ 
+ impl From<tla_syntax::Error> for Error {
+     fn from(e: tla_syntax::Error) -> Self {
+         Error::Syntax(e)
+     }
+ }
+ 
+ pub(crate) fn type_error<T>(msg: impl Into<String>) -> Result<T> {
+-    Err(Error::Type(msg.into()))
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }

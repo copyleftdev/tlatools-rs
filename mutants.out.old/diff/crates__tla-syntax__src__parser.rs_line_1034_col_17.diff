@@ -1,0 +1,26 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup in Parser::subscript_follows_bracket
+@@ -1026,22 +1026,17 @@
+                 Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+                 Tok::RBrack if depth == 0 => {
+                     return match &self.peek_at(offset + 1) {
+                         Tok::Underscore => true,
+                         Tok::Ident(name) => name.starts_with('_'),
+                         _ => false,
+                     };
+                 }
+-                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+-                    if depth == 0 {
+-                        return false;
+-                    }
+-                    depth -= 1;
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 Tok::Eof => return false,
+                 _ => {}
+             }
+         }
+         false
+     }
+ 
+     /// Look ahead past a just-consumed `[` or `{` to the first delimiter that

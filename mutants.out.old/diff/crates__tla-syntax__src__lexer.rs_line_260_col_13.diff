@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '_' in Lexer::scan_punctuation
+@@ -252,17 +252,17 @@
+             '(' => Tok::LParen,
+             ')' => Tok::RParen,
+             ']' => Tok::RBrack,
+             '{' => Tok::LBrace,
+             '}' => Tok::RBrace,
+             ',' => Tok::Comma,
+             '!' => Tok::Bang,
+             '\'' => Tok::Prime,
+-            '_' => Tok::Underscore,
++             /* ~ changed by cargo-mutants ~ */
+             '#' => Tok::Op(Op::Neq),
+             '+' => Tok::Op(Op::Plus),
+             '*' => Tok::Op(Op::Times),
+             '%' => Tok::Op(Op::Mod),
+             '^' => Tok::Op(Op::Pow),
+             _ => {
+                 return Err(Error::lex(
+                     format!("unexpected character {c:?}"),

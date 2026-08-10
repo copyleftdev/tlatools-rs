@@ -1,0 +1,67 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::ident -> Result<Value> with Ok(Default::default())
+@@ -266,63 +266,17 @@
+         let saved = ctx.primed;
+         ctx.primed = true;
+         let out = self.eval(e, ctx);
+         ctx.primed = saved;
+         out
+     }
+ 
+     fn ident(&self, name: &str, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        if let Some(local) = lookup(name, ctx) {
+-            return match local {
+-                Local::Val(v) => Ok(v),
+-                Local::Def { def, scope } => self.call(def, scope, &[], ctx),
+-                Local::Closure { body, scope, .. } => {
+-                    self.run(name, body, scope, &[], Vec::new(), ctx)
+-                }
+-                Local::Subst {
+-                    expr,
+-                    module,
+-                    scope,
+-                } => self.substituted(expr, module, scope, ctx),
+-                Local::Symbol(_) | Local::Builtin(_) => Err(Error::Malformed(format!(
+-                    "`{name}` is an operator and must be applied to arguments"
+-                ))),
+-            };
+-        }
+-        if self.spec.declares_variable(ctx.module, name) {
+-            let source = if ctx.primed {
+-                ctx.next.ok_or_else(|| {
+-                    Error::NoNextState(format!(
+-                        "`{name}'` needs a successor state, but only one state was given"
+-                    ))
+-                })?
+-            } else {
+-                ctx.state
+-            };
+-            return source.get(name).cloned().ok_or_else(|| {
+-                Error::Malformed(format!("the state gives no value for variable `{name}`"))
+-            });
+-        }
+-        if let Some(v) = self.constants.get(name) {
+-            return Ok(v.clone());
+-        }
+-        if let Some((module, def)) = self.spec.definition(ctx.module, name) {
+-            if !def.params.is_empty() {
+-                return Err(Error::Malformed(format!(
+-                    "`{name}` takes {} argument(s) but was used as a value",
+-                    def.params.len()
+-                )));
+-            }
+-            return self.in_module(module, ctx, |me, ctx| me.call(def, 0, &[], ctx));
+-        }
+-        if self.spec.declares_constant(ctx.module, name) {
+-            return Err(Error::Undefined(format!("constant `{name}` has no value")));
+-        }
+-        builtin::constant(name).ok_or_else(|| Error::Undefined(name.to_string()))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn apply(&self, head: &'m Expr, args: &'m [Expr], ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let Expr::Ident(name) = head else {
+             return Err(Error::Malformed(
+                 "only a named operator can be applied to arguments".to_string(),
+             ));
+         };

@@ -1,0 +1,16 @@
+crates/tla-syntax/src/lexer.rs:56:33: replace + with * in Lexer::at
+crates/tla-syntax/src/lexer.rs:60:9: replace Lexer::bump -> Option<char> with None
+crates/tla-syntax/src/lexer.rs:60:9: replace Lexer::bump -> Option<char> with Some(Default::default())
+crates/tla-syntax/src/lexer.rs:61:18: replace += with *= in Lexer::bump
+crates/tla-syntax/src/lexer.rs:72:9: replace Lexer::advance with ()
+crates/tla-syntax/src/lexer.rs:84:15: replace += with *= in Lexer::run_of
+crates/tla-syntax/src/lexer.rs:139:9: replace Lexer::skip_block_comment -> Result<()> with Ok(())
+crates/tla-syntax/src/lexer.rs:168:17: replace && with || in Lexer::scan
+crates/tla-syntax/src/lexer.rs:167:19: replace == with != in Lexer::scan
+crates/tla-syntax/src/lexer.rs:317:56: replace || with && in Lexer::scan_word
+crates/tla-syntax/src/lexer.rs:317:61: replace == with != in Lexer::scan_word
+crates/tla-syntax/src/lexer.rs:463:17: replace += with *= in Lexer::scan_backslash
+crates/tla-syntax/src/lexer.rs:496:24: replace + with - in Lexer::scan_backslash
+crates/tla-syntax/src/parser.rs:448:9: replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok((String::new(), vec![]))
+crates/tla-syntax/src/parser.rs:448:9: replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok(("xyzzy".into(), vec![]))
+crates/tla-syntax/src/parser.rs:576:23: replace += with *= in Parser::skip_expression_label

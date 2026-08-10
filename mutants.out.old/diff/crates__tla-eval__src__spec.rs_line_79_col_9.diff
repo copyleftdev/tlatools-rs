@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace Spec::parse -> Result<Self> with Ok(Default::default())
+@@ -71,17 +71,17 @@
+     /// what TLA+ says an omitted substitution means.
+     pub(crate) subs: Vec<(String, Expr)>,
+ }
+ 
+ impl Spec {
+     /// Parse a self-contained specification. `EXTENDS` of a standard module is
+     /// honoured; anything else it names is reported as missing.
+     pub fn parse(src: &str) -> Result<Self> {
+-        Self::load(src, &NoModules)
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn load(src: &str, modules: &impl Modules) -> Result<Self> {
+         let root = parse_module(src)?;
+         let mut builder = Builder {
+             modules: Vec::new(),
+             index: BTreeMap::new(),
+             source: modules,

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/print.rs
++++ replace > with < in bare
+@@ -156,17 +156,17 @@
+                 QuantKind::TemporalExists => Op::TemporalExists,
+             };
+             write!(f, "{} {} : {body}", symbol.symbol(), bounds_list(bounds))
+         }
+         Expr::Choose { bound, body } => write!(f, "CHOOSE {bound} : {body}"),
+         Expr::Let { defs, body } => {
+             f.write_str("LET ")?;
+             for (i, def) in defs.iter().enumerate() {
+-                if i > 0 {
++                if i < /* ~ changed by cargo-mutants ~ */ 0 {
+                     f.write_str(" ")?;
+                 }
+                 write!(f, "{def}")?;
+             }
+             write!(f, " IN {body}")
+         }
+         Expr::If {
+             cond,

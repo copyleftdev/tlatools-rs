@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace >> with << in powerset
+@@ -1078,17 +1078,17 @@
+     let count = 1usize.checked_shl(bits).unwrap_or(usize::MAX);
+     check_size(count, "SUBSET")?;
+     let mut out = BTreeSet::new();
+     for mask in 0..count {
+         out.insert(Value::set(
+             items
+                 .iter()
+                 .enumerate()
+-                .filter(|(i, _)| mask >> i & 1 == 1)
++                .filter(|(i, _)| mask << /* ~ changed by cargo-mutants ~ */ i & 1 == 1)
+                 .map(|(_, v)| v.clone()),
+         ));
+     }
+     Ok(Value::Set(out))
+ }
+ 
+ fn check_size(count: usize, what: &str) -> Result<()> {
+     if count > MAX_ELEMENTS {

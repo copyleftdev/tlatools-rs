@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/value.rs
++++ replace Value::is_set -> bool with true
+@@ -129,17 +129,17 @@
+             Value::Seq(_) => "a sequence",
+             Value::Set(_) | Value::Infinite(_) => "a set",
+             Value::Record(_) => "a record",
+             Value::Func(_) => "a function",
+         }
+     }
+ 
+     pub fn is_set(&self) -> bool {
+-        matches!(self, Value::Set(_) | Value::Infinite(_))
++        true /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ impl fmt::Display for Value {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         match self {
+             Value::Bool(b) => f.write_str(if *b { "TRUE" } else { "FALSE" }),
+             Value::Int(n) => write!(f, "{n}"),

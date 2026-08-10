@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::run_of -> usize with 0
+@@ -74,21 +74,17 @@
+         }
+     }
+ 
+     fn starts_with(&self, s: &str) -> bool {
+         s.chars().enumerate().all(|(i, c)| self.at(i) == Some(c))
+     }
+ 
+     fn run_of(&self, c: char) -> usize {
+-        let mut n = 0;
+-        while self.at(n) == Some(c) {
+-            n += 1;
+-        }
+-        n
++        0 /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn err(&self, msg: impl Into<String>) -> Error {
+         Error::lex(msg, self.line, self.col)
+     }
+ 
+     fn run(mut self) -> Result<Vec<Token>> {
+         // Modules nest, so the file ends at the terminator that closes the

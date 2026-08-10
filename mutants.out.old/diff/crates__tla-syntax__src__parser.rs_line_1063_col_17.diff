@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Op(Op::In) in Parser::shape
+@@ -1055,17 +1055,17 @@
+                 Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+                     if depth == 0 {
+                         return Shape::Closed;
+                     }
+                     depth -= 1;
+                 }
+                 Tok::Eof => break,
+                 _ if depth > 0 => {}
+-                Tok::Op(Op::In) => saw_in = true,
++                 /* ~ changed by cargo-mutants ~ */
+                 Tok::MapsTo => return Shape::MapsTo { bounded: saw_in },
+                 Tok::Colon => return Shape::Colon { bounded: saw_in },
+                 Tok::Arrow => return Shape::Arrow,
+                 Tok::Kw(Kw::Except) => return Shape::Except,
+                 _ => {}
+             }
+         }
+         Shape::Closed

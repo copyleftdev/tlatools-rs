@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/check.rs
++++ replace Report::passed -> bool with false
+@@ -122,17 +122,17 @@
+     /// For a refinement failure: which actions came closest, closest first.
+     #[serde(skip_serializing_if = "Vec::is_empty")]
+     pub blocked: Vec<BlockedReport>,
+     pub stats: Stats,
+ }
+ 
+ impl Report {
+     pub fn passed(&self) -> bool {
+-        self.status == Status::Pass
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn of(status: Status, detail: impl Into<String>, stats: Stats) -> Self {
+         Self {
+             status,
+             detail: detail.into(),
+             edge: None,
+             outcome: None,

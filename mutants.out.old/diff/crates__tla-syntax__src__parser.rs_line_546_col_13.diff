@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Op::Minus in Parser::prefix
+@@ -538,17 +538,17 @@
+             Tok::Kw(Kw::Enabled) => Op::Enabled,
+             Tok::Kw(Kw::Unchanged) => Op::Unchanged,
+             _ => return self.postfix(),
+         };
+         self.advance();
+         // Every prefix operator here binds tighter than `/\`, so `[][A]_v /\ B`
+         // is a conjunction of two formulas rather than `[]` over both.
+         let operand_prec = match op {
+-            Op::Minus => 11,
++             /* ~ changed by cargo-mutants ~ */
+             Op::Domain | Op::Subset | Op::BigUnion => 9,
+             _ => 5,
+         };
+         let operand = self.expr(operand_prec)?;
+         Ok(Expr::Unary(op, Box::new(operand)))
+     }
+ 
+     /// A label names a subexpression so a proof can refer to it. It has no

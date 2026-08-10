@@ -191,3 +191,93 @@ fn a_passing_check_carries_no_diagnosis() {
         "an empty list is omitted"
     );
 }
+
+#[test]
+fn the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept() {
+    let passing = check(&job(WALK, r#"[[0,1,"put"],[1,2,"get"]]"#, "{}"));
+    assert!(passing.passed());
+    assert_eq!(passing.stats.states, 3);
+    assert_eq!(passing.stats.edges, 2);
+    assert_eq!(passing.stats.edges_checked, 2);
+
+    let failing = check(&job(
+        r#"[{"buf": [7], "nextVal": 1, "received": []}]"#,
+        "[]",
+        "{}",
+    ));
+    assert!(!failing.passed());
+    assert_eq!(failing.stats.states, 1);
+    assert_eq!(failing.stats.edges, 0);
+}
+
+/// An initial-state failure quotes the state, so whoever reads the report does
+/// not have to go and look it up.
+#[test]
+fn an_illegal_root_is_quoted_in_the_report() {
+    let report = check(&job(
+        r#"[{"buf": [7], "nextVal": 1, "received": []}]"#,
+        "[]",
+        "{}",
+    ));
+    assert_eq!(report.status, Status::Init);
+    assert!(report.detail.contains("buf = <<7>>"), "{}", report.detail);
+    assert!(report.detail.contains("nextVal = 1"), "{}", report.detail);
+}
+
+/// A state the schema accepts can still be one the specification cannot read.
+/// That is the candidate's fault but not a protocol mistake, so it is the
+/// contract arm rather than an error or a refinement failure.
+#[test]
+fn a_state_the_specification_cannot_read_is_a_contract_violation() {
+    let source = r#"{
+        "spec": "---- MODULE M ----\nEXTENDS Sequences\nVARIABLE s\nInit == Len(s) = 0\n====",
+        "schema": {"s": {"kind": "int"}},
+        "states": [{"s": 5}]
+    }"#;
+    let job: Job = serde_json::from_str(source).expect("the job parses");
+    let report = check(&job);
+    assert_eq!(report.status, Status::Contract, "{}", report.detail);
+    assert!(report.detail.contains("Len"), "{}", report.detail);
+}
+
+#[test]
+fn an_edge_pointing_outside_the_graph_is_an_error() {
+    let report = check(&job(WALK, r#"[[0,99,"nowhere"]]"#, "{}"));
+    assert_eq!(report.status, Status::Error, "{}", report.detail);
+    assert!(
+        report.detail.contains("outside the graph"),
+        "{}",
+        report.detail
+    );
+}
+
+/// JSON has one number type and one boolean type; the schema says which the
+/// specification wanted, and `true` is not an integer.
+#[test]
+fn a_boolean_is_not_accepted_where_an_integer_is_wanted() {
+    let source = r#"{
+        "spec": "---- MODULE M ----\nVARIABLE s\nInit == s = 1\n====",
+        "schema": {"s": {"kind": "int"}},
+        "states": [{"s": true}]
+    }"#;
+    let job: Job = serde_json::from_str(source).expect("the job parses");
+    let report = check(&job);
+    assert_eq!(report.status, Status::Contract, "{}", report.detail);
+    assert!(report.detail.contains("integer"), "{}", report.detail);
+}
+
+#[test]
+fn an_outcome_that_is_not_a_predicate_is_an_error() {
+    let outcomes = r#"{"nonsense": "1 + 1"}"#;
+    let report = check(&job(WALK, "[]", outcomes));
+    assert_eq!(report.status, Status::Error, "{}", report.detail);
+    assert!(report.detail.contains("not a boolean"), "{}", report.detail);
+}
+
+#[test]
+fn an_unparsable_outcome_names_itself() {
+    let outcomes = r#"{"broken": "\\E s \\in"}"#;
+    let report = check(&job(WALK, "[]", outcomes));
+    assert_eq!(report.status, Status::Error, "{}", report.detail);
+    assert!(report.detail.contains("broken"), "{}", report.detail);
+}

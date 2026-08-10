@@ -1,0 +1,28 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::set_map -> Result<Value> with Ok(Default::default())
+@@ -806,24 +806,17 @@
+             if keep? {
+                 out.insert(element_of(&binding));
+             }
+         }
+         Ok(Value::Set(out))
+     }
+ 
+     fn set_map(&self, expr: &'m Expr, bounds: &'m [Bound], ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        let mut out = BTreeSet::new();
+-        for binding in self.expand(bounds, ctx)? {
+-            let restore = push(ctx, &binding);
+-            let v = self.eval(expr, ctx);
+-            ctx.locals.truncate(restore);
+-            out.insert(v?);
+-        }
+-        Ok(Value::Set(out))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn record_set(&self, fields: &'m [(String, Expr)], ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let mut out: Vec<BTreeMap<String, Value>> = vec![BTreeMap::new()];
+         for (name, domain) in fields {
+             let choices = elements(&self.eval(domain, ctx)?)?;
+             check_size(out.len().saturating_mul(choices.len()), "a record set")?;
+             out = out

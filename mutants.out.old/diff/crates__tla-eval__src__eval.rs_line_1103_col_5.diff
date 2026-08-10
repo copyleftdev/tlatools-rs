@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace elements -> Result<Vec<Value>> with Ok(vec![])
+@@ -1095,17 +1095,17 @@
+         return Err(Error::Unbounded(format!(
+             "{what} would have {count} elements, over the {MAX_ELEMENTS} limit"
+         )));
+     }
+     Ok(())
+ }
+ 
+ fn elements(v: &Value) -> Result<Vec<Value>> {
+-    Ok(set_of(v)?.iter().cloned().collect())
++    Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn member(elem: &Value, set: &Value) -> Result<bool> {
+     match set {
+         Value::Set(s) => Ok(s.contains(elem)),
+         Value::Infinite(Infinite::Nat) => Ok(matches!(elem, Value::Int(n) if *n >= 0)),
+         Value::Infinite(Infinite::Int) => Ok(matches!(elem, Value::Int(_))),
+         Value::Infinite(Infinite::Strings) => Ok(matches!(elem, Value::Str(_))),

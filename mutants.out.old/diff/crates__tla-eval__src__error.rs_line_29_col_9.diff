@@ -1,0 +1,29 @@
+--- crates/tla-eval/src/error.rs
++++ replace <impl fmt::Display for Error>::fmt -> fmt::Result with Ok(Default::default())
+@@ -21,25 +21,17 @@
+     /// A specification error the language itself forbids: `@` outside EXCEPT,
+     /// wrong operator arity, a recursive definition that does not terminate.
+     Malformed(String),
+     Syntax(tla_syntax::Error),
+ }
+ 
+ impl fmt::Display for Error {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-        match self {
+-            Error::Undefined(name) => write!(f, "`{name}` is not defined"),
+-            Error::Type(m)
+-            | Error::NoNextState(m)
+-            | Error::NotGround(m)
+-            | Error::Unbounded(m)
+-            | Error::Malformed(m) => f.write_str(m),
+-            Error::Syntax(e) => write!(f, "{e}"),
+-        }
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ impl std::error::Error for Error {}
+ 
+ impl From<tla_syntax::Error> for Error {
+     fn from(e: tla_syntax::Error) -> Self {
+         Error::Syntax(e)

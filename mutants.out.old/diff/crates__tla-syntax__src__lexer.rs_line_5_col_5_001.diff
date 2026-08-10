@@ -1,0 +1,17 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace lex -> Result<Vec<Token>> with Ok(vec![Default::default()])
+@@ -1,13 +1,13 @@
+ use crate::error::{Error, Result};
+ use crate::token::{self, Kw, Op, Tok, Token};
+ 
+ pub fn lex(src: &str) -> Result<Vec<Token>> {
+-    Lexer::new(src).run()
++    Ok(vec![Default::default()]) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ struct Lexer {
+     chars: Vec<char>,
+     pos: usize,
+     line: u32,
+     col: u32,
+     out: Vec<Token>,

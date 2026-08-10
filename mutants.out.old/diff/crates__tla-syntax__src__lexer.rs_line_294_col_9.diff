@@ -1,0 +1,37 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_number -> Result<Tok> with Ok(Default::default())
+@@ -286,33 +286,17 @@
+             }
+         }
+         let symbol = best?;
+         self.advance(symbol.chars().count());
+         Some(Tok::Op(Op::User(symbol)))
+     }
+ 
+     fn scan_number(&mut self) -> Result<Tok> {
+-        let start = self.pos;
+-        while self.peek().is_some_and(|c| c.is_ascii_digit()) {
+-            self.bump();
+-        }
+-        // `1aMessage` is a name, not a number followed by one: TLA+ only asks
+-        // that an identifier contain a letter, not that it begin with one.
+-        if self
+-            .peek()
+-            .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
+-        {
+-            self.pos = start;
+-            return Ok(self.scan_word());
+-        }
+-        let text: String = self.chars[start..self.pos].iter().collect();
+-        text.parse()
+-            .map(Tok::Num)
+-            .map_err(|_| self.err(format!("integer literal out of range: {text}")))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan_word(&mut self) -> Tok {
+         let start = self.pos;
+         while self
+             .peek()
+             .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
+         {

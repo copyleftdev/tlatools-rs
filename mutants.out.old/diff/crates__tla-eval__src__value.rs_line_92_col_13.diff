@@ -1,0 +1,26 @@
+--- crates/tla-eval/src/value.rs
++++ delete match arm Value::Record(fields) in Value::entries
+@@ -84,22 +84,17 @@
+         match self {
+             Value::Seq(items) => Some(
+                 items
+                     .iter()
+                     .enumerate()
+                     .map(|(i, v)| (Value::Int(count(i) + 1), v.clone()))
+                     .collect(),
+             ),
+-            Value::Record(fields) => Some(
+-                fields
+-                    .iter()
+-                    .map(|(k, v)| (Value::Str(k.clone()), v.clone()))
+-                    .collect(),
+-            ),
++             /* ~ changed by cargo-mutants ~ */
+             Value::Func(map) => Some(map.clone()),
+             _ => None,
+         }
+     }
+ 
+     pub fn domain(&self) -> Option<BTreeSet<Value>> {
+         match self {
+             Value::Seq(items) => Some((1..=count(items.len())).map(Value::Int).collect()),

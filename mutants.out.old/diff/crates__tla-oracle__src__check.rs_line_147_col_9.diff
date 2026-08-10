@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/check.rs
++++ delete field states from struct Stats expression in check
+@@ -139,17 +139,17 @@
+             blocked: Vec::new(),
+             stats,
+         }
+     }
+ }
+ 
+ pub fn check(job: &Job) -> Report {
+     let mut stats = Stats {
+-        states: job.states.len(),
++         /* ~ changed by cargo-mutants ~ */
+         edges: job.edges.len(),
+         ..Stats::default()
+     };
+ 
+     let spec = match Spec::parse(&job.spec) {
+         Ok(s) => s,
+         Err(e) => return Report::of(Status::Error, format!("specification: {e}"), stats),
+     };

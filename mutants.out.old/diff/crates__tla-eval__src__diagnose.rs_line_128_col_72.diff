@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace + with - in Evaluator<'m>::probe
+@@ -120,17 +120,17 @@
+             }
+             Expr::Let { defs, body } => {
+                 let base = ctx.locals.len();
+                 let scope = base + defs.len();
+                 for def in defs {
+                     ctx.locals
+                         .push((def.name.clone(), Local::Def { def, scope }));
+                 }
+-                let walked = self.probe(body, ctx, label, found, depth + 1);
++                let walked = self.probe(body, ctx, label, found, depth - /* ~ changed by cargo-mutants ~ */ 1);
+                 ctx.locals.truncate(base);
+                 walked
+             }
+             Expr::Apply(head, args) => {
+                 if let Expr::Ident(name) = &**head
+                     && let Some((_, def)) = self.spec.definition(ctx.module, name)
+                 {
+                     return self.enter(def, args, ctx, found, depth);

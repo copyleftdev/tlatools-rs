@@ -1,0 +1,31 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::choose -> Result<Value> with Ok(Default::default())
+@@ -895,27 +895,17 @@
+         }
+         Ok(Value::Bool(!wanted))
+     }
+ 
+     /// `CHOOSE` must be deterministic: the same set and predicate always give
+     /// the same answer. Taking the least satisfying element in the value order
+     /// is one such rule, and sets are already held in that order.
+     fn choose(&self, bound: &'m Bound, body: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        for binding in self.expand(std::slice::from_ref(bound), ctx)? {
+-            let restore = push(ctx, &binding);
+-            let holds = self.eval_bool(body, ctx);
+-            ctx.locals.truncate(restore);
+-            if holds? {
+-                return Ok(element_of(&binding));
+-            }
+-        }
+-        Err(Error::Malformed(
+-            "CHOOSE found no value satisfying its predicate".to_string(),
+-        ))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// All the ways the bound variables can be assigned. A later bound's
+     /// domain may mention an earlier bound's variable, so they are evaluated
+     /// with the bindings so far in scope.
+     pub(crate) fn expand(
+         &self,
+         bounds: &'m [Bound],

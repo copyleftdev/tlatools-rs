@@ -1,0 +1,38 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace Evaluator<'m>::enter -> Result<()> with Ok(())
+@@ -158,34 +158,17 @@
+     fn enter(
+         &self,
+         def: &'m Def,
+         args: &'m [Expr],
+         ctx: &mut Ctx<'m, '_>,
+         found: &mut Probe,
+         depth: usize,
+     ) -> Result<()> {
+-        if def.params.len() != args.len() {
+-            return Ok(());
+-        }
+-        let mut values = Vec::with_capacity(args.len());
+-        for arg in args {
+-            values.push(self.eval(arg, ctx)?);
+-        }
+-        let label = render_call(&def.name, &def.params, &values);
+-
+-        // An operator sees its parameters and the module, never the locals of
+-        // whoever called it -- the same rule evaluation follows.
+-        let hidden = std::mem::take(&mut ctx.locals);
+-        for (param, value) in def.params.iter().zip(values) {
+-            ctx.locals.push((param.name.clone(), Local::Val(value)));
+-        }
+-        let walked = self.probe(&def.body, ctx, Some(&label), found, depth + 1);
+-        ctx.locals = hidden;
+-        walked
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Evaluate a leaf action conjunct by conjunct and keep the furthest it got.
+     fn record(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>, label: Option<&str>, found: &mut Probe) {
+         let parts = conjuncts(e);
+         let mut satisfied = 0;
+         let mut first_failure = None;
+         for part in &parts {

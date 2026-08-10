@@ -1,0 +1,325 @@
+
+*** crates/tla-syntax/src/lexer.rs:369:16: replace == with != in Lexer::scan_equals
+
+*** mutation diff:
+--- crates/tla-syntax/src/lexer.rs
++++ replace == with != in Lexer::scan_equals
+@@ -361,17 +361,17 @@
+     }
+ 
+     fn scan_equals(&mut self) -> Result<Tok> {
+         let run = self.run_of('=');
+         if run >= 4 {
+             self.advance(run);
+             return Ok(Tok::ModuleEnd);
+         }
+-        if run == 2 {
++        if run != /* ~ changed by cargo-mutants ~ */ 2 {
+             self.advance(2);
+             return Ok(Tok::DefEq);
+         }
+         if run == 1 {
+             return Ok(match self.at(1) {
+                 Some('>') => {
+                     self.advance(2);
+                     Tok::Op(Op::Implies)
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/lexer.rs` has changed (1786401704.045693820s, 1s after last build at 1786401703.657670059s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.30s
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+
+running 23 tests
+test a_choose_inside_braces_is_not_a_set_filter ... FAILED
+test a_fairness_subscript_may_be_a_tuple ... FAILED
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
+test a_function_may_be_defined_by_its_graph ... FAILED
+test a_module_may_contain_another ... FAILED
+test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
+test a_named_theorem_keeps_its_statement ... FAILED
+test a_postfix_operator_binds_to_what_precedes_it ... FAILED
+test a_proof_is_skipped_and_the_module_continues ... FAILED
+test an_action_subscript_is_recognised_past_an_inner_colon ... FAILED
+test an_infix_operator_can_be_defined ... FAILED
+test an_operator_may_be_passed_as_an_argument ... FAILED
+test an_operator_may_follow_a_bulleted_list ... FAILED
+test case_arms_are_separated_by_boxes ... FAILED
+test except_accepts_several_indices_at_once ... FAILED
+test higher_order_parameters_record_their_arity ... FAILED
+test instance_names_may_be_chained_and_take_arguments ... FAILED
+test labels_are_read_and_dropped ... FAILED
+test prefix_and_postfix_operators_can_be_defined ... FAILED
+test prose_outside_the_module_is_not_lexed ... FAILED
+test set_filters_and_set_maps_are_told_apart ... FAILED
+test temporal_quantifiers_parse_and_are_marked_as_such ... FAILED
+test the_new_forms_round_trip ... FAILED
+
+failures:
+
+---- a_choose_inside_braces_is_not_a_set_filter stdout ----
+
+thread 'a_choose_inside_braces_is_not_a_set_filter' (15852) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:6: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Pick == {CHOOSE x \in S : TRUE}
+====================
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_fairness_subscript_may_be_a_tuple stdout ----
+
+thread 'a_fairness_subscript_may_be_a_tuple' (15853) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:3: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+F == WF_<<a, b>>(Next)
+====================
+
+---- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
+
+thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (15855) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:5: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Foo == Apply(LAMBDA x, y : x + y, 1)
+====================
+
+---- a_function_may_be_defined_by_its_graph stdout ----
+
+thread 'a_function_may_be_defined_by_its_graph' (15854) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:12: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+f[x \in S] == x + 1
+====================
+
+---- a_module_may_contain_another stdout ----
+
+thread 'a_module_may_contain_another' (15856) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 3:3: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+---- MODULE Inner ----
+X == 1
+====================
+Outer == 2
+====================
+
+---- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
+
+thread 'a_name_may_begin_with_a_digit_or_an_underscore' (15857) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:12: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+1aMessage == 1
+_hidden == 2
+====================
+
+---- a_named_theorem_keeps_its_statement stdout ----
+
+thread 'a_named_theorem_keeps_its_statement' (15858) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:17: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+THEOREM Correct == Spec => []Inv
+====================
+
+---- a_postfix_operator_binds_to_what_precedes_it stdout ----
+
+thread 'a_postfix_operator_binds_to_what_precedes_it' (15859) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:5: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Foo == S^+ \cup T
+====================
+
+---- a_proof_is_skipped_and_the_module_continues stdout ----
+
+thread 'a_proof_is_skipped_and_the_module_continues' (15860) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:17: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+THEOREM Correct == Spec => []Inv
+<1>1. Init => Inv
+BY DEF Init, Inv
+<1>2. QED
+BY <1>1
+After == 42
+====================
+
+---- an_action_subscript_is_recognised_past_an_inner_colon stdout ----
+
+thread 'an_action_subscript_is_recognised_past_an_inner_colon' (15861) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:7: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Keeps == [][\A i \in Proc : p[i] = p'[i]]_vars
+====================
+
+---- an_infix_operator_can_be_defined stdout ----
+
+thread 'an_infix_operator_can_be_defined' (15862) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:11: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+a \prec b == a < b
+====================
+
+---- an_operator_may_be_passed_as_an_argument stdout ----
+
+thread 'an_operator_may_be_passed_as_an_argument' (15863) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:8: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Sum(S) == FoldSet(+, 0, S)
+====================
+
+---- an_operator_may_follow_a_bulleted_list stdout ----
+
+thread 'an_operator_may_follow_a_bulleted_list' (15864) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:6: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Safe ==
+  /\ TypeOK
+  /\ OneVote
+  => Consistent
+====================
+
+---- case_arms_are_separated_by_boxes stdout ----
+
+thread 'case_arms_are_separated_by_boxes' (15865) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:8: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Colour == CASE n = 1 -> "red" [] n = 2 -> "green" [] OTHER -> "grey"
+====================
+
+---- except_accepts_several_indices_at_once stdout ----
+
+thread 'except_accepts_several_indices_at_once' (15866) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:5: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Set == [f EXCEPT ![a, b] = v]
+====================
+
+---- higher_order_parameters_record_their_arity stdout ----
+
+thread 'higher_order_parameters_record_their_arity' (15867) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:25: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Fold(op(_, _), base, S) == base
+====================
+
+---- instance_names_may_be_chained_and_take_arguments stdout ----
+
+thread 'instance_names_may_be_chained_and_take_arguments' (15868) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:3: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Q == A!B!C
+====================
+
+---- labels_are_read_and_dropped stdout ----
+
+thread 'labels_are_read_and_dropped' (15869) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:6: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Step == /\ Lbl:: x = 1
+        /\ y = 2
+====================
+
+---- prefix_and_postfix_operators_can_be_defined stdout ----
+
+thread 'prefix_and_postfix_operators_can_be_defined' (15870) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:6: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+-. a == 0 - a
+b ^+ == b + 1
+====================
+
+---- prose_outside_the_module_is_not_lexed stdout ----
+
+thread 'prose_outside_the_module_is_not_lexed' (15871) panicked at crates/tla-syntax/tests/grammar.rs:36:31:
+the prose is ignored: Error { stage: Lex, message: "`===` is neither a definition nor a module terminator", line: 4, col: 5 }
+
+---- set_filters_and_set_maps_are_told_apart stdout ----
+
+thread 'set_filters_and_set_maps_are_told_apart' (15872) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:3: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+A == {x \in S : P(x)}
+====================
+
+---- temporal_quantifiers_parse_and_are_marked_as_such stdout ----
+
+thread 'temporal_quantifiers_parse_and_are_marked_as_such' (15873) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 2:8: `===` is neither a definition nor a module terminator
+in:
+---- MODULE T ----
+Hidden == \EE t : Timer(t)
+====================
+
+---- the_new_forms_round_trip stdout ----
+
+thread 'the_new_forms_round_trip' (15874) panicked at crates/tla-syntax/tests/grammar.rs:254:33:
+parsing `CASE n = 1 -> "a" [] OTHER -> "b"`: parse error at 1:8: expected Arrow, found DefEq
+
+
+failures:
+    a_choose_inside_braces_is_not_a_set_filter
+    a_fairness_subscript_may_be_a_tuple
+    a_function_may_be_defined_by_its_graph
+    a_lambda_may_be_passed_where_an_operator_is_wanted
+    a_module_may_contain_another
+    a_name_may_begin_with_a_digit_or_an_underscore
+    a_named_theorem_keeps_its_statement
+    a_postfix_operator_binds_to_what_precedes_it
+    a_proof_is_skipped_and_the_module_continues
+    an_action_subscript_is_recognised_past_an_inner_colon
+    an_infix_operator_can_be_defined
+    an_operator_may_be_passed_as_an_argument
+    an_operator_may_follow_a_bulleted_list
+    case_arms_are_separated_by_boxes
+    except_accepts_several_indices_at_once
+    higher_order_parameters_record_their_arity
+    instance_names_may_be_chained_and_take_arguments
+    labels_are_read_and_dropped
+    prefix_and_postfix_operators_can_be_defined
+    prose_outside_the_module_is_not_lexed
+    set_filters_and_set_maps_are_told_apart
+    temporal_quantifiers_parse_and_are_marked_as_such
+    the_new_forms_round_trip
+
+test result: FAILED. 0 passed; 23 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `-p tla-syntax --test grammar`
+
+*** result: Failure(101)

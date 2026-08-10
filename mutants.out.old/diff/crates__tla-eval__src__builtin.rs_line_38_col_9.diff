@@ -1,0 +1,27 @@
+--- crates/tla-eval/src/builtin.rs
++++ delete match arm "Head" in call
+@@ -30,23 +30,17 @@
+         "IsFiniteSet" => {
+             arity(1)?;
+             Ok(Value::Bool(matches!(args[0], Value::Set(_))))
+         }
+         "Len" => {
+             arity(1)?;
+             seq(&args[0], name).map(|s| Value::Int(count(s.len())))
+         }
+-        "Head" => {
+-            arity(1)?;
+-            seq(&args[0], name)?
+-                .first()
+-                .cloned()
+-                .ok_or_else(|| Error::Type("Head of an empty sequence".to_string()))
+-        }
++         /* ~ changed by cargo-mutants ~ */
+         "Tail" => {
+             arity(1)?;
+             let s = seq(&args[0], name)?;
+             if s.is_empty() {
+                 return type_error("Tail of an empty sequence");
+             }
+             Ok(Value::Seq(s[1..].to_vec()))
+         }

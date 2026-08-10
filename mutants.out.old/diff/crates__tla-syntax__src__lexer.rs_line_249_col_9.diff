@@ -1,0 +1,45 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_punctuation -> Result<Tok> with Ok(Default::default())
+@@ -241,41 +241,17 @@
+                     Ok(Tok::LBrack)
+                 }
+             }
+             _ => self.scan_punctuation(c),
+         }
+     }
+ 
+     fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+-        let at = (self.line, self.col);
+-        self.bump();
+-        Ok(match c {
+-            '(' => Tok::LParen,
+-            ')' => Tok::RParen,
+-            ']' => Tok::RBrack,
+-            '{' => Tok::LBrace,
+-            '}' => Tok::RBrace,
+-            ',' => Tok::Comma,
+-            '!' => Tok::Bang,
+-            '\'' => Tok::Prime,
+-            '_' => Tok::Underscore,
+-            '#' => Tok::Op(Op::Neq),
+-            '+' => Tok::Op(Op::Plus),
+-            '*' => Tok::Op(Op::Times),
+-            '%' => Tok::Op(Op::Mod),
+-            '^' => Tok::Op(Op::Pow),
+-            _ => {
+-                return Err(Error::lex(
+-                    format!("unexpected character {c:?}"),
+-                    at.0,
+-                    at.1,
+-                ));
+-            }
+-        })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// The longest symbol from the language's user-definable operator table
+     /// that starts here. The named `\`-operators are matched elsewhere.
+     fn user_symbol(&mut self) -> Option<Tok> {
+         let mut best: Option<&'static str> = None;
+         for (symbol, _) in token::USER_OPERATORS {
+             if symbol.starts_with('\\') || !self.starts_with(symbol) {

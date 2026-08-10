@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace + with * in Evaluator<'m>::expand_into
+@@ -930,17 +930,17 @@
+     fn expand_into(
+         &self,
+         bounds: &'m [Bound],
+         ctx: &mut Ctx<'m, '_>,
+         current: &mut Vec<(String, Value)>,
+         out: &mut Vec<Vec<(String, Value)>>,
+     ) -> Result<()> {
+         let Some((first, rest)) = bounds.split_first() else {
+-            check_size(out.len() + 1, "a quantifier")?;
++            check_size(out.len() * /* ~ changed by cargo-mutants ~ */ 1, "a quantifier")?;
+             out.push(current.clone());
+             return Ok(());
+         };
+         let Some(domain) = &first.domain else {
+             return Err(Error::Unbounded(format!(
+                 "`{}` is quantified over no set, so it cannot be enumerated",
+                 first.names.join(", ")
+             )));

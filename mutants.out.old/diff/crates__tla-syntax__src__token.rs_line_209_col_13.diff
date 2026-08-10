@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm Self::Equiv | Self::LeadsTo in Op::infix_prec
+@@ -201,17 +201,17 @@
+     /// Binding power as an infix operator; `None` for prefix-only operators.
+     ///
+     /// Ordering follows TLA+'s table where it matters for these specs: `\cup`
+     /// binds tighter than `=`, and `:>` tighter than `@@`, so `a \cup {b} = c`
+     /// and `("k" :> v) @@ rest` parse without parentheses.
+     pub fn infix_prec(self) -> Option<u8> {
+         Some(match self {
+             Self::Implies => 1,
+-            Self::Equiv | Self::LeadsTo => 2,
++             /* ~ changed by cargo-mutants ~ */
+             Self::Or => 3,
+             Self::And => 4,
+             Self::Eq
+             | Self::Neq
+             | Self::Lt
+             | Self::Gt
+             | Self::Le
+             | Self::Ge

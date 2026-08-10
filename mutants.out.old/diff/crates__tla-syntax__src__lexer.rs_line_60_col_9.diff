@@ -1,0 +1,29 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::bump -> Option<char> with None
+@@ -52,25 +52,17 @@
+         self.chars.get(self.pos).copied()
+     }
+ 
+     fn at(&self, offset: usize) -> Option<char> {
+         self.chars.get(self.pos + offset).copied()
+     }
+ 
+     fn bump(&mut self) -> Option<char> {
+-        let c = self.chars.get(self.pos).copied()?;
+-        self.pos += 1;
+-        if c == '\n' {
+-            self.line += 1;
+-            self.col = 1;
+-        } else {
+-            self.col += 1;
+-        }
+-        Some(c)
++        None /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn advance(&mut self, n: usize) {
+         for _ in 0..n {
+             self.bump();
+         }
+     }
+ 

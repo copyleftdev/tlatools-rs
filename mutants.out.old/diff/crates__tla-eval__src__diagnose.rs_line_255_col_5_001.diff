@@ -1,0 +1,18 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace truncate -> String with "xyzzy".into()
+@@ -247,14 +247,10 @@
+         .map(|(param, value)| format!("{} = {value}", param.name))
+         .collect();
+     format!("{name}({})", bindings.join(", "))
+ }
+ 
+ const MAX_RENDERED: usize = 160;
+ 
+ fn truncate(text: &str) -> String {
+-    if text.chars().count() <= MAX_RENDERED {
+-        return text.to_string();
+-    }
+-    let head: String = text.chars().take(MAX_RENDERED).collect();
+-    format!("{head}...")
++    "xyzzy".into() /* ~ changed by cargo-mutants ~ */
+ }

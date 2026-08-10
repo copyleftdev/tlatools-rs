@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace == with != in Lexer::scan_word
+@@ -309,17 +309,17 @@
+             .map(Tok::Num)
+             .map_err(|_| self.err(format!("integer literal out of range: {text}")))
+     }
+ 
+     fn scan_word(&mut self) -> Tok {
+         let start = self.pos;
+         while self
+             .peek()
+-            .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
++            .is_some_and(|c| c.is_ascii_alphanumeric() || c != /* ~ changed by cargo-mutants ~ */ '_')
+         {
+             self.bump();
+         }
+         let word: String = self.chars[start..self.pos].iter().collect();
+ 
+         // `WF_vars` is one word to the lexer but an operator plus a subscript.
+         // `WF_vars` is one word; `WF_<<a, b>>` is the same operator with a
+         // subscript the lexer cannot see, so the name is left empty.

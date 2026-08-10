@@ -5,10 +5,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+keywords = ["tla", "tlaplus", "refinement", "formal-methods", "verification"]
+categories = ["development-tools", "parser-implementations"]
+readme = "../../README.md"
 
 [dependencies]
-tla-eval = { path = "../tla-eval" }
-tla-syntax = { path = "../tla-syntax" }
+tla-eval = { path = "../tla-eval", version = "0.1.0" }
+tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 

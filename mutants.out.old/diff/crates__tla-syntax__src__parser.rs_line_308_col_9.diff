@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::skip_label with ()
+@@ -300,20 +300,17 @@
+             body: self.expr(0)?,
+             local,
+         }))
+     }
+ 
+     /// `THEOREM Name == ...` names the theorem; the name carries no meaning
+     /// for evaluation, so it is read and dropped.
+     fn skip_label(&mut self) {
+-        if matches!(self.peek(), Tok::Ident(_)) && matches!(self.peek_at(1), Tok::DefEq) {
+-            self.advance();
+-            self.advance();
+-        }
++        () /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Try something, and rewind rather than fail if it does not work.
+     fn recover<T>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Option<T> {
+         let mark = self.pos;
+         let fences = self.fences.len();
+         let Ok(value) = f(self) else {
+             self.pos = mark;

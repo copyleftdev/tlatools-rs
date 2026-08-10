@@ -1,0 +1,23 @@
+--- crates/tla-eval/src/eval.rs
++++ replace as_bool -> Result<bool> with Ok(true)
+@@ -1140,19 +1140,16 @@
+ fn as_int(v: &Value) -> Result<i64> {
+     match v {
+         Value::Int(n) => Ok(*n),
+         other => type_error(format!("expected an integer, got {other}")),
+     }
+ }
+ 
+ fn as_bool(v: &Value) -> Result<bool> {
+-    match v {
+-        Value::Bool(b) => Ok(*b),
+-        other => type_error(format!("expected a boolean, got {other}")),
+-    }
++    Ok(true) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn arith(a: &Value, b: &Value, f: fn(i64, i64) -> Option<i64>, name: &str) -> Result<Value> {
+     f(as_int(a)?, as_int(b)?)
+         .map(Value::Int)
+         .ok_or_else(|| Error::Type(format!("{a} {name} {b} is undefined or overflows")))
+ }

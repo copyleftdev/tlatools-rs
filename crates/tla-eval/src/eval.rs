@@ -1099,7 +1099,13 @@ fn check_size(count: usize, what: &str) -> Result<()> {
     Ok(())
 }
 
+/// Every member of a set, for the operations that have to visit them all.
+/// Membership of an infinite set is decidable where enumeration is not, so the
+/// two failures are reported differently.
 fn elements(v: &Value) -> Result<Vec<Value>> {
+    if matches!(v, Value::Infinite(_)) {
+        return Err(Error::Unbounded(format!("{v} cannot be enumerated")));
+    }
     Ok(set_of(v)?.iter().cloned().collect())
 }
 

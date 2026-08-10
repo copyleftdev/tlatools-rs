@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/token.rs
++++ replace user_operator -> Option<Op> with None
+@@ -186,20 +186,17 @@
+     ("/", 13),
+     ("^+", 15),
+     ("^*", 15),
+     ("^#", 15),
+     ("-+->", 2),
+ ];
+ 
+ pub(crate) fn user_operator(symbol: &str) -> Option<Op> {
+-    USER_OPERATORS
+-        .iter()
+-        .find(|(name, _)| *name == symbol)
+-        .map(|(name, _)| Op::User(name))
++    None /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ impl Op {
+     /// Binding power as an infix operator; `None` for prefix-only operators.
+     ///
+     /// Ordering follows TLA+'s table where it matters for these specs: `\cup`
+     /// binds tighter than `=`, and `:>` tighter than `@@`, so `a \cup {b} = c`
+     /// and `("k" :> v) @@ rest` parse without parentheses.

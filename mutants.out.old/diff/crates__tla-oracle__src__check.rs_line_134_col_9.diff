@@ -1,0 +1,28 @@
+--- crates/tla-oracle/src/check.rs
++++ replace Report::of -> Self with Default::default()
+@@ -126,24 +126,17 @@
+ }
+ 
+ impl Report {
+     pub fn passed(&self) -> bool {
+         self.status == Status::Pass
+     }
+ 
+     fn of(status: Status, detail: impl Into<String>, stats: Stats) -> Self {
+-        Self {
+-            status,
+-            detail: detail.into(),
+-            edge: None,
+-            outcome: None,
+-            blocked: Vec::new(),
+-            stats,
+-        }
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ pub fn check(job: &Job) -> Report {
+     let mut stats = Stats {
+         states: job.states.len(),
+         edges: job.edges.len(),
+         ..Stats::default()

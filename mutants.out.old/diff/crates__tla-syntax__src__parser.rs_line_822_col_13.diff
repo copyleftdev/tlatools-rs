@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Ident(name) in Parser::at_subscript
+@@ -814,17 +814,17 @@
+         Ok(Expr::Tuple(items))
+     }
+ 
+     /// Is a `_v` subscript coming? Identifiers may begin with an underscore,
+     /// so `[A]_vars` reaches the parser as one token, not two.
+     fn at_subscript(&self) -> bool {
+         match self.peek() {
+             Tok::Underscore => true,
+-            Tok::Ident(name) => name.starts_with('_'),
++             /* ~ changed by cargo-mutants ~ */
+             _ => false,
+         }
+     }
+ 
+     /// The `v` of `[A]_v`, parsed tightly so it cannot swallow what follows.
+     fn subscript(&mut self) -> Result<Expr> {
+         if let Tok::Ident(name) = self.peek()
+             && let Some(rest) = name.strip_prefix('_')

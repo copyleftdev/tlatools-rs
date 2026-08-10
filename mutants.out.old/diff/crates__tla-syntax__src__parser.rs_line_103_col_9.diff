@@ -1,0 +1,22 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::err_at -> Error with Default::default()
+@@ -95,18 +95,17 @@
+ 
+     fn err(&self, message: impl Into<String>) -> Error {
+         self.err_at(self.pos, message)
+     }
+ 
+     /// Errors point at the token that caused them, which is not the current
+     /// one once it has been consumed.
+     fn err_at(&self, at: usize, message: impl Into<String>) -> Error {
+-        let t = &self.toks[at];
+-        Error::parse(message, t.line, t.col)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// True when the upcoming token belongs to an enclosing junction list
+     /// rather than to the expression being parsed.
+     fn fenced(&self) -> bool {
+         self.fences.last().is_some_and(|&f| self.col() <= f)
+     }
+ 

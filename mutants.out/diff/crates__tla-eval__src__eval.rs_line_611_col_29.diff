@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace != with == in Evaluator<'m>::call
+@@ -603,17 +603,17 @@
+ 
+     fn call(
+         &self,
+         def: &'m Def,
+         scope: usize,
+         args: &[Value],
+         ctx: &mut Ctx<'m, '_>,
+     ) -> Result<Value> {
+-        if def.params.len() != args.len() {
++        if def.params.len() == /* ~ changed by cargo-mutants ~ */ args.len() {
+             return Err(Error::Malformed(format!(
+                 "`{}` takes {} argument(s), given {}",
+                 def.name,
+                 def.params.len(),
+                 args.len()
+             )));
+         }
+         let bindings = args.iter().cloned().map(Local::Val).collect();

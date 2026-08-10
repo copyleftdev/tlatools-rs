@@ -1,0 +1,24 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::expand -> Result<Vec<Vec<(String, Value)>>> with Ok(vec![vec![("xyzzy".into(), Default::default())]])
+@@ -916,20 +916,17 @@
+     /// All the ways the bound variables can be assigned. A later bound's
+     /// domain may mention an earlier bound's variable, so they are evaluated
+     /// with the bindings so far in scope.
+     pub(crate) fn expand(
+         &self,
+         bounds: &'m [Bound],
+         ctx: &mut Ctx<'m, '_>,
+     ) -> Result<Vec<Vec<(String, Value)>>> {
+-        let mut out = Vec::new();
+-        let mut current = Vec::new();
+-        self.expand_into(bounds, ctx, &mut current, &mut out)?;
+-        Ok(out)
++        Ok(vec![vec![("xyzzy".into(), Default::default())]]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn expand_into(
+         &self,
+         bounds: &'m [Bound],
+         ctx: &mut Ctx<'m, '_>,
+         current: &mut Vec<(String, Value)>,
+         out: &mut Vec<Vec<(String, Value)>>,

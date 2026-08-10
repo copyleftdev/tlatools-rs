@@ -1,0 +1,39 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::update -> Result<Value> with Ok(Default::default())
+@@ -998,35 +998,17 @@
+     /// One `![a][b] = e` update. `@` inside `e` is the value being replaced.
+     fn update(
+         &self,
+         base: Value,
+         path: &'m [ExceptPath],
+         rhs: &'m Expr,
+         ctx: &mut Ctx<'m, '_>,
+     ) -> Result<Value> {
+-        let Some((step, rest)) = path.split_first() else {
+-            ctx.at.push(base);
+-            let out = self.eval(rhs, ctx);
+-            ctx.at.pop();
+-            return out;
+-        };
+-        let key = match step {
+-            ExceptPath::Index(e) => self.eval(e, ctx)?,
+-            ExceptPath::Field(name) => Value::Str(name.clone()),
+-        };
+-        let old = base
+-            .apply(&key)
+-            .ok_or_else(|| Error::Type(format!("EXCEPT: {base} is not defined at {key}")))?;
+-        let replacement = self.update(old, rest, rhs, ctx)?;
+-        let mut entries = base
+-            .entries()
+-            .ok_or_else(|| Error::Type(format!("EXCEPT: {base} is not a function")))?;
+-        entries.insert(key, replacement);
+-        Ok(Value::function(entries))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// The operator a bare symbol names, for `FoldSet(+, 0, S)`.
+ fn symbol_operator(name: &str) -> Option<Op> {
+     const CANDIDATES: &[Op] = &[
+         Op::Plus,
+         Op::Minus,

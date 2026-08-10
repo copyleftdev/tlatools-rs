@@ -1,0 +1,57 @@
+
+*** crates/tla-syntax/src/parser.rs:55:9: replace Parser::peek_at -> &Tok with Box::leak(Box::new(Default::default()))
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::peek_at -> &Tok with Box::leak(Box::new(Default::default()))
+@@ -47,18 +47,17 @@
+         }
+     }
+ 
+     fn peek(&self) -> &Tok {
+         &self.toks[self.pos].tok
+     }
+ 
+     fn peek_at(&self, offset: usize) -> &Tok {
+-        let i = (self.pos + offset).min(self.toks.len() - 1);
+-        &self.toks[i].tok
++        Box::leak(Box::new(Default::default())) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn col(&self) -> u32 {
+         self.toks[self.pos].col
+     }
+ 
+     fn advance(&mut self) -> Tok {
+         let t = self.toks[self.pos].tok.clone();
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+error[E0277]: the trait bound `Tok: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:55:28
+    |
+ 55 |         Box::leak(Box::new(Default::default())) /* ~ changed by cargo-mutants ~ */
+    |                            ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Tok`
+   --> crates/tla-syntax/src/token.rs:321:1
+    |
+321 | pub enum Tok {
+    | ^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

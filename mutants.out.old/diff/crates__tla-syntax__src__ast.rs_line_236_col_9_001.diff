@@ -1,0 +1,85 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Expr::mentions_next_state -> bool with false
+@@ -228,81 +228,17 @@
+     },
+ }
+ 
+ impl Expr {
+     /// Does this constrain the successor state? Distinguishes an action's
+     /// guard, which says when it may happen, from its effect, which says what
+     /// it does — the two call for different advice when one of them fails.
+     pub fn mentions_next_state(&self) -> bool {
+-        match self {
+-            Expr::Prime(_)
+-            | Expr::ActionBox { .. }
+-            | Expr::ActionAngle { .. }
+-            | Expr::Fairness { .. } => true,
+-            Expr::Unary(op, inner) => {
+-                *op == Op::Unchanged || *op == Op::Enabled || inner.mentions_next_state()
+-            }
+-            Expr::Binary(_, lhs, rhs) => lhs.mentions_next_state() || rhs.mentions_next_state(),
+-            Expr::Apply(head, args) | Expr::FnApply(head, args) => {
+-                head.mentions_next_state() || args.iter().any(Expr::mentions_next_state)
+-            }
+-            Expr::Field(inner, _) => inner.mentions_next_state(),
+-            Expr::Qualified { args, .. } => args.iter().any(Expr::mentions_next_state),
+-            Expr::Tuple(items) | Expr::SetEnum(items) => {
+-                items.iter().any(Expr::mentions_next_state)
+-            }
+-            Expr::SetFilter { bound, pred } => {
+-                bound.mentions_next_state() || pred.mentions_next_state()
+-            }
+-            Expr::SetMap { expr, bounds } => {
+-                expr.mentions_next_state() || bounds.iter().any(Bound::mentions_next_state)
+-            }
+-            Expr::Record(fields) | Expr::RecordSet(fields) => {
+-                fields.iter().any(|(_, v)| v.mentions_next_state())
+-            }
+-            Expr::FnSet { domain, range } => {
+-                domain.mentions_next_state() || range.mentions_next_state()
+-            }
+-            Expr::Except { base, updates } => {
+-                base.mentions_next_state()
+-                    || updates.iter().any(|(path, value)| {
+-                        value.mentions_next_state()
+-                            || path.iter().any(|step| match step {
+-                                ExceptPath::Index(e) => e.mentions_next_state(),
+-                                ExceptPath::Field(_) => false,
+-                            })
+-                    })
+-            }
+-            Expr::FnDef { bounds, body } | Expr::Quant { bounds, body, .. } => {
+-                body.mentions_next_state() || bounds.iter().any(Bound::mentions_next_state)
+-            }
+-            Expr::Choose { bound, body } => {
+-                bound.mentions_next_state() || body.mentions_next_state()
+-            }
+-            Expr::Lambda { body, .. } => body.mentions_next_state(),
+-            Expr::Let { defs, body } => {
+-                body.mentions_next_state() || defs.iter().any(|d| d.body.mentions_next_state())
+-            }
+-            Expr::If {
+-                cond,
+-                then,
+-                otherwise,
+-            } => {
+-                cond.mentions_next_state()
+-                    || then.mentions_next_state()
+-                    || otherwise.mentions_next_state()
+-            }
+-            Expr::Case { arms, other } => {
+-                arms.iter()
+-                    .any(|(g, r)| g.mentions_next_state() || r.mentions_next_state())
+-                    || other.as_ref().is_some_and(|o| o.mentions_next_state())
+-            }
+-            Expr::Num(_) | Expr::Str(_) | Expr::Bool(_) | Expr::Ident(_) | Expr::At => false,
+-        }
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn conjunction(items: Vec<Expr>) -> Expr {
+         Self::fold(items, Op::And)
+     }
+ 
+     pub fn disjunction(items: Vec<Expr>) -> Expr {
+         Self::fold(items, Op::Or)

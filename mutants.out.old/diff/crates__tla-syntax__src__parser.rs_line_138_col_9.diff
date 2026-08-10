@@ -1,0 +1,50 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::module_body -> Result<Module> with Ok(Default::default())
+@@ -130,46 +130,17 @@
+         }
+         self.advance();
+         self.module_body()
+     }
+ 
+     /// Everything from `MODULE` to the terminator. Modules nest, so this is
+     /// reached both at the top of a file and part-way through one.
+     fn module_body(&mut self) -> Result<Module> {
+-        self.expect(&Tok::Kw(Kw::Module))?;
+-        let name = self.expect_ident()?;
+-        self.expect(&Tok::Separator)?;
+-
+-        let mut extends = Vec::new();
+-        let mut units = Vec::new();
+-        loop {
+-            while self.eat(&Tok::Separator) {}
+-            match self.peek() {
+-                Tok::ModuleEnd | Tok::Eof => break,
+-                Tok::Kw(Kw::Module) => {
+-                    let inner = self.module_body()?;
+-                    self.expect(&Tok::ModuleEnd)?;
+-                    units.push(Unit::Inner(Box::new(inner)));
+-                }
+-                Tok::Kw(Kw::Extends) => {
+-                    self.advance();
+-                    extends.push(self.expect_ident()?);
+-                    while self.eat(&Tok::Comma) {
+-                        extends.push(self.expect_ident()?);
+-                    }
+-                }
+-                _ => units.push(self.unit()?),
+-            }
+-        }
+-        Ok(Module {
+-            name,
+-            extends,
+-            units,
+-        })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn unit(&mut self) -> Result<Unit> {
+         self.fences.push(1);
+         let parsed = self.unit_body();
+         self.fences.pop();
+         parsed
+     }

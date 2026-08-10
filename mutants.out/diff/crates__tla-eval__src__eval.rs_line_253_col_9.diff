@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::eval_all -> Result<Vec<Value>> with Ok(vec![])
+@@ -245,17 +245,17 @@
+     pub(crate) fn eval_bool(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<bool> {
+         match self.eval(e, ctx)? {
+             Value::Bool(b) => Ok(b),
+             other => type_error(format!("expected a boolean, got {other}")),
+         }
+     }
+ 
+     fn eval_all(&self, items: &'m [Expr], ctx: &mut Ctx<'m, '_>) -> Result<Vec<Value>> {
+-        items.iter().map(|e| self.eval(e, ctx)).collect()
++        Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn key(&self, args: &'m [Expr], ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let mut values = self.eval_all(args, ctx)?;
+         Ok(if values.len() == 1 {
+             values.remove(0)
+         } else {
+             Value::Seq(values)

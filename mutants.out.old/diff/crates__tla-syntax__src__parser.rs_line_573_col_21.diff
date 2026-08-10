@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Eof in Parser::skip_expression_label
+@@ -565,17 +565,17 @@
+                     Tok::LParen => depth += 1,
+                     Tok::RParen => {
+                         depth -= 1;
+                         if depth == 0 {
+                             ahead += 1;
+                             break;
+                         }
+                     }
+-                    Tok::Eof => return None,
++                     /* ~ changed by cargo-mutants ~ */
+                     _ => {}
+                 }
+                 ahead += 1;
+             }
+         }
+         if !matches!(self.peek_at(ahead), Tok::ColonColon) {
+             return None;
+         }

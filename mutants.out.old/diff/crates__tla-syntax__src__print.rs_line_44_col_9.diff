@@ -1,0 +1,26 @@
+--- crates/tla-syntax/src/print.rs
++++ delete match arm Expr::Quant{..} | Expr::Choose{..} | Expr::Let{..} | Expr::If{..} | Expr::Case{..} | Expr::Lambda{..} in precedence
+@@ -36,22 +36,17 @@
+     }
+ }
+ 
+ fn precedence(e: &Expr) -> u8 {
+     match e {
+         Expr::Binary(op, ..) => op.infix_prec().unwrap_or(TRAILING),
+         Expr::Unary(op, _) if op.is_postfix() => ATOM,
+         Expr::Unary(op, _) => op.prefix_prec().saturating_sub(1),
+-        Expr::Quant { .. }
+-        | Expr::Choose { .. }
+-        | Expr::Let { .. }
+-        | Expr::If { .. }
+-        | Expr::Case { .. }
+-        | Expr::Lambda { .. } => TRAILING,
++         /* ~ changed by cargo-mutants ~ */
+         _ => ATOM,
+     }
+ }
+ 
+ fn write(e: &Expr, min: u8, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+     if precedence(e) < min {
+         write!(f, "(")?;
+         write(e, TRAILING, f)?;

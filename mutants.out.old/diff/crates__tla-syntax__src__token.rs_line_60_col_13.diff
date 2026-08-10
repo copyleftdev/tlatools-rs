@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "TRUE" in Kw::lookup
+@@ -52,17 +52,17 @@
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+             "LAMBDA" => Self::Lambda,
+             "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+-            "TRUE" => Self::True,
++             /* ~ changed by cargo-mutants ~ */
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+             "SUBSET" => Self::Subset,
+             "UNION" => Self::Union,
+             "ENABLED" => Self::Enabled,
+             "UNCHANGED" => Self::Unchanged,
+             _ => return None,
+         })

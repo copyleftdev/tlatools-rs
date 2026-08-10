@@ -1,0 +1,28 @@
+--- crates/tla-eval/src/builtin.rs
++++ delete match arm "Tail" in call
+@@ -37,24 +37,17 @@
+         }
+         "Head" => {
+             arity(1)?;
+             seq(&args[0], name)?
+                 .first()
+                 .cloned()
+                 .ok_or_else(|| Error::Type("Head of an empty sequence".to_string()))
+         }
+-        "Tail" => {
+-            arity(1)?;
+-            let s = seq(&args[0], name)?;
+-            if s.is_empty() {
+-                return type_error("Tail of an empty sequence");
+-            }
+-            Ok(Value::Seq(s[1..].to_vec()))
+-        }
++         /* ~ changed by cargo-mutants ~ */
+         "Append" => {
+             arity(2)?;
+             let mut s = seq(&args[0], name)?.to_vec();
+             s.push(args[1].clone());
+             Ok(Value::Seq(s))
+         }
+         "SubSeq" => {
+             arity(3)?;

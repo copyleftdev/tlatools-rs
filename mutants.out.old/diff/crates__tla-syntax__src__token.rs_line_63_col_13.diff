@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "SUBSET" in Kw::lookup
+@@ -55,17 +55,17 @@
+             "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+-            "SUBSET" => Self::Subset,
++             /* ~ changed by cargo-mutants ~ */
+             "UNION" => Self::Union,
+             "ENABLED" => Self::Enabled,
+             "UNCHANGED" => Self::Unchanged,
+             _ => return None,
+         })
+     }
+ }
+ 

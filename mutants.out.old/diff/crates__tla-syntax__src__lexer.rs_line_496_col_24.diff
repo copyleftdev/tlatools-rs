@@ -1,0 +1,16 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace + with - in Lexer::scan_backslash
+@@ -488,12 +488,12 @@
+             "E" | "exists" => Op::Exists,
+             "AA" => Op::TemporalForall,
+             "EE" => Op::TemporalExists,
+             _ => match token::user_operator(&format!("\\{name}")) {
+                 Some(op) => op,
+                 None => return Err(self.err(format!("unknown operator `\\{name}`"))),
+             },
+         };
+-        self.advance(1 + name.len());
++        self.advance(1 - /* ~ changed by cargo-mutants ~ */ name.len());
+         Ok(Tok::Op(op))
+     }
+ }

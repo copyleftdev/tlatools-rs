@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ replace Op::is_postfix -> bool with true
+@@ -236,17 +236,17 @@
+             }
+             _ => return None,
+         })
+     }
+ 
+     /// `s^+`, `s^*` and `s^#` follow their operand rather than sitting
+     /// between two, so they are never infix.
+     pub fn is_postfix(self) -> bool {
+-        matches!(self, Self::User("^+" | "^*" | "^#"))
++        true /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn is_right_assoc(self) -> bool {
+         matches!(self, Self::Implies | Self::Pow)
+     }
+ 
+     /// How the operator is written. Where TLA+ offers several spellings the
+     /// ASCII one is chosen, so printed output can be re-read by the parser.

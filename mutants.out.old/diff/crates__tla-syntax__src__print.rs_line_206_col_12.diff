@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/print.rs
++++ delete ! in <impl fmt::Display for Def>::fmt
+@@ -198,17 +198,17 @@
+             write!(f, "{kind}_{subscript}({action})")
+         }
+     }
+ }
+ 
+ impl fmt::Display for Def {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         f.write_str(&self.name)?;
+-        if !self.params.is_empty() {
++        if  /* ~ changed by cargo-mutants ~ */self.params.is_empty() {
+             write!(f, "({})", params_list(&self.params))?;
+         }
+         write!(f, " == {}", self.body)
+     }
+ }
+ 
+ impl fmt::Display for Param {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

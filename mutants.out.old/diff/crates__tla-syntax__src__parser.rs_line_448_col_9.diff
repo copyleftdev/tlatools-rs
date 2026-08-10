@@ -1,0 +1,34 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok((String::new(), vec![]))
+@@ -440,30 +440,17 @@
+                 }
+             }
+             self.expect(&Tok::RParen)?;
+         }
+         Ok(Param { name, arity })
+     }
+ 
+     fn instance_tail(&mut self) -> Result<(String, Vec<(String, Expr)>)> {
+-        self.expect(&Tok::Kw(Kw::Instance))?;
+-        let module = self.expect_ident()?;
+-        let mut subs = Vec::new();
+-        if self.eat(&Tok::Kw(Kw::With)) {
+-            loop {
+-                let name = self.expect_ident()?;
+-                self.expect(&Tok::Gets)?;
+-                subs.push((name, self.expr(0)?));
+-                if !self.eat(&Tok::Comma) {
+-                    break;
+-                }
+-            }
+-        }
+-        Ok((module, subs))
++        Ok((String::new(), vec![])) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     // ------------------------------------------------------------ expression
+ 
+     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
+         // A bulleted list is an operand, not a whole expression: after
+         //
+         //     /\ TypeOK

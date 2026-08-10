@@ -19,9 +19,25 @@ pub fn parse_expression(src: &str) -> Result<Expr> {
     }
 }
 
+/// How deeply expressions may nest.
+///
+/// The parser descends recursively, so without a bound a file of enough open
+/// brackets exhausts the stack, and a parser that aborts the process on bad
+/// input is worse than one that rejects it.
+///
+/// The figure is measured rather than guessed, by `examples/depth.rs`. Across
+/// the 432 modules of the public corpus the deepest expression nests 24. On a
+/// 2 MiB stack — what a spawned thread gets — an unoptimised build reaches
+/// 116 before the stack runs out; an optimised one reaches far more, and the
+/// smaller number is the one that has to be respected. Sixty-four sits at
+/// nearly three times what real specifications ask for and a little over half
+/// of what the tightest build can carry.
+const MAX_NESTING: usize = 64;
+
 struct Parser {
     toks: Vec<Token>,
     pos: usize,
+    depth: usize,
     /// Column fences from enclosing junction lists. A token at or left of the
     /// innermost fence ends the current conjunct; a bracketed context pushes 0
     /// to suspend the rule while inside it.
@@ -43,6 +59,7 @@ impl Parser {
         Self {
             toks,
             pos: 0,
+            depth: 0,
             fences: Vec::new(),
         }
     }
@@ -315,9 +332,11 @@ impl Parser {
     fn recover<T>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Option<T> {
         let mark = self.pos;
         let fences = self.fences.len();
+        let depth = self.depth;
         let Ok(value) = f(self) else {
             self.pos = mark;
             self.fences.truncate(fences);
+            self.depth = depth;
             self.skip_to_unit();
             return None;
         };
@@ -464,6 +483,16 @@ impl Parser {
     // ------------------------------------------------------------ expression
 
     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
+        if self.depth >= MAX_NESTING {
+            return Err(self.err(format!("expressions nest more than {MAX_NESTING} deep")));
+        }
+        self.depth += 1;
+        let parsed = self.expr_inner(min_prec);
+        self.depth -= 1;
+        parsed
+    }
+
+    fn expr_inner(&mut self, min_prec: u8) -> Result<Expr> {
         // A bulleted list is an operand, not a whole expression: after
         //
         //     /\ TypeOK

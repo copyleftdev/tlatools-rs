@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ delete match arm (Value::Seq(x), Value::Seq(y)) in combine
+@@ -767,17 +767,17 @@
+             for x in set_of(&a)? {
+                 for y in set_of(&b)? {
+                     out.insert(Value::Seq(vec![x.clone(), y.clone()]));
+                 }
+             }
+             Ok(Value::Set(out))
+         }
+         Op::Concat => match (&a, &b) {
+-            (Value::Seq(x), Value::Seq(y)) => Ok(Value::Seq(x.iter().chain(y).cloned().collect())),
++             /* ~ changed by cargo-mutants ~ */
+             _ => type_error(format!("\\o expects two sequences, got {a} and {b}")),
+         },
+         Op::OneTo => Ok(Value::function(BTreeMap::from([(a, b)]))),
+         Op::AtAt => {
+             let mut left = a
+                 .entries()
+                 .ok_or_else(|| Error::Type(format!("@@ expects functions, got {a}")))?;
+             let right = b

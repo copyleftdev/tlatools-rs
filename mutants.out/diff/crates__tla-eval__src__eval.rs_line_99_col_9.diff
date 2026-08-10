@@ -1,0 +1,22 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::step_allowed -> Result<bool> with Ok(true)
+@@ -91,18 +91,17 @@
+     /// Does the named state predicate hold at `state`?
+     pub fn holds_at(&self, name: &str, state: &State) -> Result<bool> {
+         let body = self.body_of(name)?;
+         self.eval_bool(body, &mut self.ctx(state, None))
+     }
+ 
+     /// Is `from -> to` a step the named action permits?
+     pub fn step_allowed(&self, name: &str, from: &State, to: &State) -> Result<bool> {
+-        let body = self.body_of(name)?;
+-        self.eval_bool(body, &mut self.ctx(from, Some(to)))
++        Ok(true) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn value_of(&self, name: &str, state: &State) -> Result<Value> {
+         let body = self.body_of(name)?;
+         self.eval(body, &mut self.ctx(state, None))
+     }
+ 
+     pub fn eval_at(&self, expr: &'m Expr, from: &State, to: Option<&State>) -> Result<Value> {

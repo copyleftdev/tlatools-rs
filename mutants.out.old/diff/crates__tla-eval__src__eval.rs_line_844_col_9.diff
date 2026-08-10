@@ -1,0 +1,29 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::fn_def -> Result<Value> with Ok(Default::default())
+@@ -836,25 +836,17 @@
+                     })
+                 })
+                 .collect();
+         }
+         Ok(Value::set(out.into_iter().map(Value::Record)))
+     }
+ 
+     fn fn_def(&self, bounds: &'m [Bound], body: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        let mut entries = BTreeMap::new();
+-        for binding in self.expand(bounds, ctx)? {
+-            let key = element_of(&binding);
+-            let restore = push(ctx, &binding);
+-            let v = self.eval(body, ctx);
+-            ctx.locals.truncate(restore);
+-            entries.insert(key, v?);
+-        }
+-        Ok(Value::function(entries))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn fn_set(&self, domain: &'m Expr, range: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         let keys = elements(&self.eval(domain, ctx)?)?;
+         let range = self.eval(range, ctx)?;
+         let values = elements(&range)?;
+         let count = values
+             .len()

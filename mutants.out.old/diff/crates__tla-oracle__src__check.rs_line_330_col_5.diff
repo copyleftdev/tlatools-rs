@@ -1,0 +1,28 @@
+--- crates/tla-oracle/src/check.rs
++++ replace decode_constants -> Result<BTreeMap<String, Value>, String> with Ok(BTreeMap::new())
+@@ -322,24 +322,17 @@
+         EvalError::Type(_) => Status::Contract,
+         _ => Status::Error,
+     }
+ }
+ 
+ fn decode_constants(
+     given: &BTreeMap<String, ConstantSpec>,
+ ) -> Result<BTreeMap<String, Value>, String> {
+-    given
+-        .iter()
+-        .map(|(name, spec)| {
+-            decode(&spec.value, &spec.schema, name)
+-                .map(|v| (name.clone(), v))
+-                .map_err(|e| format!("constant {e}"))
+-        })
+-        .collect()
++    Ok(BTreeMap::new()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn decode_states(job: &Job) -> Result<Vec<State>, String> {
+     job.states
+         .iter()
+         .enumerate()
+         .map(|(i, json)| {
+             decode_state(json, &job.schema, &format!("state[{i}]")).map_err(|e| e.to_string())

@@ -1,0 +1,63 @@
+
+*** crates/tla-syntax/src/parser.rs:316:9: replace Parser::recover -> Option<T> with Some(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::recover -> Option<T> with Some(Default::default())
+@@ -308,25 +308,17 @@
+         if matches!(self.peek(), Tok::Ident(_)) && matches!(self.peek_at(1), Tok::DefEq) {
+             self.advance();
+             self.advance();
+         }
+     }
+ 
+     /// Try something, and rewind rather than fail if it does not work.
+     fn recover<T>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Option<T> {
+-        let mark = self.pos;
+-        let fences = self.fences.len();
+-        let Ok(value) = f(self) else {
+-            self.pos = mark;
+-            self.fences.truncate(fences);
+-            self.skip_to_unit();
+-            return None;
+-        };
+-        Some(value)
++        Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Skip a TLAPS proof.
+     ///
+     /// Proofs are checked by a prover, not by an evaluator, so this crate
+     /// recognises them in order to get past them. A proof runs until the next
+     /// token that can only begin a new module unit.
+     fn skip_proof(&mut self) {
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786401729.853274162s, 392024006ns after last build at 1786401729.461250156s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
+error[E0277]: the trait bound `T: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:316:14
+    |
+316 |         Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+    |              ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `T`
+    |
+help: consider restricting type parameter `T` with trait `Default`
+    |
+315 |     fn recover<T: std::default::Default>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Option<T> {
+    |                 +++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

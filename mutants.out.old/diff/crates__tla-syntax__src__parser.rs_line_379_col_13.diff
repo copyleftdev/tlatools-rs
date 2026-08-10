@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Ident(_) in Parser::at_unit_start
+@@ -371,20 +371,17 @@
+                 Kw::Variable
+                 | Kw::Constant
+                 | Kw::Assume
+                 | Kw::Theorem
+                 | Kw::Local
+                 | Kw::Instance
+                 | Kw::Recursive,
+             ) => true,
+-            Tok::Ident(_) => matches!(
+-                self.peek_at(1),
+-                Tok::DefEq | Tok::LParen | Tok::LBrack | Tok::Op(_)
+-            ),
++             /* ~ changed by cargo-mutants ~ */
+             _ => false,
+         }
+     }
+ 
+     fn decl_list(&mut self) -> Result<Vec<Decl>> {
+         let mut out = vec![self.decl()?];
+         while self.eat(&Tok::Comma) {
+             out.push(self.decl()?);

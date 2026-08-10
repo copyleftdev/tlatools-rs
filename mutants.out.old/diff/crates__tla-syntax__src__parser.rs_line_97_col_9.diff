@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::err -> Error with Default::default()
+@@ -89,17 +89,17 @@
+         let at = self.pos;
+         match self.advance() {
+             Tok::Ident(name) => Ok(name),
+             other => Err(self.err_at(at, format!("expected an identifier, found {other:?}"))),
+         }
+     }
+ 
+     fn err(&self, message: impl Into<String>) -> Error {
+-        self.err_at(self.pos, message)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Errors point at the token that caused them, which is not the current
+     /// one once it has been consumed.
+     fn err_at(&self, at: usize, message: impl Into<String>) -> Error {
+         let t = &self.toks[at];
+         Error::parse(message, t.line, t.col)
+     }

@@ -1,0 +1,99 @@
+--- crates/tla-oracle/src/check.rs
++++ replace check -> Report with Default::default()
+@@ -138,95 +138,17 @@
+             outcome: None,
+             blocked: Vec::new(),
+             stats,
+         }
+     }
+ }
+ 
+ pub fn check(job: &Job) -> Report {
+-    let mut stats = Stats {
+-        states: job.states.len(),
+-        edges: job.edges.len(),
+-        ..Stats::default()
+-    };
+-
+-    let spec = match Spec::parse(&job.spec) {
+-        Ok(s) => s,
+-        Err(e) => return Report::of(Status::Error, format!("specification: {e}"), stats),
+-    };
+-
+-    let constants = match decode_constants(&job.constants) {
+-        Ok(c) => c,
+-        Err(detail) => return Report::of(Status::Error, detail, stats),
+-    };
+-
+-    let states = match decode_states(job) {
+-        Ok(s) => s,
+-        Err(detail) => return Report::of(Status::Contract, detail, stats),
+-    };
+-    let Some(root) = states.first() else {
+-        return Report::of(
+-            Status::Contract,
+-            "the implementation reported no states at all",
+-            stats,
+-        );
+-    };
+-
+-    let outcomes = match parse_outcomes(job) {
+-        Ok(o) => o,
+-        Err(detail) => return Report::of(Status::Error, detail, stats),
+-    };
+-
+-    let evaluator = match Evaluator::new(&spec, constants.clone()) {
+-        Ok(e) => e,
+-        Err(e) => return Report::of(Status::Error, e.to_string(), stats),
+-    };
+-
+-    match evaluator.holds_at(&job.init_op, root) {
+-        Ok(true) => {}
+-        Ok(false) => {
+-            return Report::of(
+-                Status::Init,
+-                format!(
+-                    "the first state the implementation reports is not a legal initial \
+-                     state of the specification: {}",
+-                    render(root)
+-                ),
+-                stats,
+-            );
+-        }
+-        Err(e) => return Report::of(classify(&e), format!("{}: {e}", job.init_op), stats),
+-    }
+-
+-    if let Some(failure) = check_edges(job, &evaluator, &states, &mut stats) {
+-        return failure;
+-    }
+-
+-    if outcomes.is_empty() {
+-        return Report::of(Status::Pass, "all obligations discharged", stats);
+-    }
+-
+-    // `Reached` is what a coverage predicate quantifies over, and it behaves
+-    // exactly like a constant: fixed for the whole check, mentioning no
+-    // variable.
+-    let mut with_reached = constants;
+-    with_reached.insert(
+-        "Reached".to_string(),
+-        Value::set(states.iter().cloned().map(Value::Record)),
+-    );
+-    let coverage = match Evaluator::new(&spec, with_reached) {
+-        Ok(e) => e,
+-        Err(e) => return Report::of(Status::Error, e.to_string(), stats),
+-    };
+-    if let Some(failure) = check_outcomes(job, &coverage, &outcomes, &mut stats) {
+-        return failure;
+-    }
+-
+-    Report::of(Status::Pass, "all obligations discharged", stats)
++    Default::default() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn check_edges(
+     job: &Job,
+     evaluator: &Evaluator<'_>,
+     states: &[State],
+     stats: &mut Stats,
+ ) -> Option<Report> {

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace + with * in Lexer::scan_backslash
+@@ -452,17 +452,17 @@
+             .map_or_else(|| Err(self.err("stray `/`")), Ok)
+     }
+ 
+     fn scan_backslash(&mut self) -> Result<Tok> {
+         if self.starts_with("\\/") {
+             self.advance(2);
+             return Ok(Tok::Op(Op::Or));
+         }
+-        let start = self.pos + 1;
++        let start = self.pos * /* ~ changed by cargo-mutants ~ */ 1;
+         let mut end = start;
+         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {
+             end += 1;
+         }
+         if end == start {
+             self.bump();
+             return Ok(Tok::Op(Op::SetMinus));
+         }

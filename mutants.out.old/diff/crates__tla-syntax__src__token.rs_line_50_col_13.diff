@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "INSTANCE" in Kw::lookup
+@@ -42,17 +42,17 @@
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+             "ELSE" => Self::Else,
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+-            "INSTANCE" => Self::Instance,
++             /* ~ changed by cargo-mutants ~ */
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+             "LAMBDA" => Self::Lambda,
+             "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,

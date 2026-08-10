@@ -1,0 +1,29 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace render_call -> String with String::new()
+@@ -233,25 +233,17 @@
+             out.extend(conjuncts(rhs));
+             out
+         }
+         other => vec![other],
+     }
+ }
+ 
+ fn render_call(name: &str, params: &[Param], values: &[Value]) -> String {
+-    if params.is_empty() {
+-        return name.to_string();
+-    }
+-    let bindings: Vec<String> = params
+-        .iter()
+-        .zip(values)
+-        .map(|(param, value)| format!("{} = {value}", param.name))
+-        .collect();
+-    format!("{name}({})", bindings.join(", "))
++    String::new() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ const MAX_RENDERED: usize = 160;
+ 
+ fn truncate(text: &str) -> String {
+     if text.chars().count() <= MAX_RENDERED {
+         return text.to_string();
+     }

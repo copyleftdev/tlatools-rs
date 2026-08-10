@@ -5,6 +5,9 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+keywords = ["tla", "tlaplus", "parser", "formal-methods", "specification"]
+categories = ["development-tools", "parser-implementations"]
+readme = "../../README.md"
 
 [lints]
 workspace = true

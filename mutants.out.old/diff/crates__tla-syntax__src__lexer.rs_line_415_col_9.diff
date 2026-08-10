@@ -1,0 +1,34 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_lt -> Tok with Default::default()
+@@ -407,30 +407,17 @@
+                 return tok;
+             }
+         }
+         self.bump();
+         Tok::Op(Op::Minus)
+     }
+ 
+     fn scan_lt(&mut self) -> Tok {
+-        for (text, tok) in [
+-            ("<<", Tok::LTup),
+-            ("<=>", Tok::Op(Op::Equiv)),
+-            ("<=", Tok::Op(Op::Le)),
+-            ("<-", Tok::Gets),
+-            ("<>", Tok::Op(Op::Eventually)),
+-        ] {
+-            if self.starts_with(text) {
+-                self.advance(text.len());
+-                return tok;
+-            }
+-        }
+-        self.bump();
+-        Tok::Op(Op::Lt)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan_gt(&mut self) -> Tok {
+         for (text, tok) in [(">>", Tok::RTup), (">=", Tok::Op(Op::Ge))] {
+             if self.starts_with(text) {
+                 self.advance(text.len());
+                 return tok;
+             }

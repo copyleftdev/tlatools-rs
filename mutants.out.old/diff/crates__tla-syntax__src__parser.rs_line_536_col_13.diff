@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Kw(Kw::Subset) in Parser::prefix
+@@ -528,17 +528,17 @@
+                 return Ok(Expr::Quant {
+                     kind,
+                     bounds,
+                     body: Box::new(body),
+                 });
+             }
+             Tok::Op(o @ (Op::Not | Op::Always | Op::Eventually | Op::Minus)) => o,
+             Tok::Kw(Kw::Domain) => Op::Domain,
+-            Tok::Kw(Kw::Subset) => Op::Subset,
++             /* ~ changed by cargo-mutants ~ */
+             Tok::Kw(Kw::Union) => Op::BigUnion,
+             Tok::Kw(Kw::Enabled) => Op::Enabled,
+             Tok::Kw(Kw::Unchanged) => Op::Unchanged,
+             _ => return self.postfix(),
+         };
+         self.advance();
+         // Every prefix operator here binds tighter than `/\`, so `[][A]_v /\ B`
+         // is a conjunction of two formulas rather than `[]` over both.

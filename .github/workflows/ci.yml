@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+
+      - name: format
+        run: cargo fmt --all --check
+
+      - name: lint
+        run: cargo clippy --all-targets --all-features
+
+      - name: test
+        run: cargo test --all-features
+
+      - name: docs
+        run: cargo doc --no-deps --all-features
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: rustsec/audit-check@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  # The parser is measured against every public TLA+ specification. A drop in
+  # the count is a regression even when every test still passes.
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@v5
+        with:
+          repository: tlaplus/Examples
+          path: corpus
+      - name: parse the public corpus
+        run: |
+          read -r parsed _ total < <(
+            cargo run --release --quiet --example audit -p tla-syntax -- \
+              $(find corpus -name '*.tla') | head -1 | sed 's/parsed //'
+          )
+          echo "parsed $parsed of $total"
+          test "$parsed" -ge 415
+
+  mutants:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-mutants
+      - name: mutation coverage of the diff
+        run: cargo mutants --in-diff <(git diff origin/main...HEAD) -j 2

@@ -1,0 +1,26 @@
+--- crates/tla-eval/src/builtin.rs
++++ delete match arm "Seq" in call
+@@ -62,22 +62,17 @@
+             let lo = int(&args[1], name)?.max(1);
+             let hi = int(&args[2], name)?.min(count(s.len()));
+             if hi < lo {
+                 return Ok(Value::Seq(Vec::new()));
+             }
+             let (lo, hi) = index_range(lo, hi);
+             Ok(Value::Seq(s[lo..hi].to_vec()))
+         }
+-        "Seq" => {
+-            arity(1)?;
+-            Ok(Value::Infinite(Infinite::Sequences(Box::new(
+-                args[0].clone(),
+-            ))))
+-        }
++         /* ~ changed by cargo-mutants ~ */
+         "Assert" => {
+             arity(2)?;
+             if args[0] == Value::Bool(true) {
+                 Ok(Value::Bool(true))
+             } else {
+                 Err(Error::Malformed(format!("assertion failed: {}", args[1])))
+             }
+         }
