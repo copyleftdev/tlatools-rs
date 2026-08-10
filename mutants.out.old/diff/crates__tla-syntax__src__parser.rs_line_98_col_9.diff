@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::expect -> Result<()> with Ok(())
+@@ -90,21 +90,17 @@
+             self.advance();
+             true
+         } else {
+             false
+         }
+     }
+ 
+     fn expect(&mut self, tok: &Tok) -> Result<()> {
+-        if self.eat(tok) {
+-            Ok(())
+-        } else {
+-            Err(self.err(format!("expected {tok:?}, found {:?}", self.peek())))
+-        }
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn expect_ident(&mut self) -> Result<String> {
+         let at = self.pos;
+         match self.advance() {
+             Tok::Ident(name) => Ok(name),
+             other => Err(self.err_at(at, format!("expected an identifier, found {other:?}"))),
+         }

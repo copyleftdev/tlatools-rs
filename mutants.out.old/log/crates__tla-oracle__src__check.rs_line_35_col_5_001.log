@@ -26,128 +26,116 @@
 
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-oracle@0.1.0
-   Compiling proc-macro2 v1.0.107
-   Compiling quote v1.0.47
-   Compiling unicode-ident v1.0.24
-   Compiling serde_core v1.0.229
-   Compiling zmij v1.0.23
-   Compiling serde_json v1.0.151
-   Compiling serde v1.0.229
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
-   Compiling itoa v1.0.18
-   Compiling memchr v2.8.3
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "nightly", "proc-macro", "span-locations"))' -C metadata=31b268bb3ea9b5b3 -C extra-filename=-b687888273c8b209 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/proc-macro2-b687888273c8b209 -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "proc-macro"))' -C metadata=206a3511bd93c406 -C extra-filename=-c641ea97ba341343 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/quote-c641ea97ba341343 -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name unicode_ident --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/unicode-ident-1.0.24/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=6c21868395ec9d99 -C extra-filename=-8443eb632a3fbe4c --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="result"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "rc", "result", "std", "unstable"))' -C metadata=3ef7fcea9d10924b -C extra-filename=-f2ae637853f690ee --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde_core-f2ae637853f690ee -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("no-panic"))' -C metadata=582d6faca25d0f35 -C extra-filename=-37c7a7b83a60607f --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/zmij-37c7a7b83a60607f -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "arbitrary_precision", "default", "float_roundtrip", "indexmap", "preserve_order", "raw_value", "std", "unbounded_depth"))' -C metadata=ad970abfe5cecf68 -C extra-filename=-2c0a994303fe8e5c --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde_json-2c0a994303fe8e5c -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name build_script_build --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no --cfg 'feature="default"' --cfg 'feature="derive"' --cfg 'feature="serde_derive"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "derive", "rc", "serde_derive", "std", "unstable"))' -C metadata=43076d16803708eb -C extra-filename=-047fb28ec31c7b7d --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde-047fb28ec31c7b7d -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-       Dirty tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval): the file `crates/tla-eval/src/value.rs` has changed (1786401640.394796121s, 1s after last build at 1786401639.557744864s)
-   Compiling tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name itoa --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/itoa-1.0.18/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("no-panic"))' -C metadata=8a12853f95eb01f2 -C extra-filename=-e1cf0ba11d02098b --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name memchr --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/memchr-2.8.3/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="alloc"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "core", "default", "libc", "logging", "rustc-dep-of-std", "std", "use_std"))' -C metadata=c9588ceaf7ce9e57 -C extra-filename=-0b319444e8f73b56 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde_json-2c0a994303fe8e5c/build-script-build`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/zmij-37c7a7b83a60607f/build-script-build`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/quote-c641ea97ba341343/build-script-build`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name zmij --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zmij-1.0.23/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("no-panic"))' -C metadata=369b69d3162cd330 -C extra-filename=-fe95c7ae1d0a6e3a --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow --check-cfg 'cfg(exhaustive)' --check-cfg 'cfg(opt_level, values("s"))' --check-cfg 'cfg(zmij_no_select_unpredictable)'`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde-047fb28ec31c7b7d/build-script-build`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/proc-macro2-b687888273c8b209/build-script-build`
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/build/serde_core-f2ae637853f690ee/build-script-build`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name serde_core --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="result"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "rc", "result", "std", "unstable"))' -C metadata=9a461d4d32c3ee37 -C extra-filename=-f5e46e0723bd319e --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --cap-lints allow --check-cfg 'cfg(if_docsrs_then_no_serde_core)' --check-cfg 'cfg(no_core_cstr)' --check-cfg 'cfg(no_core_error)' --check-cfg 'cfg(no_core_net)' --check-cfg 'cfg(no_core_num_saturating)' --check-cfg 'cfg(no_diagnostic_namespace)' --check-cfg 'cfg(no_serde_derive)' --check-cfg 'cfg(no_std_atomic)' --check-cfg 'cfg(no_std_atomic64)' --check-cfg 'cfg(no_target_has_atomic)'`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name proc_macro2 --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/proc-macro2-1.0.107/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "nightly", "proc-macro", "span-locations"))' -C metadata=e1010b7cdbc1df2f -C extra-filename=-404452a690452e61 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern unicode_ident=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libunicode_ident-8443eb632a3fbe4c.rmeta --cap-lints allow --cfg wrap_proc_macro --cfg proc_macro_span_location --cfg proc_macro_span_file --check-cfg 'cfg(fuzzing)' --check-cfg 'cfg(no_is_available)' --check-cfg 'cfg(no_literal_byte_character)' --check-cfg 'cfg(no_literal_c_string)' --check-cfg 'cfg(no_source_text)' --check-cfg 'cfg(proc_macro_span)' --check-cfg 'cfg(proc_macro_span_file)' --check-cfg 'cfg(proc_macro_span_location)' --check-cfg 'cfg(procmacro2_backtrace)' --check-cfg 'cfg(procmacro2_build_probe)' --check-cfg 'cfg(procmacro2_nightly_testing)' --check-cfg 'cfg(procmacro2_semver_exempt)' --check-cfg 'cfg(randomize_layout)' --check-cfg 'cfg(span_locations)' --check-cfg 'cfg(super_unstable)' --check-cfg 'cfg(wrap_proc_macro)'`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name quote --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/quote-1.0.47/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "proc-macro"))' -C metadata=9149b173c437fbc5 -C extra-filename=-1f1b0729b559a784 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern proc_macro2=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libproc_macro2-404452a690452e61.rmeta --cap-lints allow --check-cfg 'cfg(no_diagnostic_namespace)'`
-   Compiling syn v3.0.3
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name syn --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/syn-3.0.3/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no --cfg 'feature="clone-impls"' --cfg 'feature="derive"' --cfg 'feature="parsing"' --cfg 'feature="printing"' --cfg 'feature="proc-macro"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("clone-impls", "default", "derive", "extra-traits", "fold", "full", "parsing", "printing", "proc-macro", "test", "visit", "visit-mut"))' -C metadata=38cdfe86e0af2d6a -C extra-filename=-dee893f603239a67 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern proc_macro2=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libproc_macro2-404452a690452e61.rmeta --extern quote=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libquote-1f1b0729b559a784.rmeta --extern unicode_ident=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libunicode_ident-8443eb632a3fbe4c.rmeta --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name serde_json --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "arbitrary_precision", "default", "float_roundtrip", "indexmap", "preserve_order", "raw_value", "std", "unbounded_depth"))' -C metadata=247ce14e3654c677 -C extra-filename=-1f53e1b7a8e26068 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern itoa=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libitoa-e1cf0ba11d02098b.rmeta --extern memchr=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libmemchr-0b319444e8f73b56.rmeta --extern serde_core=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_core-f5e46e0723bd319e.rmeta --extern zmij=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libzmij-fe95c7ae1d0a6e3a.rmeta --cap-lints allow --cfg 'fast_arithmetic="64"' --check-cfg 'cfg(fast_arithmetic, values("32", "64"))'`
-   Compiling serde_derive v1.0.229
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name serde_derive --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_derive-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type proc-macro --emit=dep-info,link -C prefer-dynamic -C embed-bitcode=no --cfg 'feature="default"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "deserialize_in_place"))' -C metadata=84e93034a63433a9 -C extra-filename=-ff1f26ba90699cc7 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern proc_macro2=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libproc_macro2-404452a690452e61.rlib --extern quote=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libquote-1f1b0729b559a784.rlib --extern syn=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libsyn-dee893f603239a67.rlib --extern proc_macro --cap-lints allow`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name serde --edition=2021 /home/ops/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.229/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --cfg 'feature="default"' --cfg 'feature="derive"' --cfg 'feature="serde_derive"' --cfg 'feature="std"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("alloc", "default", "derive", "rc", "serde_derive", "std", "unstable"))' -C metadata=49c143e8fe1212b2 -C extra-filename=-50e58405f4925bd5 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern serde_core=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_core-f5e46e0723bd319e.rmeta --extern serde_derive=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_derive-ff1f26ba90699cc7.so --cap-lints allow --cfg if_docsrs_then_no_serde_core --check-cfg 'cfg(feature, values("result"))' --check-cfg 'cfg(if_docsrs_then_no_serde_core)' --check-cfg 'cfg(no_core_cstr)' --check-cfg 'cfg(no_core_error)' --check-cfg 'cfg(no_core_net)' --check-cfg 'cfg(no_core_num_saturating)' --check-cfg 'cfg(no_diagnostic_namespace)' --check-cfg 'cfg(no_serde_derive)' --check-cfg 'cfg(no_std_atomic)' --check-cfg 'cfg(no_std_atomic64)' --check-cfg 'cfg(no_target_has_atomic)'`
-   Compiling tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-oracle)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name jobs --edition=2024 crates/tla-oracle/tests/jobs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c96bd47a0a5f8df1 -C extra-filename=-9836ff370b14868d --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_oracle=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_oracle-05e96871ddace9ec.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 3.60s
-  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
-  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/jobs-9836ff370b14868d`
+       Fresh unicode-ident v1.0.24
+       Fresh proc-macro2 v1.0.107
+       Fresh itoa v1.0.18
+       Fresh memchr v2.8.3
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
+       Fresh quote v1.0.47
+       Fresh serde_core v1.0.229
+       Fresh zmij v1.0.23
+       Fresh syn v3.0.3
+       Fresh serde_json v1.0.151
+       Fresh serde_derive v1.0.229
+       Fresh serde v1.0.229
+       Dirty tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle): the file `crates/tla-oracle/src/check.rs` has changed (1786402194.716740420s, 347907407ns after last build at 1786402194.368833013s)
+   Compiling tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name jobs --edition=2024 crates/tla-oracle/tests/jobs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=c96bd47a0a5f8df1 -C extra-filename=-9836ff370b14868d --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_oracle=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_oracle-05e96871ddace9ec.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.28s
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/jobs-9836ff370b14868d`
 
 *** result: Success
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-oracle@0.1.0
        Fresh unicode-ident v1.0.24
-       Fresh proc-macro2 v1.0.107
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
        Fresh memchr v2.8.3
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
+       Fresh proc-macro2 v1.0.107
        Fresh itoa v1.0.18
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
        Fresh quote v1.0.47
-       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
        Fresh serde_core v1.0.229
-       Fresh syn v3.0.3
        Fresh zmij v1.0.23
-       Fresh serde_derive v1.0.229
+       Fresh syn v3.0.3
        Fresh serde_json v1.0.151
+       Fresh serde_derive v1.0.229
        Fresh serde v1.0.229
-       Fresh tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-oracle)
+       Fresh tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-oracle)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
+     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_oracle-1cfd7f127e84a435`
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/jobs-9836ff370b14868d`
+     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/jobs-9836ff370b14868d`
 
-running 13 tests
+running 20 tests
 test a_broken_specification_is_an_error_not_a_verdict ... ok
+test a_boolean_is_not_accepted_where_an_integer_is_wanted ... ok
 test a_constant_without_a_value_is_an_error ... ok
-test duplicate_members_of_a_set_are_rejected ... ok
-test a_legal_walk_passes ... FAILED
+test a_state_the_specification_cannot_read_is_a_contract_violation ... ok
 test a_missing_variable_is_a_contract_violation ... ok
 test a_passing_check_carries_no_diagnosis ... ok
+test a_legal_walk_passes ... FAILED
 test a_state_of_the_wrong_shape_is_a_contract_violation ... ok
-test a_refinement_failure_names_the_action_that_came_closest ... FAILED
-test an_illegal_root_is_an_init_failure ... ok
 test a_reachable_outcome_passes ... FAILED
+test a_refinement_failure_names_the_action_that_came_closest ... FAILED
+test duplicate_members_of_a_set_are_rejected ... ok
+test an_edge_pointing_outside_the_graph_is_an_error ... ok
+test an_illegal_edge_is_named ... FAILED
+test an_illegal_root_is_an_init_failure ... ok
+test an_outcome_that_is_not_a_predicate_is_an_error ... ok
+test an_illegal_root_is_quoted_in_the_report ... ok
+test an_unparsable_outcome_names_itself ... ok
+test the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept ... FAILED
 test the_status_names_match_the_harness_vocabulary ... ok
 test an_unreachable_outcome_is_a_coverage_failure ... FAILED
-test an_illegal_edge_is_named ... FAILED
 
 failures:
 
 ---- a_legal_walk_passes stdout ----
 
-thread 'a_legal_walk_passes' (4142943) panicked at crates/tla-oracle/tests/jobs.rs:45:5:
+thread 'a_legal_walk_passes' (295127) panicked at crates/tla-oracle/tests/jobs.rs:45:5:
 assertion `left == right` failed: xyzzy: `xyzzy` is not defined
   left: Error
  right: Pass
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
----- a_refinement_failure_names_the_action_that_came_closest stdout ----
-
-thread 'a_refinement_failure_names_the_action_that_came_closest' (4142947) panicked at crates/tla-oracle/tests/jobs.rs:173:42:
-an action came close
-
 ---- a_reachable_outcome_passes stdout ----
 
-thread 'a_reachable_outcome_passes' (4142946) panicked at crates/tla-oracle/tests/jobs.rs:88:5:
+thread 'a_reachable_outcome_passes' (295130) panicked at crates/tla-oracle/tests/jobs.rs:88:5:
 assertion `left == right` failed: xyzzy: `xyzzy` is not defined
   left: Error
  right: Pass
 
----- an_unreachable_outcome_is_a_coverage_failure stdout ----
+---- a_refinement_failure_names_the_action_that_came_closest stdout ----
 
-thread 'an_unreachable_outcome_is_a_coverage_failure' (4142951) panicked at crates/tla-oracle/tests/jobs.rs:80:5:
-assertion `left == right` failed: xyzzy: `xyzzy` is not defined
-  left: Error
- right: Coverage
+thread 'a_refinement_failure_names_the_action_that_came_closest' (295131) panicked at crates/tla-oracle/tests/jobs.rs:173:42:
+an action came close
 
 ---- an_illegal_edge_is_named stdout ----
 
-thread 'an_illegal_edge_is_named' (4142949) panicked at crates/tla-oracle/tests/jobs.rs:69:5:
+thread 'an_illegal_edge_is_named' (295135) panicked at crates/tla-oracle/tests/jobs.rs:69:5:
 assertion `left == right` failed: xyzzy: `xyzzy` is not defined
   left: Error
  right: Refines
+
+---- the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept stdout ----
+
+thread 'the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept' (295143) panicked at crates/tla-oracle/tests/jobs.rs:198:5:
+assertion failed: passing.passed()
+
+---- an_unreachable_outcome_is_a_coverage_failure stdout ----
+
+thread 'an_unreachable_outcome_is_a_coverage_failure' (295140) panicked at crates/tla-oracle/tests/jobs.rs:80:5:
+assertion `left == right` failed: xyzzy: `xyzzy` is not defined
+  left: Error
+ right: Coverage
 
 
 failures:
@@ -156,8 +144,9 @@ failures:
     a_refinement_failure_names_the_action_that_came_closest
     an_illegal_edge_is_named
     an_unreachable_outcome_is_a_coverage_failure
+    the_verdict_is_readable_as_a_boolean_and_the_counts_are_kept
 
-test result: FAILED. 8 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: FAILED. 14 passed; 6 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 error: test failed, to rerun pass `-p tla-oracle --test jobs`
 

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Op::Exists in Parser::prefix
+@@ -542,17 +542,17 @@
+         if let Some(labelled) = self.skip_expression_label() {
+             return labelled;
+         }
+         let op = match *self.peek() {
+             Tok::Op(o @ (Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) => {
+                 self.advance();
+                 let kind = match o {
+                     Op::Forall => QuantKind::Forall,
+-                    Op::Exists => QuantKind::Exists,
++                     /* ~ changed by cargo-mutants ~ */
+                     Op::TemporalForall => QuantKind::TemporalForall,
+                     _ => QuantKind::TemporalExists,
+                 };
+                 let bounds = self.bounds(&Tok::Colon)?;
+                 self.expect(&Tok::Colon)?;
+                 let body = self.expr(0)?;
+                 return Ok(Expr::Quant {
+                     kind,

@@ -24,15 +24,18 @@ fn definition(body: &str, name: &str) -> Expr {
 /// characters the language does not allow loose.
 #[test]
 fn prose_outside_the_module_is_not_lexed() {
+    // The prose contains an unterminated quote and a character the language
+    // has no token for, so lexing it at all would fail rather than merely
+    // produce odd tokens.
     let src = "\
-Notes: see http://example.com/a/b -- costs $5 & rising.
+Notes: this spec is Bob\u{27}s; see \u{201c}the paper\u{201d} for why.
+It costs ~5\u{20ac} to run \u{2014} worth it.
 
 ---- MODULE T ----
 Foo == 1
 ====================
 
-$ tlc T.tla -config T.cfg
-Ran 100% clean & finished.";
+Afterwards: \u{201c}done\u{201d}, said Bob\u{27}s colleague.";
     let m = parse_module(src).expect("the prose is ignored");
     assert_eq!(m.name, "T");
     assert_eq!(m.units.len(), 1);

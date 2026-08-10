@@ -1,350 +1,57 @@
 
-*** crates/tla-syntax/src/parser.rs:72:9: replace Parser::eat -> bool with true
+*** crates/tla-syntax/src/parser.rs:72:9: replace Parser::peek_at -> &Tok with Box::leak(Box::new(Default::default()))
 
 *** mutation diff:
 --- crates/tla-syntax/src/parser.rs
-+++ replace Parser::eat -> bool with true
-@@ -64,22 +64,17 @@
++++ replace Parser::peek_at -> &Tok with Box::leak(Box::new(Default::default()))
+@@ -64,18 +64,17 @@
+         }
+     }
+ 
+     fn peek(&self) -> &Tok {
+         &self.toks[self.pos].tok
+     }
+ 
+     fn peek_at(&self, offset: usize) -> &Tok {
+-        let i = (self.pos + offset).min(self.toks.len() - 1);
+-        &self.toks[i].tok
++        Box::leak(Box::new(Default::default())) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn col(&self) -> u32 {
+         self.toks[self.pos].col
+     }
+ 
+     fn advance(&mut self) -> Tok {
          let t = self.toks[self.pos].tok.clone();
-         if self.pos + 1 < self.toks.len() {
-             self.pos += 1;
-         }
-         t
-     }
- 
-     fn eat(&mut self, tok: &Tok) -> bool {
--        if self.peek() == tok {
--            self.advance();
--            true
--        } else {
--            false
--        }
-+        true /* ~ changed by cargo-mutants ~ */
-     }
- 
-     fn expect(&mut self, tok: &Tok) -> Result<()> {
-         if self.eat(tok) {
-             Ok(())
-         } else {
-             Err(self.err(format!("expected {tok:?}, found {:?}", self.peek())))
-         }
 
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
-       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786401726.324058048s, 1s after last build at 1786401725.931033981s)
-   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps`
-warning: unused variable: `tok`
-  --> crates/tla-syntax/src/parser.rs:71:23
-   |
-71 |     fn eat(&mut self, tok: &Tok) -> bool {
-   |                       ^^^ help: if this is intentional, prefix it with an underscore: `_tok`
-   |
-   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps`
+error[E0277]: the trait bound `Tok: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:72:28
+    |
+ 72 |         Box::leak(Box::new(Default::default())) /* ~ changed by cargo-mutants ~ */
+    |                            ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Tok`
+   --> crates/tla-syntax/src/token.rs:321:1
+    |
+321 | pub enum Tok {
+    | ^^^^^^^^^^^^
 
-warning: `tla-syntax` (lib test) generated 1 warning (run `cargo fix --lib -p tla-syntax --tests` to apply 1 suggestion)
-warning: `tla-syntax` (lib) generated 1 warning (1 duplicate)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s
-  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
-  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
-  Executable `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
 
-*** result: Success
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
 
-*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
-warning: unused variable: `tok`
-  --> crates/tla-syntax/src/parser.rs:71:23
-   |
-71 |     fn eat(&mut self, tok: &Tok) -> bool {
-   |                       ^^^ help: if this is intentional, prefix it with an underscore: `_tok`
-   |
-   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
-
-warning: `tla-syntax` (lib) generated 1 warning (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/crates/tla-syntax)
-warning: `tla-syntax` (lib test) generated 1 warning (1 duplicate)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
-     Running `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-     Running `/tmp/cargo-mutants-tlatools-rs-5hvWlL.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
-
-running 23 tests
-test a_choose_inside_braces_is_not_a_set_filter ... FAILED
-test a_fairness_subscript_may_be_a_tuple ... FAILED
-test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
-test a_module_may_contain_another ... FAILED
-test a_function_may_be_defined_by_its_graph ... FAILED
-test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
-test a_named_theorem_keeps_its_statement ... FAILED
-test a_postfix_operator_binds_to_what_precedes_it ... FAILED
-test a_proof_is_skipped_and_the_module_continues ... FAILED
-test an_action_subscript_is_recognised_past_an_inner_colon ... FAILED
-test an_infix_operator_can_be_defined ... FAILED
-test case_arms_are_separated_by_boxes ... FAILED
-test an_operator_may_be_passed_as_an_argument ... FAILED
-test an_operator_may_follow_a_bulleted_list ... FAILED
-test except_accepts_several_indices_at_once ... FAILED
-test instance_names_may_be_chained_and_take_arguments ... FAILED
-test higher_order_parameters_record_their_arity ... FAILED
-test labels_are_read_and_dropped ... FAILED
-test prose_outside_the_module_is_not_lexed ... FAILED
-test prefix_and_postfix_operators_can_be_defined ... FAILED
-test set_filters_and_set_maps_are_told_apart ... FAILED
-test temporal_quantifiers_parse_and_are_marked_as_such ... FAILED
-test the_new_forms_round_trip ... FAILED
-
-failures:
-
----- a_choose_inside_braces_is_not_a_set_filter stdout ----
-
-thread 'a_choose_inside_braces_is_not_a_set_filter' (36187) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Pick == {CHOOSE x \in S : TRUE}
-====================
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-
----- a_fairness_subscript_may_be_a_tuple stdout ----
-
-thread 'a_fairness_subscript_may_be_a_tuple' (36188) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-F == WF_<<a, b>>(Next)
-====================
-
----- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
-
-thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (36190) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Foo == Apply(LAMBDA x, y : x + y, 1)
-====================
-
----- a_module_may_contain_another stdout ----
-
-thread 'a_module_may_contain_another' (36191) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
----- MODULE Inner ----
-X == 1
-====================
-Outer == 2
-====================
-
----- a_function_may_be_defined_by_its_graph stdout ----
-
-thread 'a_function_may_be_defined_by_its_graph' (36189) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-f[x \in S] == x + 1
-====================
-
----- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
-
-thread 'a_name_may_begin_with_a_digit_or_an_underscore' (36192) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-1aMessage == 1
-_hidden == 2
-====================
-
----- a_named_theorem_keeps_its_statement stdout ----
-
-thread 'a_named_theorem_keeps_its_statement' (36193) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-THEOREM Correct == Spec => []Inv
-====================
-
----- a_postfix_operator_binds_to_what_precedes_it stdout ----
-
-thread 'a_postfix_operator_binds_to_what_precedes_it' (36194) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Foo == S^+ \cup T
-====================
-
----- a_proof_is_skipped_and_the_module_continues stdout ----
-
-thread 'a_proof_is_skipped_and_the_module_continues' (36195) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-THEOREM Correct == Spec => []Inv
-<1>1. Init => Inv
-BY DEF Init, Inv
-<1>2. QED
-BY <1>1
-After == 42
-====================
-
----- an_action_subscript_is_recognised_past_an_inner_colon stdout ----
-
-thread 'an_action_subscript_is_recognised_past_an_inner_colon' (36196) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Keeps == [][\A i \in Proc : p[i] = p'[i]]_vars
-====================
-
----- an_infix_operator_can_be_defined stdout ----
-
-thread 'an_infix_operator_can_be_defined' (36197) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-a \prec b == a < b
-====================
-
----- case_arms_are_separated_by_boxes stdout ----
-
-thread 'case_arms_are_separated_by_boxes' (36200) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Colour == CASE n = 1 -> "red" [] n = 2 -> "green" [] OTHER -> "grey"
-====================
-
----- an_operator_may_be_passed_as_an_argument stdout ----
-
-thread 'an_operator_may_be_passed_as_an_argument' (36198) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Sum(S) == FoldSet(+, 0, S)
-====================
-
----- an_operator_may_follow_a_bulleted_list stdout ----
-
-thread 'an_operator_may_follow_a_bulleted_list' (36199) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Safe ==
-  /\ TypeOK
-  /\ OneVote
-  => Consistent
-====================
-
----- except_accepts_several_indices_at_once stdout ----
-
-thread 'except_accepts_several_indices_at_once' (36201) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Set == [f EXCEPT ![a, b] = v]
-====================
-
----- instance_names_may_be_chained_and_take_arguments stdout ----
-
-thread 'instance_names_may_be_chained_and_take_arguments' (36203) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Q == A!B!C
-====================
-
----- higher_order_parameters_record_their_arity stdout ----
-
-thread 'higher_order_parameters_record_their_arity' (36202) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Fold(op(_, _), base, S) == base
-====================
-
----- labels_are_read_and_dropped stdout ----
-
-thread 'labels_are_read_and_dropped' (36204) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Step == /\ Lbl:: x = 1
-        /\ y = 2
-====================
-
----- prose_outside_the_module_is_not_lexed stdout ----
-
-thread 'prose_outside_the_module_is_not_lexed' (36206) panicked at crates/tla-syntax/tests/grammar.rs:36:31:
-the prose is ignored: Error { stage: Parse, message: "expected an identifier, found Kw(Module)", line: 3, col: 6 }
-
----- prefix_and_postfix_operators_can_be_defined stdout ----
-
-thread 'prefix_and_postfix_operators_can_be_defined' (36205) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
--. a == 0 - a
-b ^+ == b + 1
-====================
-
----- set_filters_and_set_maps_are_told_apart stdout ----
-
-thread 'set_filters_and_set_maps_are_told_apart' (36207) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-A == {x \in S : P(x)}
-====================
-
----- temporal_quantifiers_parse_and_are_marked_as_such stdout ----
-
-thread 'temporal_quantifiers_parse_and_are_marked_as_such' (36208) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-parse error at 1:6: expected an identifier, found Kw(Module)
-in:
----- MODULE T ----
-Hidden == \EE t : Timer(t)
-====================
-
----- the_new_forms_round_trip stdout ----
-
-thread 'the_new_forms_round_trip' (36209) panicked at crates/tla-syntax/tests/grammar.rs:254:33:
-parsing `CASE n = 1 -> "a" [] OTHER -> "b"`: parse error at 1:12: unexpected Arrow after the expression
-
-
-failures:
-    a_choose_inside_braces_is_not_a_set_filter
-    a_fairness_subscript_may_be_a_tuple
-    a_function_may_be_defined_by_its_graph
-    a_lambda_may_be_passed_where_an_operator_is_wanted
-    a_module_may_contain_another
-    a_name_may_begin_with_a_digit_or_an_underscore
-    a_named_theorem_keeps_its_statement
-    a_postfix_operator_binds_to_what_precedes_it
-    a_proof_is_skipped_and_the_module_continues
-    an_action_subscript_is_recognised_past_an_inner_colon
-    an_infix_operator_can_be_defined
-    an_operator_may_be_passed_as_an_argument
-    an_operator_may_follow_a_bulleted_list
-    case_arms_are_separated_by_boxes
-    except_accepts_several_indices_at_once
-    higher_order_parameters_record_their_arity
-    instance_names_may_be_chained_and_take_arguments
-    labels_are_read_and_dropped
-    prefix_and_postfix_operators_can_be_defined
-    prose_outside_the_module_is_not_lexed
-    set_filters_and_set_maps_are_told_apart
-    temporal_quantifiers_parse_and_are_marked_as_such
-    the_new_forms_round_trip
-
-test result: FAILED. 0 passed; 23 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-error: test failed, to rerun pass `-p tla-syntax --test grammar`
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-jMqRFZ.tmp/target/debug/deps` (exit status: 1)
 
 *** result: Failure(101)

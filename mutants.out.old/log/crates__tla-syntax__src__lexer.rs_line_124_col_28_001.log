@@ -26,10 +26,10 @@
 
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
-       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/lexer.rs` has changed (1786401676.629293243s, 436304999ns after last build at 1786401676.192988244s)
-   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps`
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/lexer.rs` has changed (1786402234.843197585s, 387023699ns after last build at 1786402234.456173886s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps`
 warning: unused variable: `c`
    --> crates/tla-syntax/src/lexer.rs:124:22
     |
@@ -40,13 +40,18 @@ warning: unused variable: `c`
 
 warning: `tla-syntax` (lib test) generated 1 warning (run `cargo fix --lib -p tla-syntax --tests` to apply 1 suggestion)
 warning: `tla-syntax` (lib) generated 1 warning (1 duplicate)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.35s
-  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
-  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
-  Executable `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name robustness --edition=2024 crates/tla-syntax/tests/robustness.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=3b1de0d84c0f7391 -C extra-filename=-4657dcdff6c43e2f --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name depth --edition=2024 crates/tla-syntax/examples/depth.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=945ad0d3a4da74b3 -C extra-filename=-2ef4d05ce566e5e5 --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name queries --edition=2024 crates/tla-syntax/tests/queries.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fc19234c6e95ae98 -C extra-filename=-2cacbc55350fea8e --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.34s
+  Executable `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+  Executable `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/queries-2cacbc55350fea8e`
+  Executable `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/robustness-4657dcdff6c43e2f`
 
 *** result: Success
 
@@ -60,26 +65,26 @@ warning: unused variable: `c`
     = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
 
 warning: `tla-syntax` (lib) generated 1 warning (run `cargo fix --lib -p tla-syntax` to apply 1 suggestion)
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/crates/tla-syntax)
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/crates/tla-syntax)
 warning: `tla-syntax` (lib test) generated 1 warning (1 duplicate)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
-     Running `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+     Running `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running `/tmp/cargo-mutants-tlatools-rs-2cNtl3.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+     Running `/tmp/cargo-mutants-tlatools-rs-qjGGJh.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
 
 running 23 tests
 test a_choose_inside_braces_is_not_a_set_filter ... FAILED
-test a_function_may_be_defined_by_its_graph ... FAILED
 test a_fairness_subscript_may_be_a_tuple ... FAILED
-test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
-test a_named_theorem_keeps_its_statement ... FAILED
-test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
-test a_postfix_operator_binds_to_what_precedes_it ... FAILED
+test a_function_may_be_defined_by_its_graph ... FAILED
 test a_module_may_contain_another ... FAILED
+test a_name_may_begin_with_a_digit_or_an_underscore ... FAILED
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... FAILED
+test a_named_theorem_keeps_its_statement ... FAILED
+test a_postfix_operator_binds_to_what_precedes_it ... FAILED
 test a_proof_is_skipped_and_the_module_continues ... FAILED
 test an_action_subscript_is_recognised_past_an_inner_colon ... FAILED
 test an_infix_operator_can_be_defined ... FAILED
@@ -89,8 +94,8 @@ test case_arms_are_separated_by_boxes ... FAILED
 test except_accepts_several_indices_at_once ... FAILED
 test higher_order_parameters_record_their_arity ... FAILED
 test instance_names_may_be_chained_and_take_arguments ... FAILED
-test prefix_and_postfix_operators_can_be_defined ... FAILED
 test labels_are_read_and_dropped ... FAILED
+test prefix_and_postfix_operators_can_be_defined ... FAILED
 test prose_outside_the_module_is_not_lexed ... FAILED
 test set_filters_and_set_maps_are_told_apart ... FAILED
 test temporal_quantifiers_parse_and_are_marked_as_such ... FAILED
@@ -100,72 +105,35 @@ failures:
 
 ---- a_choose_inside_braces_is_not_a_set_filter stdout ----
 
-thread 'a_choose_inside_braces_is_not_a_set_filter' (4183044) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'a_choose_inside_braces_is_not_a_set_filter' (356184) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
 Pick == {CHOOSE x \in S : TRUE}
 ====================
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- a_fairness_subscript_may_be_a_tuple stdout ----
+
+thread 'a_fairness_subscript_may_be_a_tuple' (356185) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+F == WF_<<a, b>>(Next)
+====================
 
 ---- a_function_may_be_defined_by_its_graph stdout ----
 
-thread 'a_function_may_be_defined_by_its_graph' (4183047) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'a_function_may_be_defined_by_its_graph' (356186) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
 f[x \in S] == x + 1
 ====================
 
----- a_fairness_subscript_may_be_a_tuple stdout ----
-
-thread 'a_fairness_subscript_may_be_a_tuple' (4183046) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
-F == WF_<<a, b>>(Next)
-====================
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
-
----- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
-
-thread 'a_name_may_begin_with_a_digit_or_an_underscore' (4183052) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
-1aMessage == 1
-_hidden == 2
-====================
-
----- a_named_theorem_keeps_its_statement stdout ----
-
-thread 'a_named_theorem_keeps_its_statement' (4183053) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
-THEOREM Correct == Spec => []Inv
-====================
-
----- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
-
-thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (4183049) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
-Foo == Apply(LAMBDA x, y : x + y, 1)
-====================
-
----- a_postfix_operator_binds_to_what_precedes_it stdout ----
-
-thread 'a_postfix_operator_binds_to_what_precedes_it' (4183055) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
-Foo == S^+ \cup T
-====================
-
 ---- a_module_may_contain_another stdout ----
 
-thread 'a_module_may_contain_another' (4183050) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'a_module_may_contain_another' (356188) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -175,9 +143,46 @@ X == 1
 Outer == 2
 ====================
 
+---- a_name_may_begin_with_a_digit_or_an_underscore stdout ----
+
+thread 'a_name_may_begin_with_a_digit_or_an_underscore' (356189) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+1aMessage == 1
+_hidden == 2
+====================
+
+---- a_lambda_may_be_passed_where_an_operator_is_wanted stdout ----
+
+thread 'a_lambda_may_be_passed_where_an_operator_is_wanted' (356187) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+Foo == Apply(LAMBDA x, y : x + y, 1)
+====================
+
+---- a_named_theorem_keeps_its_statement stdout ----
+
+thread 'a_named_theorem_keeps_its_statement' (356190) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+THEOREM Correct == Spec => []Inv
+====================
+
+---- a_postfix_operator_binds_to_what_precedes_it stdout ----
+
+thread 'a_postfix_operator_binds_to_what_precedes_it' (356191) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+Foo == S^+ \cup T
+====================
+
 ---- a_proof_is_skipped_and_the_module_continues stdout ----
 
-thread 'a_proof_is_skipped_and_the_module_continues' (4183056) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'a_proof_is_skipped_and_the_module_continues' (356192) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -191,7 +196,7 @@ After == 42
 
 ---- an_action_subscript_is_recognised_past_an_inner_colon stdout ----
 
-thread 'an_action_subscript_is_recognised_past_an_inner_colon' (4183057) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'an_action_subscript_is_recognised_past_an_inner_colon' (356193) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -200,7 +205,7 @@ Keeps == [][\A i \in Proc : p[i] = p'[i]]_vars
 
 ---- an_infix_operator_can_be_defined stdout ----
 
-thread 'an_infix_operator_can_be_defined' (4183058) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'an_infix_operator_can_be_defined' (356194) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -209,7 +214,7 @@ a \prec b == a < b
 
 ---- an_operator_may_be_passed_as_an_argument stdout ----
 
-thread 'an_operator_may_be_passed_as_an_argument' (4183059) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'an_operator_may_be_passed_as_an_argument' (356195) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -218,7 +223,7 @@ Sum(S) == FoldSet(+, 0, S)
 
 ---- an_operator_may_follow_a_bulleted_list stdout ----
 
-thread 'an_operator_may_follow_a_bulleted_list' (4183060) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'an_operator_may_follow_a_bulleted_list' (356196) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -230,7 +235,7 @@ Safe ==
 
 ---- case_arms_are_separated_by_boxes stdout ----
 
-thread 'case_arms_are_separated_by_boxes' (4183061) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'case_arms_are_separated_by_boxes' (356197) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -239,7 +244,7 @@ Colour == CASE n = 1 -> "red" [] n = 2 -> "green" [] OTHER -> "grey"
 
 ---- except_accepts_several_indices_at_once stdout ----
 
-thread 'except_accepts_several_indices_at_once' (4183062) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'except_accepts_several_indices_at_once' (356198) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -248,7 +253,7 @@ Set == [f EXCEPT ![a, b] = v]
 
 ---- higher_order_parameters_record_their_arity stdout ----
 
-thread 'higher_order_parameters_record_their_arity' (4183063) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'higher_order_parameters_record_their_arity' (356199) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -257,26 +262,16 @@ Fold(op(_, _), base, S) == base
 
 ---- instance_names_may_be_chained_and_take_arguments stdout ----
 
-thread 'instance_names_may_be_chained_and_take_arguments' (4183064) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'instance_names_may_be_chained_and_take_arguments' (356200) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
 Q == A!B!C
 ====================
 
----- prefix_and_postfix_operators_can_be_defined stdout ----
-
-thread 'prefix_and_postfix_operators_can_be_defined' (4183066) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
-lex error at 1:5: unexpected character ' '
-in:
----- MODULE T ----
--. a == 0 - a
-b ^+ == b + 1
-====================
-
 ---- labels_are_read_and_dropped stdout ----
 
-thread 'labels_are_read_and_dropped' (4183065) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'labels_are_read_and_dropped' (356201) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -284,14 +279,24 @@ Step == /\ Lbl:: x = 1
         /\ y = 2
 ====================
 
+---- prefix_and_postfix_operators_can_be_defined stdout ----
+
+thread 'prefix_and_postfix_operators_can_be_defined' (356202) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+lex error at 1:5: unexpected character ' '
+in:
+---- MODULE T ----
+-. a == 0 - a
+b ^+ == b + 1
+====================
+
 ---- prose_outside_the_module_is_not_lexed stdout ----
 
-thread 'prose_outside_the_module_is_not_lexed' (4183067) panicked at crates/tla-syntax/tests/grammar.rs:36:31:
+thread 'prose_outside_the_module_is_not_lexed' (356203) panicked at crates/tla-syntax/tests/grammar.rs:36:31:
 the prose is ignored: Error { stage: Lex, message: "unexpected character ' '", line: 3, col: 5 }
 
 ---- set_filters_and_set_maps_are_told_apart stdout ----
 
-thread 'set_filters_and_set_maps_are_told_apart' (4183068) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'set_filters_and_set_maps_are_told_apart' (356204) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -300,7 +305,7 @@ A == {x \in S : P(x)}
 
 ---- temporal_quantifiers_parse_and_are_marked_as_such stdout ----
 
-thread 'temporal_quantifiers_parse_and_are_marked_as_such' (4183069) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
+thread 'temporal_quantifiers_parse_and_are_marked_as_such' (356205) panicked at crates/tla-syntax/tests/grammar.rs:12:43:
 lex error at 1:5: unexpected character ' '
 in:
 ---- MODULE T ----
@@ -309,7 +314,7 @@ Hidden == \EE t : Timer(t)
 
 ---- the_new_forms_round_trip stdout ----
 
-thread 'the_new_forms_round_trip' (4183070) panicked at crates/tla-syntax/tests/grammar.rs:254:33:
+thread 'the_new_forms_round_trip' (356206) panicked at crates/tla-syntax/tests/grammar.rs:254:33:
 parsing `S^+ \cup T`: lex error at 1:4: unexpected character ' '
 
 

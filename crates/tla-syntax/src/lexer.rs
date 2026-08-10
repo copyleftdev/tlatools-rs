@@ -380,6 +380,10 @@ impl Lexer {
                     self.advance(2);
                     Tok::Op(Op::Le)
                 }
+                Some('|') => {
+                    self.advance(2);
+                    Tok::Op(Op::User("=|"))
+                }
                 _ => {
                     self.bump();
                     Tok::Op(Op::Eq)
@@ -418,6 +422,7 @@ impl Lexer {
             ("<=", Tok::Op(Op::Le)),
             ("<-", Tok::Gets),
             ("<>", Tok::Op(Op::Eventually)),
+            ("<:", Tok::Op(Op::User("<:"))),
         ] {
             if self.starts_with(text) {
                 self.advance(text.len());

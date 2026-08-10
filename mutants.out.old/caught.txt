@@ -1,34 +1,58 @@
 crates/tla-eval/src/builtin.rs:34:9: delete match arm "Len" in call
 crates/tla-eval/src/builtin.rs:38:9: delete match arm "Head" in call
 crates/tla-eval/src/builtin.rs:45:9: delete match arm "Tail" in call
-crates/tla-eval/src/builtin.rs:20:9: delete match arm "Cardinality" in call
 crates/tla-eval/src/builtin.rs:10:23: replace == with != in call
+crates/tla-eval/src/builtin.rs:20:9: delete match arm "Cardinality" in call
+crates/tla-eval/src/builtin.rs:30:9: delete match arm "IsFiniteSet" in call
 crates/tla-eval/src/builtin.rs:53:9: delete match arm "Append" in call
+crates/tla-eval/src/builtin.rs:76:9: delete match arm "Assert" in call
+crates/tla-eval/src/builtin.rs:59:9: delete match arm "SubSeq" in call
 crates/tla-eval/src/builtin.rs:70:9: delete match arm "Seq" in call
+crates/tla-eval/src/builtin.rs:84:9: delete match arm "ToString" in call
+crates/tla-eval/src/builtin.rs:88:9: delete match arm "Print" in call
+crates/tla-eval/src/builtin.rs:64:19: replace < with == in call
+crates/tla-eval/src/builtin.rs:92:9: delete match arm "PrintT" in call
+crates/tla-eval/src/builtin.rs:64:19: replace < with > in call
+crates/tla-eval/src/builtin.rs:64:19: replace < with <= in call
+crates/tla-eval/src/builtin.rs:78:24: replace == with != in call
+crates/tla-eval/src/builtin.rs:104:9: delete match arm "Int" in constant
+crates/tla-eval/src/builtin.rs:103:9: delete match arm "Nat" in constant
+crates/tla-eval/src/builtin.rs:102:5: replace constant -> Option<Value> with None
+crates/tla-eval/src/builtin.rs:105:9: delete match arm "STRING" in constant
+crates/tla-eval/src/builtin.rs:113:5: replace index_range -> (usize, usize) with (0, 0)
+crates/tla-eval/src/builtin.rs:113:5: replace index_range -> (usize, usize) with (1, 0)
+crates/tla-eval/src/builtin.rs:106:9: delete match arm "BOOLEAN" in constant
+crates/tla-eval/src/builtin.rs:113:5: replace index_range -> (usize, usize) with (0, 1)
+crates/tla-eval/src/builtin.rs:113:5: replace index_range -> (usize, usize) with (1, 1)
+crates/tla-eval/src/builtin.rs:114:19: replace - with + in index_range
 crates/tla-eval/src/builtin.rs:118:5: replace seq -> Result<&'a[Value]> with Ok(Vec::leak(Vec::new()))
+crates/tla-eval/src/builtin.rs:125:5: replace int -> Result<i64> with Ok(1)
+crates/tla-eval/src/builtin.rs:125:5: replace int -> Result<i64> with Ok(0)
+crates/tla-eval/src/builtin.rs:114:19: replace - with / in index_range
 crates/tla-eval/src/diagnose.rs:49:25: replace * with + in Blocked::closer_than
+crates/tla-eval/src/builtin.rs:125:5: replace int -> Result<i64> with Ok(-1)
 crates/tla-eval/src/diagnose.rs:49:25: replace * with / in Blocked::closer_than
 crates/tla-eval/src/diagnose.rs:49:62: replace * with / in Blocked::closer_than
 crates/tla-eval/src/diagnose.rs:100:18: replace >= with < in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:104:13: delete match arm Expr::Binary(Op::Or, lhs, rhs) in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:74:9: replace Evaluator<'m>::why_not -> Result<Vec<Blocked>> with Ok(vec![])
 crates/tla-eval/src/diagnose.rs:100:9: replace Evaluator<'m>::probe -> Result<()> with Ok(())
-crates/tla-eval/src/diagnose.rs:104:13: delete match arm Expr::Binary(Op::Or, lhs, rhs) in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:108:13: delete match arm Expr::Quant{kind:QuantKind::Exists, bounds, body,} in Evaluator<'m>::probe
-crates/tla-eval/src/diagnose.rs:141:13: delete match arm Expr::Ident(name) in Evaluator<'m>::probe
-crates/tla-eval/src/diagnose.rs:132:13: delete match arm Expr::Apply(head, args) in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:105:58: replace + with - in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:132:13: delete match arm Expr::Apply(head, args) in Evaluator<'m>::probe
+crates/tla-eval/src/diagnose.rs:141:13: delete match arm Expr::Ident(name) in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:106:58: replace + with - in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:115:76: replace + with - in Evaluator<'m>::probe
 crates/tla-eval/src/diagnose.rs:166:29: replace != with == in Evaluator<'m>::enter
 crates/tla-eval/src/diagnose.rs:166:9: replace Evaluator<'m>::enter -> Result<()> with Ok(())
-crates/tla-eval/src/diagnose.rs:196:39: replace += with *= in Evaluator<'m>::record
 crates/tla-eval/src/diagnose.rs:196:39: replace += with -= in Evaluator<'m>::record
+crates/tla-eval/src/diagnose.rs:196:39: replace += with *= in Evaluator<'m>::record
 crates/tla-eval/src/diagnose.rs:188:9: replace Evaluator<'m>::record with ()
 crates/tla-eval/src/diagnose.rs:221:31: replace match guard existing.closer_than(&candidate).is_ge() with false in Evaluator<'m>::record
 crates/tla-eval/src/diagnose.rs:230:5: replace conjuncts -> Vec<&Expr> with vec![]
 crates/tla-eval/src/diagnose.rs:241:5: replace render_call -> String with String::new()
-crates/tla-eval/src/diagnose.rs:241:5: replace render_call -> String with "xyzzy".into()
 crates/tla-eval/src/diagnose.rs:255:5: replace truncate -> String with String::new()
+crates/tla-eval/src/diagnose.rs:241:5: replace render_call -> String with "xyzzy".into()
 crates/tla-eval/src/diagnose.rs:255:5: replace truncate -> String with "xyzzy".into()
 crates/tla-eval/src/diagnose.rs:255:29: replace <= with > in truncate
 crates/tla-eval/src/error.rs:29:9: replace <impl fmt::Display for Error>::fmt -> fmt::Result with Ok(Default::default())
@@ -46,8 +70,8 @@ crates/tla-eval/src/eval.rs:309:16: delete ! in Evaluator<'m>::ident
 crates/tla-eval/src/eval.rs:387:13: delete match arm 2 in Evaluator<'m>::apply_symbol
 crates/tla-eval/src/eval.rs:409:29: replace != with == in Evaluator<'m>::invoke
 crates/tla-eval/src/eval.rs:419:42: replace == with != in Evaluator<'m>::invoke
-crates/tla-eval/src/eval.rs:446:42: replace == with != in Evaluator<'m>::enter_closure
 crates/tla-eval/src/eval.rs:437:25: replace != with == in Evaluator<'m>::enter_closure
+crates/tla-eval/src/eval.rs:446:42: replace == with != in Evaluator<'m>::enter_closure
 crates/tla-eval/src/eval.rs:561:9: replace Evaluator<'m>::bind_substitutions -> usize with 0
 crates/tla-eval/src/eval.rs:561:9: replace Evaluator<'m>::bind_substitutions -> usize with 1
 crates/tla-eval/src/eval.rs:587:22: replace >= with < in Evaluator<'m>::run
@@ -71,34 +95,38 @@ crates/tla-eval/src/eval.rs:719:46: replace > with < in combine
 crates/tla-eval/src/eval.rs:719:46: replace > with >= in combine
 crates/tla-eval/src/eval.rs:720:46: replace <= with > in combine
 crates/tla-eval/src/eval.rs:721:46: replace >= with < in combine
+crates/tla-eval/src/eval.rs:740:20: delete ! in combine
+crates/tla-eval/src/eval.rs:775:13: delete match arm (Value::Seq(x), Value::Seq(y)) in combine
 crates/tla-eval/src/eval.rs:869:58: replace % with / in Evaluator<'m>::fn_set
-crates/tla-eval/src/eval.rs:869:58: replace % with + in Evaluator<'m>::fn_set
 crates/tla-eval/src/eval.rs:870:23: replace /= with %= in Evaluator<'m>::fn_set
 crates/tla-eval/src/eval.rs:870:23: replace /= with *= in Evaluator<'m>::fn_set
-crates/tla-eval/src/eval.rs:887:27: replace == with != in Evaluator<'m>::quantify
+crates/tla-eval/src/eval.rs:869:58: replace % with + in Evaluator<'m>::fn_set
 crates/tla-eval/src/eval.rs:892:23: replace == with != in Evaluator<'m>::quantify
+crates/tla-eval/src/eval.rs:887:27: replace == with != in Evaluator<'m>::quantify
 crates/tla-eval/src/eval.rs:896:24: delete ! in Evaluator<'m>::quantify
-crates/tla-eval/src/eval.rs:938:34: replace + with - in Evaluator<'m>::expand_into
 crates/tla-eval/src/eval.rs:924:9: replace Evaluator<'m>::expand -> Result<Vec<Vec<(String, Value)>>> with Ok(vec![])
 crates/tla-eval/src/eval.rs:924:9: replace Evaluator<'m>::expand -> Result<Vec<Vec<(String, Value)>>> with Ok(vec![vec![]])
+crates/tla-eval/src/eval.rs:938:34: replace + with - in Evaluator<'m>::expand_into
 crates/tla-eval/src/eval.rs:937:9: replace Evaluator<'m>::expand_into -> Result<()> with Ok(())
 crates/tla-eval/src/eval.rs:984:9: replace Evaluator<'m>::product -> Result<()> with Ok(())
 crates/tla-eval/src/eval.rs:1030:5: replace symbol_operator -> Option<Op> with None
 crates/tla-eval/src/eval.rs:1047:54: replace == with != in symbol_operator
 crates/tla-eval/src/eval.rs:1051:5: replace lookup -> Option<Local<'m>> with None
 crates/tla-eval/src/eval.rs:1054:26: replace == with != in lookup
-crates/tla-eval/src/eval.rs:1059:5: replace push -> usize with 1
 crates/tla-eval/src/eval.rs:1059:5: replace push -> usize with 0
-crates/tla-eval/src/eval.rs:1086:44: replace & with | in powerset
+crates/tla-eval/src/eval.rs:1059:5: replace push -> usize with 1
 crates/tla-eval/src/eval.rs:1086:44: replace & with ^ in powerset
+crates/tla-eval/src/eval.rs:1086:44: replace & with | in powerset
 crates/tla-eval/src/eval.rs:1086:39: replace >> with << in powerset
 crates/tla-eval/src/eval.rs:1094:14: replace > with < in check_size
-crates/tla-eval/src/eval.rs:1103:5: replace elements -> Result<Vec<Value>> with Ok(vec![])
-crates/tla-eval/src/eval.rs:1107:5: replace member -> Result<bool> with Ok(false)
-crates/tla-eval/src/eval.rs:1128:5: replace set_of -> Result<&BTreeSet<Value>> with Ok(Box::leak(Box::new(BTreeSet::new())))
-crates/tla-eval/src/eval.rs:1141:5: replace as_int -> Result<i64> with Ok(0)
-crates/tla-eval/src/eval.rs:1141:5: replace as_int -> Result<i64> with Ok(1)
-crates/tla-eval/src/eval.rs:1141:5: replace as_int -> Result<i64> with Ok(-1)
+crates/tla-eval/src/eval.rs:1106:5: replace elements -> Result<Vec<Value>> with Ok(vec![])
+crates/tla-eval/src/eval.rs:1113:5: replace member -> Result<bool> with Ok(true)
+crates/tla-eval/src/eval.rs:1113:5: replace member -> Result<bool> with Ok(false)
+crates/tla-eval/src/eval.rs:1123:20: delete ! in member
+crates/tla-eval/src/eval.rs:1134:5: replace set_of -> Result<&BTreeSet<Value>> with Ok(Box::leak(Box::new(BTreeSet::new())))
+crates/tla-eval/src/eval.rs:1147:5: replace as_int -> Result<i64> with Ok(1)
+crates/tla-eval/src/eval.rs:1147:5: replace as_int -> Result<i64> with Ok(0)
+crates/tla-eval/src/eval.rs:1147:5: replace as_int -> Result<i64> with Ok(-1)
 crates/tla-eval/src/spec.rs:20:9: replace <impl Modules for NoModules>::source -> Option<String> with Some(String::new())
 crates/tla-eval/src/spec.rs:20:9: replace <impl Modules for NoModules>::source -> Option<String> with Some("xyzzy".into())
 crates/tla-eval/src/spec.rs:105:9: replace Spec::variables -> impl Iterator<Item =&str> with ::std::iter::empty()
@@ -107,54 +135,80 @@ crates/tla-eval/src/spec.rs:105:9: replace Spec::variables -> impl Iterator<Item
 crates/tla-eval/src/spec.rs:109:9: replace Spec::constants -> impl Iterator<Item =&str> with ::std::iter::empty()
 crates/tla-eval/src/spec.rs:109:9: replace Spec::constants -> impl Iterator<Item =&str> with ::std::iter::once("")
 crates/tla-eval/src/spec.rs:109:9: replace Spec::constants -> impl Iterator<Item =&str> with ::std::iter::once("xyzzy")
-crates/tla-eval/src/spec.rs:121:9: replace Spec::declares_variable -> bool with true
 crates/tla-eval/src/spec.rs:117:9: replace Spec::root -> usize with 1
+crates/tla-eval/src/spec.rs:121:9: replace Spec::declares_variable -> bool with true
 crates/tla-eval/src/spec.rs:121:9: replace Spec::declares_variable -> bool with false
+crates/tla-eval/src/spec.rs:125:9: replace Spec::declares_constant -> bool with true
 crates/tla-eval/src/spec.rs:131:9: replace Spec::definition -> Option<(usize, &Def)> with None
 crates/tla-eval/src/spec.rs:141:9: replace Spec::search -> Option<(usize, &Def)> with None
 crates/tla-eval/src/spec.rs:141:12: delete ! in Spec::search
 crates/tla-eval/src/spec.rs:155:9: replace Spec::instance -> Option<&Instance> with None
-crates/tla-eval/src/spec.rs:165:12: delete ! in Spec::find_instance
 crates/tla-eval/src/spec.rs:165:9: replace Spec::find_instance -> Option<&Instance> with None
 crates/tla-eval/src/spec.rs:171:41: replace == with != in Spec::find_instance
+crates/tla-eval/src/spec.rs:165:12: delete ! in Spec::find_instance
 crates/tla-eval/src/spec.rs:215:13: delete match arm Unit::Instance{module, ..} in Builder<'_, M>::add
 crates/tla-eval/src/spec.rs:191:9: replace Builder<'_, M>::add -> Result<usize> with Ok(0)
 crates/tla-eval/src/spec.rs:205:17: delete match arm Unit::Inner(m) in Builder<'_, M>::add
 crates/tla-eval/src/spec.rs:191:9: replace Builder<'_, M>::add -> Result<usize> with Ok(1)
 crates/tla-eval/src/spec.rs:219:50: replace || with && in Builder<'_, M>::add
-crates/tla-eval/src/spec.rs:286:12: delete ! in collect
-crates/tla-eval/src/spec.rs:235:5: replace resolve -> Result<Vec<Facts>> with Ok(vec![Default::default()])
 crates/tla-eval/src/spec.rs:235:5: replace resolve -> Result<Vec<Facts>> with Ok(vec![])
+crates/tla-eval/src/spec.rs:235:5: replace resolve -> Result<Vec<Facts>> with Ok(vec![Default::default()])
 crates/tla-eval/src/spec.rs:285:5: replace collect with ()
-crates/tla-eval/src/spec.rs:299:5: replace complete -> Vec<(String, Expr)> with vec![]
-crates/tla-eval/src/spec.rs:302:48: replace == with != in complete
-crates/tla-eval/src/value.rs:36:5: replace count -> i64 with 1
-crates/tla-eval/src/spec.rs:302:12: delete ! in complete
+crates/tla-eval/src/spec.rs:286:12: delete ! in collect
 crates/tla-eval/src/value.rs:36:5: replace count -> i64 with 0
+crates/tla-eval/src/spec.rs:302:12: delete ! in complete
+crates/tla-eval/src/spec.rs:299:5: replace complete -> Vec<(String, Expr)> with vec![]
+crates/tla-eval/src/value.rs:36:5: replace count -> i64 with 1
+crates/tla-eval/src/spec.rs:302:48: replace == with != in complete
 crates/tla-eval/src/value.rs:36:5: replace count -> i64 with -1
 crates/tla-eval/src/value.rs:73:25: delete match arm Value::Str(s) in Value::function
 crates/tla-eval/src/value.rs:84:9: replace Value::entries -> Option<BTreeMap<Value, Value>> with Some(BTreeMap::new())
 crates/tla-eval/src/value.rs:84:9: replace Value::entries -> Option<BTreeMap<Value, Value>> with None
+crates/tla-eval/src/value.rs:85:13: delete match arm Value::Seq(items) in Value::entries
 crates/tla-eval/src/value.rs:92:13: delete match arm Value::Record(fields) in Value::entries
+crates/tla-eval/src/value.rs:89:56: replace + with * in Value::entries
+crates/tla-eval/src/value.rs:98:13: delete match arm Value::Func(map) in Value::entries
+crates/tla-eval/src/value.rs:89:56: replace + with - in Value::entries
+crates/tla-eval/src/value.rs:104:9: replace Value::domain -> Option<BTreeSet<Value>> with None
+crates/tla-eval/src/value.rs:105:13: delete match arm Value::Seq(items) in Value::domain
+crates/tla-eval/src/value.rs:104:9: replace Value::domain -> Option<BTreeSet<Value>> with Some(BTreeSet::new())
+crates/tla-eval/src/value.rs:107:13: delete match arm Value::Func(map) in Value::domain
+crates/tla-eval/src/value.rs:106:13: delete match arm Value::Record(fields) in Value::domain
 crates/tla-eval/src/value.rs:113:9: replace Value::apply -> Option<Value> with None
+crates/tla-eval/src/value.rs:114:13: delete match arm (Value::Seq(items), Value::Int(i)) in Value::apply
 crates/tla-eval/src/value.rs:118:13: delete match arm (Value::Record(fields), Value::Str(k)) in Value::apply
+crates/tla-eval/src/value.rs:119:13: delete match arm (Value::Func(map), k) in Value::apply
+crates/tla-eval/src/value.rs:125:9: replace Value::type_name -> &'static str with "xyzzy"
+crates/tla-eval/src/value.rs:125:9: replace Value::type_name -> &'static str with ""
+crates/tla-eval/src/value.rs:137:9: replace Value::is_set -> bool with true
+crates/tla-eval/src/value.rs:137:9: replace Value::is_set -> bool with false
 crates/tla-eval/src/value.rs:143:9: replace <impl fmt::Display for Value>::fmt -> fmt::Result with Ok(Default::default())
+crates/tla-eval/src/value.rs:167:5: replace join -> String with String::new()
 crates/tla-oracle/src/check.rs:31:5: replace init_default -> String with String::new()
-crates/tla-oracle/src/check.rs:35:5: replace next_default -> String with String::new()
-crates/tla-oracle/src/check.rs:31:5: replace init_default -> String with "xyzzy".into()
-crates/tla-oracle/src/check.rs:233:5: replace check_edges -> Option<Report> with None
-crates/tla-oracle/src/check.rs:241:37: replace + with - in check_edges
+crates/tla-eval/src/value.rs:167:5: replace join -> String with "xyzzy".into()
 crates/tla-oracle/src/check.rs:35:5: replace next_default -> String with "xyzzy".into()
-crates/tla-oracle/src/check.rs:241:37: replace + with * in check_edges
+crates/tla-oracle/src/check.rs:130:9: replace Report::passed -> bool with true
+crates/tla-oracle/src/check.rs:130:9: replace Report::passed -> bool with false
+crates/tla-oracle/src/check.rs:130:21: replace == with != in Report::passed
+crates/tla-oracle/src/check.rs:147:9: delete field states from struct Stats expression in check
+crates/tla-oracle/src/check.rs:148:9: delete field edges from struct Stats expression in check
+crates/tla-oracle/src/check.rs:233:5: replace check_edges -> Option<Report> with None
+crates/tla-oracle/src/check.rs:31:5: replace init_default -> String with "xyzzy".into()
+crates/tla-oracle/src/check.rs:35:5: replace next_default -> String with String::new()
+crates/tla-oracle/src/check.rs:241:37: replace + with - in check_edges
+crates/tla-oracle/src/check.rs:281:5: replace check_outcomes -> Option<Report> with None
 crates/tla-oracle/src/check.rs:283:32: replace += with -= in check_outcomes
 crates/tla-oracle/src/check.rs:283:32: replace += with *= in check_outcomes
-crates/tla-oracle/src/check.rs:281:5: replace check_outcomes -> Option<Report> with None
+crates/tla-oracle/src/check.rs:241:37: replace + with * in check_edges
+crates/tla-oracle/src/check.rs:322:9: delete match arm EvalError::Type(_) in classify
 crates/tla-oracle/src/check.rs:330:5: replace decode_constants -> Result<BTreeMap<String, Value>, String> with Ok(BTreeMap::new())
 crates/tla-oracle/src/check.rs:341:5: replace decode_states -> Result<Vec<State>, String> with Ok(vec![])
 crates/tla-oracle/src/check.rs:341:5: replace decode_states -> Result<Vec<State>, String> with Ok(vec![Default::default()])
 crates/tla-oracle/src/check.rs:351:5: replace parse_outcomes -> Result<Vec<(String, Expr)>, String> with Ok(vec![])
+crates/tla-oracle/src/check.rs:384:5: replace render -> String with String::new()
 crates/tla-oracle/src/check.rs:364:5: replace explain -> String with String::new()
 crates/tla-oracle/src/check.rs:364:5: replace explain -> String with "xyzzy".into()
+crates/tla-oracle/src/check.rs:384:5: replace render -> String with "xyzzy".into()
 crates/tla-oracle/src/schema.rs:47:9: replace <impl std::fmt::Display for DecodeError>::fmt -> std::fmt::Result with Ok(Default::default())
 crates/tla-oracle/src/schema.rs:65:24: replace match guard !json.is_boolean() with false in decode
 crates/tla-oracle/src/schema.rs:65:24: delete ! in decode
@@ -172,9 +226,32 @@ crates/tla-syntax/src/ast.rs:13:29: replace match guard d.name == name with fals
 crates/tla-syntax/src/ast.rs:13:36: replace == with != in Module::definition
 crates/tla-syntax/src/ast.rs:19:9: replace Module::constants -> impl Iterator<Item =&Decl> with ::std::iter::empty()
 crates/tla-syntax/src/ast.rs:29:9: replace Module::variables -> impl Iterator<Item =&String> with ::std::iter::empty()
+crates/tla-syntax/src/ast.rs:105:9: replace Bound::mentions_next_state -> bool with true
+crates/tla-syntax/src/ast.rs:121:9: replace QuantKind::is_temporal -> bool with true
+crates/tla-syntax/src/ast.rs:105:9: replace Bound::mentions_next_state -> bool with false
 crates/tla-syntax/src/ast.rs:121:9: replace QuantKind::is_temporal -> bool with false
-crates/tla-syntax/src/lexer.rs:5:5: replace lex -> Result<Vec<Token>> with Ok(vec![])
+crates/tla-syntax/src/ast.rs:236:9: replace Expr::mentions_next_state -> bool with true
+crates/tla-syntax/src/ast.rs:236:9: replace Expr::mentions_next_state -> bool with false
+crates/tla-syntax/src/ast.rs:242:60: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:242:38: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:242:21: replace == with != in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:244:68: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:242:45: replace == with != in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:246:44: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:254:45: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:257:44: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:263:46: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:267:21: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:276:44: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:269:29: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:279:45: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:283:44: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:292:21: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:291:21: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:297:21: replace || with && in Expr::mentions_next_state
+crates/tla-syntax/src/ast.rs:296:59: replace || with && in Expr::mentions_next_state
 crates/tla-syntax/src/lexer.rs:23:5: replace module_start -> (usize, u32) with (0, 0)
+crates/tla-syntax/src/lexer.rs:5:5: replace lex -> Result<Vec<Token>> with Ok(vec![])
 crates/tla-syntax/src/lexer.rs:23:5: replace module_start -> (usize, u32) with (1, 0)
 crates/tla-syntax/src/lexer.rs:23:5: replace module_start -> (usize, u32) with (1, 1)
 crates/tla-syntax/src/lexer.rs:32:70: replace + with - in module_start
@@ -187,8 +264,8 @@ crates/tla-syntax/src/lexer.rs:56:9: replace Lexer::at -> Option<char> with Some
 crates/tla-syntax/src/lexer.rs:56:33: replace + with - in Lexer::at
 crates/tla-syntax/src/lexer.rs:61:18: replace += with -= in Lexer::bump
 crates/tla-syntax/src/lexer.rs:62:14: replace == with != in Lexer::bump
-crates/tla-syntax/src/lexer.rs:63:23: replace += with -= in Lexer::bump
 crates/tla-syntax/src/lexer.rs:63:23: replace += with *= in Lexer::bump
+crates/tla-syntax/src/lexer.rs:63:23: replace += with -= in Lexer::bump
 crates/tla-syntax/src/lexer.rs:66:22: replace += with -= in Lexer::bump
 crates/tla-syntax/src/lexer.rs:66:22: replace += with *= in Lexer::bump
 crates/tla-syntax/src/lexer.rs:78:9: replace Lexer::starts_with -> bool with true
@@ -267,160 +344,171 @@ crates/tla-syntax/src/lexer.rs:487:13: delete match arm "A" | "forall" in Lexer:
 crates/tla-syntax/src/lexer.rs:488:13: delete match arm "E" | "exists" in Lexer::scan_backslash
 crates/tla-syntax/src/lexer.rs:490:13: delete match arm "EE" in Lexer::scan_backslash
 crates/tla-syntax/src/lexer.rs:496:24: replace + with * in Lexer::scan_backslash
-crates/tla-syntax/src/parser.rs:55:27: replace + with - in Parser::peek_at
-crates/tla-syntax/src/parser.rs:55:27: replace + with * in Parser::peek_at
-crates/tla-syntax/src/parser.rs:60:9: replace Parser::col -> u32 with 0
-crates/tla-syntax/src/parser.rs:60:9: replace Parser::col -> u32 with 1
-crates/tla-syntax/src/parser.rs:65:25: replace < with == in Parser::advance
-crates/tla-syntax/src/parser.rs:65:25: replace < with > in Parser::advance
-crates/tla-syntax/src/parser.rs:65:21: replace + with - in Parser::advance
-crates/tla-syntax/src/parser.rs:66:22: replace += with -= in Parser::advance
-crates/tla-syntax/src/parser.rs:66:22: replace += with *= in Parser::advance
-crates/tla-syntax/src/parser.rs:72:9: replace Parser::eat -> bool with true
-crates/tla-syntax/src/parser.rs:72:9: replace Parser::eat -> bool with false
-crates/tla-syntax/src/parser.rs:72:24: replace == with != in Parser::eat
-crates/tla-syntax/src/parser.rs:81:9: replace Parser::expect -> Result<()> with Ok(())
-crates/tla-syntax/src/parser.rs:89:9: replace Parser::expect_ident -> Result<String> with Ok(String::new())
-crates/tla-syntax/src/parser.rs:89:9: replace Parser::expect_ident -> Result<String> with Ok("xyzzy".into())
-crates/tla-syntax/src/parser.rs:110:9: replace Parser::fenced -> bool with true
-crates/tla-syntax/src/parser.rs:110:9: replace Parser::fenced -> bool with false
-crates/tla-syntax/src/parser.rs:110:56: replace <= with > in Parser::fenced
-crates/tla-syntax/src/parser.rs:123:15: delete ! in Parser::module
-crates/tla-syntax/src/parser.rs:147:17: delete match arm Tok::ModuleEnd | Tok::Eof in Parser::module_body
-crates/tla-syntax/src/parser.rs:148:17: delete match arm Tok::Kw(Kw::Module) in Parser::module_body
-crates/tla-syntax/src/parser.rs:153:17: delete match arm Tok::Kw(Kw::Extends) in Parser::module_body
-crates/tla-syntax/src/parser.rs:308:9: replace Parser::skip_label with ()
-crates/tla-syntax/src/parser.rs:316:9: replace Parser::recover -> Option<T> with None
-crates/tla-syntax/src/parser.rs:333:9: replace Parser::skip_proof with ()
-crates/tla-syntax/src/parser.rs:333:12: delete ! in Parser::skip_proof
-crates/tla-syntax/src/parser.rs:336:15: delete ! in Parser::skip_proof
-crates/tla-syntax/src/parser.rs:356:9: replace Parser::at_proof -> bool with false
-crates/tla-syntax/src/parser.rs:359:13: replace || with && in Parser::at_proof
-crates/tla-syntax/src/parser.rs:366:9: replace Parser::at_unit_start -> bool with true
-crates/tla-syntax/src/parser.rs:366:9: replace Parser::at_unit_start -> bool with false
-crates/tla-syntax/src/parser.rs:366:23: replace != with == in Parser::at_unit_start
-crates/tla-syntax/src/parser.rs:379:13: delete match arm Tok::Ident(_) in Parser::at_unit_start
-crates/tla-syntax/src/parser.rs:388:9: replace Parser::decl_list -> Result<Vec<Decl>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:400:20: delete ! in Parser::decl
-crates/tla-syntax/src/parser.rs:403:23: replace += with -= in Parser::decl
-crates/tla-syntax/src/parser.rs:404:20: delete ! in Parser::decl
-crates/tla-syntax/src/parser.rs:414:9: replace Parser::opt_params -> Result<Vec<Param>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:418:20: delete ! in Parser::opt_params
-crates/tla-syntax/src/parser.rs:434:20: delete ! in Parser::param
-crates/tla-syntax/src/parser.rs:437:23: replace += with -= in Parser::param
-crates/tla-syntax/src/parser.rs:437:23: replace += with *= in Parser::param
-crates/tla-syntax/src/parser.rs:438:20: delete ! in Parser::param
-crates/tla-syntax/src/parser.rs:456:20: delete ! in Parser::instance_tail
-crates/tla-syntax/src/parser.rs:475:13: delete match arm Tok::Op(op @(Op::And | Op::Or)) in Parser::expr
-crates/tla-syntax/src/parser.rs:484:21: replace < with == in Parser::expr
-crates/tla-syntax/src/parser.rs:484:21: replace < with > in Parser::expr
-crates/tla-syntax/src/parser.rs:484:21: replace < with <= in Parser::expr
-crates/tla-syntax/src/parser.rs:488:72: replace + with - in Parser::expr
-crates/tla-syntax/src/parser.rs:488:72: replace + with * in Parser::expr
-crates/tla-syntax/src/parser.rs:500:43: replace && with || in Parser::junction
-crates/tla-syntax/src/parser.rs:500:28: replace == with != in Parser::junction
-crates/tla-syntax/src/parser.rs:500:57: replace == with != in Parser::junction
-crates/tla-syntax/src/parser.rs:505:18: replace == with != in Parser::junction
-crates/tla-syntax/src/parser.rs:517:13: delete match arm Tok::Op(o @(Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) in Parser::prefix
-crates/tla-syntax/src/parser.rs:534:13: delete match arm Tok::Op(o @(Op::Not | Op::Always | Op::Eventually | Op::Minus)) in Parser::prefix
-crates/tla-syntax/src/parser.rs:536:13: delete match arm Tok::Kw(Kw::Subset) in Parser::prefix
-crates/tla-syntax/src/parser.rs:539:13: delete match arm Tok::Kw(Kw::Unchanged) in Parser::prefix
-crates/tla-syntax/src/parser.rs:521:21: delete match arm Op::Exists in Parser::prefix
-crates/tla-syntax/src/parser.rs:557:9: replace Parser::skip_expression_label -> Option<Result<Expr>> with None
-crates/tla-syntax/src/parser.rs:557:12: delete ! in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:565:21: delete match arm Tok::LParen in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:565:42: replace += with -= in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:565:42: replace += with *= in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:568:34: replace == with != in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:576:23: replace += with -= in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:579:12: delete ! in Parser::skip_expression_label
-crates/tla-syntax/src/parser.rs:595:17: delete match arm Tok::Prime in Parser::postfix
-crates/tla-syntax/src/parser.rs:604:17: delete match arm Tok::Dot in Parser::postfix
-crates/tla-syntax/src/parser.rs:608:17: delete match arm Tok::LBrack in Parser::postfix
-crates/tla-syntax/src/parser.rs:620:17: delete match arm Tok::Bang in Parser::postfix
-crates/tla-syntax/src/parser.rs:599:32: replace match guard op.is_postfix() with true in Parser::postfix
-crates/tla-syntax/src/parser.rs:599:32: replace match guard op.is_postfix() with false in Parser::postfix
-crates/tla-syntax/src/parser.rs:614:32: replace match guard matches!(e, Expr::Ident(_)) with true in Parser::postfix
-crates/tla-syntax/src/parser.rs:614:32: replace match guard matches!(e, Expr::Ident(_)) with false in Parser::postfix
-crates/tla-syntax/src/parser.rs:622:25: delete match arm Expr::Ident(name) in Parser::postfix
-crates/tla-syntax/src/parser.rs:623:25: delete match arm Expr::Qualified{instance, name, ..} in Parser::postfix
-crates/tla-syntax/src/parser.rs:663:9: replace Parser::expr_list -> Result<Vec<Expr>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:664:24: replace == with != in Parser::expr_list
-crates/tla-syntax/src/parser.rs:671:59: replace || with && in Parser::expr_list
-crates/tla-syntax/src/parser.rs:675:20: delete ! in Parser::expr_list
-crates/tla-syntax/src/parser.rs:681:16: delete ! in Parser::expr_list
-crates/tla-syntax/src/parser.rs:718:23: delete ! in Parser::primary
-crates/tla-syntax/src/parser.rs:727:25: delete match arm Unit::Def(def) in Parser::primary
-crates/tla-syntax/src/parser.rs:742:33: replace != with == in Parser::primary
-crates/tla-syntax/src/parser.rs:795:32: replace || with && in Parser::case_form
-crates/tla-syntax/src/parser.rs:795:35: delete ! in Parser::case_form
-crates/tla-syntax/src/parser.rs:820:9: replace Parser::at_subscript -> bool with true
-crates/tla-syntax/src/parser.rs:831:16: delete ! in Parser::subscript
-crates/tla-syntax/src/parser.rs:929:18: replace != with == in Parser::bracket_form
-crates/tla-syntax/src/parser.rs:940:9: replace Parser::field_list -> Result<Vec<(String, Expr)>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:945:16: delete ! in Parser::field_list
-crates/tla-syntax/src/parser.rs:952:9: replace Parser::except_updates -> Result<Vec<(Vec<ExceptPath>, Expr)>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:960:66: replace == with != in Parser::except_updates
-crates/tla-syntax/src/parser.rs:976:16: delete ! in Parser::except_updates
-crates/tla-syntax/src/parser.rs:983:9: replace Parser::bounds -> Result<Vec<Bound>> with Ok(vec![])
-crates/tla-syntax/src/parser.rs:998:50: replace && with || in Parser::bounds
-crates/tla-syntax/src/parser.rs:998:36: replace == with != in Parser::bounds
-crates/tla-syntax/src/parser.rs:1013:42: replace || with && in Parser::bounds
-crates/tla-syntax/src/parser.rs:1013:28: replace == with != in Parser::bounds
-crates/tla-syntax/src/parser.rs:1013:45: delete ! in Parser::bounds
-crates/tla-syntax/src/parser.rs:1023:9: replace Parser::subscript_follows_bracket -> bool with true
-crates/tla-syntax/src/parser.rs:1023:9: replace Parser::subscript_follows_bracket -> bool with false
-crates/tla-syntax/src/parser.rs:1026:17: delete match arm Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1034:17: delete match arm Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1027:32: replace match guard depth == 0 with true in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1027:32: replace match guard depth == 0 with false in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1026:78: replace += with -= in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1026:78: replace += with *= in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1027:38: replace == with != in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1030:25: delete match arm Tok::Ident(name) in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1028:55: replace + with - in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1035:30: replace == with != in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1028:55: replace + with * in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1038:27: replace -= with += in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1038:27: replace -= with /= in Parser::subscript_follows_bracket
-crates/tla-syntax/src/parser.rs:1063:17: delete match arm Tok::Op(Op::In) in Parser::shape
-crates/tla-syntax/src/parser.rs:1064:17: delete match arm Tok::MapsTo in Parser::shape
-crates/tla-syntax/src/parser.rs:1065:17: delete match arm Tok::Colon in Parser::shape
-crates/tla-syntax/src/parser.rs:1066:17: delete match arm Tok::Arrow in Parser::shape
-crates/tla-syntax/src/parser.rs:1067:17: delete match arm Tok::Kw(Kw::Except) in Parser::shape
-crates/tla-syntax/src/parser.rs:1062:22: replace match guard depth > 0 with true in Parser::shape
-crates/tla-syntax/src/parser.rs:1062:28: replace > with == in Parser::shape
-crates/tla-syntax/src/parser.rs:1062:28: replace > with >= in Parser::shape
-crates/tla-syntax/src/parser.rs:1078:5: replace as_bound -> Option<Bound> with None
-crates/tla-syntax/src/parser.rs:1082:9: delete match arm Expr::Ident(name) in as_bound
+crates/tla-syntax/src/parser.rs:72:27: replace + with - in Parser::peek_at
+crates/tla-syntax/src/parser.rs:72:27: replace + with * in Parser::peek_at
+crates/tla-syntax/src/parser.rs:77:9: replace Parser::col -> u32 with 0
+crates/tla-syntax/src/parser.rs:77:9: replace Parser::col -> u32 with 1
+crates/tla-syntax/src/parser.rs:82:25: replace < with == in Parser::advance
+crates/tla-syntax/src/parser.rs:82:25: replace < with > in Parser::advance
+crates/tla-syntax/src/parser.rs:82:21: replace + with - in Parser::advance
+crates/tla-syntax/src/parser.rs:83:22: replace += with -= in Parser::advance
+crates/tla-syntax/src/parser.rs:83:22: replace += with *= in Parser::advance
+crates/tla-syntax/src/parser.rs:89:9: replace Parser::eat -> bool with true
+crates/tla-syntax/src/parser.rs:89:9: replace Parser::eat -> bool with false
+crates/tla-syntax/src/parser.rs:89:24: replace == with != in Parser::eat
+crates/tla-syntax/src/parser.rs:98:9: replace Parser::expect -> Result<()> with Ok(())
+crates/tla-syntax/src/parser.rs:106:9: replace Parser::expect_ident -> Result<String> with Ok(String::new())
+crates/tla-syntax/src/parser.rs:106:9: replace Parser::expect_ident -> Result<String> with Ok("xyzzy".into())
+crates/tla-syntax/src/parser.rs:127:9: replace Parser::fenced -> bool with true
+crates/tla-syntax/src/parser.rs:127:9: replace Parser::fenced -> bool with false
+crates/tla-syntax/src/parser.rs:127:56: replace <= with > in Parser::fenced
+crates/tla-syntax/src/parser.rs:140:15: delete ! in Parser::module
+crates/tla-syntax/src/parser.rs:164:17: delete match arm Tok::ModuleEnd | Tok::Eof in Parser::module_body
+crates/tla-syntax/src/parser.rs:165:17: delete match arm Tok::Kw(Kw::Module) in Parser::module_body
+crates/tla-syntax/src/parser.rs:170:17: delete match arm Tok::Kw(Kw::Extends) in Parser::module_body
+crates/tla-syntax/src/parser.rs:325:9: replace Parser::skip_label with ()
+crates/tla-syntax/src/parser.rs:333:9: replace Parser::recover -> Option<T> with None
+crates/tla-syntax/src/parser.rs:352:9: replace Parser::skip_proof with ()
+crates/tla-syntax/src/parser.rs:352:12: delete ! in Parser::skip_proof
+crates/tla-syntax/src/parser.rs:355:15: delete ! in Parser::skip_proof
+crates/tla-syntax/src/parser.rs:375:9: replace Parser::at_proof -> bool with false
+crates/tla-syntax/src/parser.rs:378:13: replace || with && in Parser::at_proof
+crates/tla-syntax/src/parser.rs:385:9: replace Parser::at_unit_start -> bool with true
+crates/tla-syntax/src/parser.rs:385:9: replace Parser::at_unit_start -> bool with false
+crates/tla-syntax/src/parser.rs:385:23: replace != with == in Parser::at_unit_start
+crates/tla-syntax/src/parser.rs:398:13: delete match arm Tok::Ident(_) in Parser::at_unit_start
+crates/tla-syntax/src/parser.rs:407:9: replace Parser::decl_list -> Result<Vec<Decl>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:419:20: delete ! in Parser::decl
+crates/tla-syntax/src/parser.rs:422:23: replace += with -= in Parser::decl
+crates/tla-syntax/src/parser.rs:423:20: delete ! in Parser::decl
+crates/tla-syntax/src/parser.rs:433:9: replace Parser::opt_params -> Result<Vec<Param>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:437:20: delete ! in Parser::opt_params
+crates/tla-syntax/src/parser.rs:453:20: delete ! in Parser::param
+crates/tla-syntax/src/parser.rs:456:23: replace += with -= in Parser::param
+crates/tla-syntax/src/parser.rs:456:23: replace += with *= in Parser::param
+crates/tla-syntax/src/parser.rs:457:20: delete ! in Parser::param
+crates/tla-syntax/src/parser.rs:475:20: delete ! in Parser::instance_tail
+crates/tla-syntax/src/parser.rs:486:23: replace >= with < in Parser::expr
+crates/tla-syntax/src/parser.rs:489:20: replace += with -= in Parser::expr
+crates/tla-syntax/src/parser.rs:489:20: replace += with *= in Parser::expr
+crates/tla-syntax/src/parser.rs:491:20: replace -= with += in Parser::expr
+crates/tla-syntax/src/parser.rs:491:20: replace -= with /= in Parser::expr
+crates/tla-syntax/src/parser.rs:513:21: replace < with == in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:504:13: delete match arm Tok::Op(op @(Op::And | Op::Or)) in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:513:21: replace < with > in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:513:21: replace < with <= in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:517:72: replace + with * in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:517:72: replace + with - in Parser::expr_inner
+crates/tla-syntax/src/parser.rs:529:43: replace && with || in Parser::junction
+crates/tla-syntax/src/parser.rs:529:28: replace == with != in Parser::junction
+crates/tla-syntax/src/parser.rs:529:57: replace == with != in Parser::junction
+crates/tla-syntax/src/parser.rs:534:18: replace == with != in Parser::junction
+crates/tla-syntax/src/parser.rs:563:13: delete match arm Tok::Op(o @(Op::Not | Op::Always | Op::Eventually | Op::Minus)) in Parser::prefix
+crates/tla-syntax/src/parser.rs:546:13: delete match arm Tok::Op(o @(Op::Forall | Op::Exists | Op::TemporalForall | Op::TemporalExists)) in Parser::prefix
+crates/tla-syntax/src/parser.rs:565:13: delete match arm Tok::Kw(Kw::Subset) in Parser::prefix
+crates/tla-syntax/src/parser.rs:567:13: delete match arm Tok::Kw(Kw::Enabled) in Parser::prefix
+crates/tla-syntax/src/parser.rs:568:13: delete match arm Tok::Kw(Kw::Unchanged) in Parser::prefix
+crates/tla-syntax/src/parser.rs:550:21: delete match arm Op::Exists in Parser::prefix
+crates/tla-syntax/src/parser.rs:586:9: replace Parser::skip_expression_label -> Option<Result<Expr>> with None
+crates/tla-syntax/src/parser.rs:586:12: delete ! in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:594:21: delete match arm Tok::LParen in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:594:42: replace += with -= in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:594:42: replace += with *= in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:597:34: replace == with != in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:605:23: replace += with -= in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:608:12: delete ! in Parser::skip_expression_label
+crates/tla-syntax/src/parser.rs:624:17: delete match arm Tok::Prime in Parser::postfix
+crates/tla-syntax/src/parser.rs:633:17: delete match arm Tok::Dot in Parser::postfix
+crates/tla-syntax/src/parser.rs:637:17: delete match arm Tok::LBrack in Parser::postfix
+crates/tla-syntax/src/parser.rs:649:17: delete match arm Tok::Bang in Parser::postfix
+crates/tla-syntax/src/parser.rs:628:32: replace match guard op.is_postfix() with true in Parser::postfix
+crates/tla-syntax/src/parser.rs:628:32: replace match guard op.is_postfix() with false in Parser::postfix
+crates/tla-syntax/src/parser.rs:643:32: replace match guard matches!(e, Expr::Ident(_)) with true in Parser::postfix
+crates/tla-syntax/src/parser.rs:643:32: replace match guard matches!(e, Expr::Ident(_)) with false in Parser::postfix
+crates/tla-syntax/src/parser.rs:651:25: delete match arm Expr::Ident(name) in Parser::postfix
+crates/tla-syntax/src/parser.rs:652:25: delete match arm Expr::Qualified{instance, name, ..} in Parser::postfix
+crates/tla-syntax/src/parser.rs:692:9: replace Parser::expr_list -> Result<Vec<Expr>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:693:24: replace == with != in Parser::expr_list
+crates/tla-syntax/src/parser.rs:700:59: replace || with && in Parser::expr_list
+crates/tla-syntax/src/parser.rs:704:20: delete ! in Parser::expr_list
+crates/tla-syntax/src/parser.rs:710:16: delete ! in Parser::expr_list
+crates/tla-syntax/src/parser.rs:747:23: delete ! in Parser::primary
+crates/tla-syntax/src/parser.rs:756:25: delete match arm Unit::Def(def) in Parser::primary
+crates/tla-syntax/src/parser.rs:771:33: replace != with == in Parser::primary
+crates/tla-syntax/src/parser.rs:824:32: replace || with && in Parser::case_form
+crates/tla-syntax/src/parser.rs:824:35: delete ! in Parser::case_form
+crates/tla-syntax/src/parser.rs:834:28: replace != with == in Parser::tuple_or_action
+crates/tla-syntax/src/parser.rs:849:9: replace Parser::at_subscript -> bool with true
+crates/tla-syntax/src/parser.rs:849:9: replace Parser::at_subscript -> bool with false
+crates/tla-syntax/src/parser.rs:851:13: delete match arm Tok::Ident(name) in Parser::at_subscript
+crates/tla-syntax/src/parser.rs:860:16: delete ! in Parser::subscript
+crates/tla-syntax/src/parser.rs:969:9: replace Parser::field_list -> Result<Vec<(String, Expr)>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:958:18: replace != with == in Parser::bracket_form
+crates/tla-syntax/src/parser.rs:974:16: delete ! in Parser::field_list
+crates/tla-syntax/src/parser.rs:981:9: replace Parser::except_updates -> Result<Vec<(Vec<ExceptPath>, Expr)>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:989:66: replace == with != in Parser::except_updates
+crates/tla-syntax/src/parser.rs:1005:16: delete ! in Parser::except_updates
+crates/tla-syntax/src/parser.rs:1012:9: replace Parser::bounds -> Result<Vec<Bound>> with Ok(vec![])
+crates/tla-syntax/src/parser.rs:1027:50: replace && with || in Parser::bounds
+crates/tla-syntax/src/parser.rs:1027:36: replace == with != in Parser::bounds
+crates/tla-syntax/src/parser.rs:1042:42: replace || with && in Parser::bounds
+crates/tla-syntax/src/parser.rs:1042:28: replace == with != in Parser::bounds
+crates/tla-syntax/src/parser.rs:1042:45: delete ! in Parser::bounds
+crates/tla-syntax/src/parser.rs:1052:9: replace Parser::subscript_follows_bracket -> bool with true
+crates/tla-syntax/src/parser.rs:1052:9: replace Parser::subscript_follows_bracket -> bool with false
+crates/tla-syntax/src/parser.rs:1055:17: delete match arm Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1063:17: delete match arm Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1056:32: replace match guard depth == 0 with true in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1056:32: replace match guard depth == 0 with false in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1055:78: replace += with -= in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1055:78: replace += with *= in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1056:38: replace == with != in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1059:25: delete match arm Tok::Ident(name) in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1057:55: replace + with - in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1057:55: replace + with * in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1064:30: replace == with != in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1067:27: replace -= with += in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1067:27: replace -= with /= in Parser::subscript_follows_bracket
+crates/tla-syntax/src/parser.rs:1092:17: delete match arm Tok::Op(Op::In) in Parser::shape
+crates/tla-syntax/src/parser.rs:1093:17: delete match arm Tok::MapsTo in Parser::shape
+crates/tla-syntax/src/parser.rs:1094:17: delete match arm Tok::Colon in Parser::shape
+crates/tla-syntax/src/parser.rs:1095:17: delete match arm Tok::Arrow in Parser::shape
+crates/tla-syntax/src/parser.rs:1096:17: delete match arm Tok::Kw(Kw::Except) in Parser::shape
+crates/tla-syntax/src/parser.rs:1091:22: replace match guard depth > 0 with true in Parser::shape
+crates/tla-syntax/src/parser.rs:1085:30: replace == with != in Parser::shape
+crates/tla-syntax/src/parser.rs:1083:78: replace += with -= in Parser::shape
+crates/tla-syntax/src/parser.rs:1091:28: replace > with == in Parser::shape
+crates/tla-syntax/src/parser.rs:1091:28: replace > with >= in Parser::shape
+crates/tla-syntax/src/parser.rs:1107:5: replace as_bound -> Option<Bound> with None
+crates/tla-syntax/src/parser.rs:1111:9: delete match arm Expr::Ident(name) in as_bound
 crates/tla-syntax/src/print.rs:21:9: replace <impl fmt::Display for Expr>::fmt -> fmt::Result with Ok(Default::default())
 crates/tla-syntax/src/print.rs:27:9: replace <impl fmt::Display for Bound>::fmt -> fmt::Result with Ok(Default::default())
 crates/tla-syntax/src/print.rs:40:5: replace precedence -> u8 with 0
-crates/tla-syntax/src/print.rs:41:9: delete match arm Expr::Binary(op, ..) in precedence
 crates/tla-syntax/src/print.rs:40:5: replace precedence -> u8 with 1
+crates/tla-syntax/src/print.rs:41:9: delete match arm Expr::Binary(op, ..) in precedence
 crates/tla-syntax/src/print.rs:44:9: delete match arm Expr::Quant{..} | Expr::Choose{..} | Expr::Let{..} | Expr::If{..} | Expr::Case{..} | Expr::Lambda{..} in precedence
 crates/tla-syntax/src/print.rs:55:5: replace write -> fmt::Result with Ok(Default::default())
 crates/tla-syntax/src/print.rs:55:22: replace < with == in write
 crates/tla-syntax/src/print.rs:68:5: replace bare -> fmt::Result with Ok(Default::default())
 crates/tla-syntax/src/print.rs:102:37: replace match guard op.is_postfix() with true in bare
-crates/tla-syntax/src/print.rs:55:22: replace < with > in write
 crates/tla-syntax/src/print.rs:102:37: replace match guard op.is_postfix() with false in bare
+crates/tla-syntax/src/print.rs:55:22: replace < with > in write
 crates/tla-syntax/src/print.rs:118:29: replace + with - in bare
+crates/tla-syntax/src/print.rs:55:22: replace < with <= in write
 crates/tla-syntax/src/print.rs:137:22: replace > with == in bare
 crates/tla-syntax/src/print.rs:137:22: replace > with < in bare
 crates/tla-syntax/src/print.rs:137:22: replace > with >= in bare
-crates/tla-syntax/src/print.rs:55:22: replace < with <= in write
 crates/tla-syntax/src/print.rs:179:22: replace > with == in bare
 crates/tla-syntax/src/print.rs:179:22: replace > with >= in bare
 crates/tla-syntax/src/print.rs:205:9: replace <impl fmt::Display for Def>::fmt -> fmt::Result with Ok(Default::default())
 crates/tla-syntax/src/print.rs:206:12: delete ! in <impl fmt::Display for Def>::fmt
-crates/tla-syntax/src/print.rs:216:23: replace > with == in <impl fmt::Display for Param>::fmt
 crates/tla-syntax/src/print.rs:215:9: replace <impl fmt::Display for Param>::fmt -> fmt::Result with Ok(Default::default())
+crates/tla-syntax/src/print.rs:216:23: replace > with == in <impl fmt::Display for Param>::fmt
 crates/tla-syntax/src/print.rs:216:23: replace > with >= in <impl fmt::Display for Param>::fmt
 crates/tla-syntax/src/print.rs:225:5: replace params_list -> String with String::new()
 crates/tla-syntax/src/print.rs:225:5: replace params_list -> String with "xyzzy".into()
-crates/tla-syntax/src/print.rs:233:5: replace list -> String with String::new()
 crates/tla-syntax/src/print.rs:233:5: replace list -> String with "xyzzy".into()
+crates/tla-syntax/src/print.rs:233:5: replace list -> String with String::new()
 crates/tla-syntax/src/print.rs:241:5: replace bounds_list -> String with String::new()
 crates/tla-syntax/src/print.rs:241:5: replace bounds_list -> String with "xyzzy".into()
 crates/tla-syntax/src/print.rs:249:5: replace fields_list -> String with String::new()
@@ -433,8 +521,8 @@ crates/tla-syntax/src/token.rs:40:13: delete match arm "VARIABLE" | "VARIABLES" 
 crates/tla-syntax/src/token.rs:41:13: delete match arm "LET" in Kw::lookup
 crates/tla-syntax/src/token.rs:42:13: delete match arm "IN" in Kw::lookup
 crates/tla-syntax/src/token.rs:43:13: delete match arm "IF" in Kw::lookup
-crates/tla-syntax/src/token.rs:44:13: delete match arm "THEN" in Kw::lookup
 crates/tla-syntax/src/token.rs:45:13: delete match arm "ELSE" in Kw::lookup
+crates/tla-syntax/src/token.rs:44:13: delete match arm "THEN" in Kw::lookup
 crates/tla-syntax/src/token.rs:46:13: delete match arm "CHOOSE" in Kw::lookup
 crates/tla-syntax/src/token.rs:47:13: delete match arm "CASE" in Kw::lookup
 crates/tla-syntax/src/token.rs:48:13: delete match arm "OTHER" in Kw::lookup
@@ -446,13 +534,14 @@ crates/tla-syntax/src/token.rs:55:13: delete match arm "THEOREM" | "LEMMA" | "CO
 crates/tla-syntax/src/token.rs:56:13: delete match arm "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE" | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE" | "NEW" | "ONLY" in Kw::lookup
 crates/tla-syntax/src/token.rs:59:13: delete match arm "EXCEPT" in Kw::lookup
 crates/tla-syntax/src/token.rs:63:13: delete match arm "SUBSET" in Kw::lookup
+crates/tla-syntax/src/token.rs:65:13: delete match arm "ENABLED" in Kw::lookup
 crates/tla-syntax/src/token.rs:66:13: delete match arm "UNCHANGED" in Kw::lookup
 crates/tla-syntax/src/token.rs:194:5: replace user_operator -> Option<Op> with None
 crates/tla-syntax/src/token.rs:196:33: replace == with != in user_operator
 crates/tla-syntax/src/token.rs:207:9: replace Op::infix_prec -> Option<u8> with None
 crates/tla-syntax/src/token.rs:207:9: replace Op::infix_prec -> Option<u8> with Some(0)
-crates/tla-syntax/src/token.rs:207:9: replace Op::infix_prec -> Option<u8> with Some(1)
 crates/tla-syntax/src/token.rs:208:13: delete match arm Self::Implies in Op::infix_prec
+crates/tla-syntax/src/token.rs:207:9: replace Op::infix_prec -> Option<u8> with Some(1)
 crates/tla-syntax/src/token.rs:210:13: delete match arm Self::Or in Op::infix_prec
 crates/tla-syntax/src/token.rs:211:13: delete match arm Self::And in Op::infix_prec
 crates/tla-syntax/src/token.rs:212:13: delete match arm Self::Eq | Self::Neq | Self::Lt | Self::Gt | Self::Le | Self::Ge | Self::In | Self::NotIn | Self::Subseteq | Self::Supseteq in Op::infix_prec
@@ -467,3 +556,11 @@ crates/tla-syntax/src/token.rs:254:9: replace Op::symbol -> &'static str with "x
 crates/tla-syntax/src/token.rs:303:9: replace Op::prefix_prec -> u8 with 0
 crates/tla-syntax/src/token.rs:303:9: replace Op::prefix_prec -> u8 with 1
 crates/tla-syntax/src/token.rs:313:9: replace Op::is_word -> bool with false
+crates/tlatools/src/main.rs:17:5: replace main -> ExitCode with Default::default()
+crates/tlatools/src/main.rs:27:5: replace run -> Result<ExitCode, String> with Ok(Default::default())
+crates/tlatools/src/main.rs:51:9: delete match arm Status::Pass in run
+crates/tlatools/src/main.rs:58:5: replace read_stdin -> Result<String, String> with Ok(String::new())
+crates/tlatools/src/main.rs:52:9: delete match arm Status::Error in run
+crates/tlatools/src/main.rs:66:5: replace usage -> &'static str with ""
+crates/tlatools/src/main.rs:58:5: replace read_stdin -> Result<String, String> with Ok("xyzzy".into())
+crates/tlatools/src/main.rs:66:5: replace usage -> &'static str with "xyzzy"

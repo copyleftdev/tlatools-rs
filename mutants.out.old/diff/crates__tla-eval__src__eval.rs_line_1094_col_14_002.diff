@@ -18,4 +18,4 @@
      Ok(())
  }
  
- fn elements(v: &Value) -> Result<Vec<Value>> {
+ /// Every member of a set, for the operations that have to visit them all.

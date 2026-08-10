@@ -1,0 +1,54 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::bounds -> Result<Vec<Bound>> with Ok(vec![])
+@@ -1004,50 +1004,17 @@
+             out.push((path, self.expr(0)?));
+             if !self.eat(&Tok::Comma) {
+                 return Ok(out);
+             }
+         }
+     }
+ 
+     fn bounds(&mut self, terminator: &Tok) -> Result<Vec<Bound>> {
+-        let mut out = Vec::new();
+-        loop {
+-            let mut destructure = false;
+-            let mut names = Vec::new();
+-            if self.eat(&Tok::LTup) {
+-                destructure = true;
+-                loop {
+-                    names.push(self.expect_ident()?);
+-                    if !self.eat(&Tok::Comma) {
+-                        break;
+-                    }
+-                }
+-                self.expect(&Tok::RTup)?;
+-            } else {
+-                names.push(self.expect_ident()?);
+-                while *self.peek() == Tok::Comma && matches!(self.peek_at(1), Tok::Ident(_)) {
+-                    self.advance();
+-                    names.push(self.expect_ident()?);
+-                }
+-            }
+-            let domain = if self.eat(&Tok::Op(Op::In)) {
+-                Some(self.expr(0)?)
+-            } else {
+-                None
+-            };
+-            out.push(Bound {
+-                names,
+-                domain,
+-                destructure,
+-            });
+-            if self.peek() == terminator || !self.eat(&Tok::Comma) {
+-                return Ok(out);
+-            }
+-        }
++        Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Is this `[A]_v`? A quantifier inside the brackets puts a `:` where a
+     /// record set would have one, so the only reliable sign is the subscript
+     /// after the closing bracket.
+     fn subscript_follows_bracket(&self) -> bool {
+         let mut depth = 0usize;
+         for (offset, t) in self.toks[self.pos..].iter().enumerate() {

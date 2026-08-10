@@ -1,25 +1,26 @@
 --- crates/tla-syntax/src/parser.rs
-+++ replace Parser::expect_ident -> Result<String> with Ok("xyzzy".into())
-@@ -81,21 +81,17 @@
++++ replace Parser::eat -> bool with false
+@@ -81,22 +81,17 @@
+         let t = self.toks[self.pos].tok.clone();
+         if self.pos + 1 < self.toks.len() {
+             self.pos += 1;
+         }
+         t
+     }
+ 
+     fn eat(&mut self, tok: &Tok) -> bool {
+-        if self.peek() == tok {
+-            self.advance();
+-            true
+-        } else {
+-            false
+-        }
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn expect(&mut self, tok: &Tok) -> Result<()> {
          if self.eat(tok) {
              Ok(())
          } else {
              Err(self.err(format!("expected {tok:?}, found {:?}", self.peek())))
          }
-     }
- 
-     fn expect_ident(&mut self) -> Result<String> {
--        let at = self.pos;
--        match self.advance() {
--            Tok::Ident(name) => Ok(name),
--            other => Err(self.err_at(at, format!("expected an identifier, found {other:?}"))),
--        }
-+        Ok("xyzzy".into()) /* ~ changed by cargo-mutants ~ */
-     }
- 
-     fn err(&self, message: impl Into<String>) -> Error {
-         self.err_at(self.pos, message)
-     }
- 
-     /// Errors point at the token that caused them, which is not the current
-     /// one once it has been consumed.

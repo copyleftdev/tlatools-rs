@@ -18,9 +18,9 @@
 +    Ok(()) /* ~ changed by cargo-mutants ~ */
  }
  
+ /// Every member of a set, for the operations that have to visit them all.
+ /// Membership of an infinite set is decidable where enumeration is not, so the
+ /// two failures are reported differently.
  fn elements(v: &Value) -> Result<Vec<Value>> {
-     Ok(set_of(v)?.iter().cloned().collect())
- }
- 
- fn member(elem: &Value, set: &Value) -> Result<bool> {
-     match set {
+     if matches!(v, Value::Infinite(_)) {
+         return Err(Error::Unbounded(format!("{v} cannot be enumerated")));

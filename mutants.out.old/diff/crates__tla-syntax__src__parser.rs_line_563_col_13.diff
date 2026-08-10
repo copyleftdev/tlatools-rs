@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Op(o @(Op::Not | Op::Always | Op::Eventually | Op::Minus)) in Parser::prefix
+@@ -555,17 +555,17 @@
+                 self.expect(&Tok::Colon)?;
+                 let body = self.expr(0)?;
+                 return Ok(Expr::Quant {
+                     kind,
+                     bounds,
+                     body: Box::new(body),
+                 });
+             }
+-            Tok::Op(o @ (Op::Not | Op::Always | Op::Eventually | Op::Minus)) => o,
++             /* ~ changed by cargo-mutants ~ */
+             Tok::Kw(Kw::Domain) => Op::Domain,
+             Tok::Kw(Kw::Subset) => Op::Subset,
+             Tok::Kw(Kw::Union) => Op::BigUnion,
+             Tok::Kw(Kw::Enabled) => Op::Enabled,
+             Tok::Kw(Kw::Unchanged) => Op::Unchanged,
+             _ => return self.postfix(),
+         };
+         self.advance();

@@ -29,11 +29,11 @@
 
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-eval@0.1.0
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
-       Dirty tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval): the file `crates/tla-eval/src/eval.rs` has changed (1786401624.259808087s, 1s after last build at 1786401623.870784265s)
-   Compiling tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=30c97671448b5d79 -C extra-filename=-ecdad261fb53d0a2 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
+       Dirty tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval): the file `crates/tla-eval/src/eval.rs` has changed (1786402179.476807194s, 388023761ns after last build at 1786402179.088783433s)
+   Compiling tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=30c97671448b5d79 -C extra-filename=-ecdad261fb53d0a2 --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_eval --edition=2024 crates/tla-eval/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=9d57265a0ef5a3e3 -C extra-filename=-9723028bc8fab821 --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
 warning: unused variable: `bounds`
    --> crates/tla-eval/src/eval.rs:921:9
     |
@@ -64,17 +64,19 @@ warning: methods `expand_into` and `product` are never used
 
 warning: `tla-eval` (lib test) generated 3 warnings (run `cargo fix --lib -p tla-eval --tests` to apply 2 suggestions)
 warning: `tla-eval` (lib) generated 3 warnings (3 duplicates)
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name modules --edition=2024 crates/tla-eval/tests/modules.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=f6ec955a438c0e78 -C extra-filename=-3a02f88cdd03a5e2 --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name evaluate_specs --edition=2024 crates/tla-eval/tests/evaluate_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fa93390e31c446f5 -C extra-filename=-7aa4b9899970176d --out-dir /tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.54s
-  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
-  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
-  Executable `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/modules-3a02f88cdd03a5e2`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name standard_operators --edition=2024 crates/tla-eval/tests/standard_operators.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0fba321265a5ace7 -C extra-filename=-9ff3682c850332fc --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name modules --edition=2024 crates/tla-eval/tests/modules.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=f6ec955a438c0e78 -C extra-filename=-3a02f88cdd03a5e2 --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name evaluate_specs --edition=2024 crates/tla-eval/tests/evaluate_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fa93390e31c446f5 -C extra-filename=-7aa4b9899970176d --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.55s
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/modules-3a02f88cdd03a5e2`
+  Executable `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/standard_operators-9ff3682c850332fc`
 
 *** result: Success
 
 *** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-eval@0.1.0
-       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-syntax)
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
 warning: unused variable: `bounds`
    --> crates/tla-eval/src/eval.rs:921:9
     |
@@ -104,96 +106,96 @@ warning: methods `expand_into` and `product` are never used
     = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
 
 warning: `tla-eval` (lib) generated 3 warnings (run `cargo fix --lib -p tla-eval` to apply 2 suggestions)
-       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/crates/tla-eval)
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-eval)
 warning: `tla-eval` (lib test) generated 3 warnings (3 duplicates)
     Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
+     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/tla_eval-ecdad261fb53d0a2`
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running `/tmp/cargo-mutants-tlatools-rs-oqtjrh.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
+     Running `/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps/evaluate_specs-7aa4b9899970176d`
 
 running 20 tests
 test a_missing_constant_is_reported_before_evaluation ... ok
 test a_temporal_formula_is_refused_rather_than_guessed ... ok
 test a_wrong_effect_is_distinguished_from_an_unmet_guard ... ok
-test an_allowed_step_has_nothing_to_explain ... ok
 test an_action_evaluated_as_a_predicate_says_so ... ok
+test an_allowed_step_has_nothing_to_explain ... ok
+test bounded_buffer_rejects_lifo ... ok
+test bounded_buffer_rejects_overfilling ... ok
 test bounded_buffer_accepts_the_protocol ... ok
 test bank_transfer_conserves_and_refuses_overdraft ... FAILED
-test bounded_buffer_rejects_lifo ... ok
 test closeness_is_measured_over_all_of_an_actions_conjuncts ... ok
-test bounded_buffer_rejects_overfilling ... ok
-test raft_accepts_an_election ... FAILED
-test ring_election_builds_its_initial_state ... FAILED
-test paxos_rejects_a_proposal_without_a_quorum ... FAILED
-test raft_rejects_a_second_vote_in_the_same_term ... FAILED
-test ring_election_rejects_forwarding_a_smaller_id ... FAILED
 test paxos_accepts_a_first_phase ... FAILED
 test raft_rejects_a_leader_without_a_majority ... FAILED
-test two_phase_accepts_prepare_and_abort ... FAILED
-test the_closest_action_and_its_blocking_guard_are_named ... FAILED
+test ring_election_rejects_forwarding_a_smaller_id ... FAILED
+test ring_election_builds_its_initial_state ... FAILED
+test raft_accepts_an_election ... FAILED
 test two_phase_rejects_commit_before_every_rm_prepared ... FAILED
+test the_closest_action_and_its_blocking_guard_are_named ... FAILED
+test paxos_rejects_a_proposal_without_a_quorum ... FAILED
+test two_phase_accepts_prepare_and_abort ... FAILED
+test raft_rejects_a_second_vote_in_the_same_term ... FAILED
 
 failures:
 
 ---- bank_transfer_conserves_and_refuses_overdraft stdout ----
 
-thread 'bank_transfer_conserves_and_refuses_overdraft' (4096115) panicked at crates/tla-eval/tests/evaluate_specs.rs:281:5:
+thread 'bank_transfer_conserves_and_refuses_overdraft' (242053) panicked at crates/tla-eval/tests/evaluate_specs.rs:281:5:
 assertion failed: e.holds_at("Init", &init).unwrap()
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
----- raft_accepts_an_election stdout ----
-
-thread 'raft_accepts_an_election' (4096122) panicked at crates/tla-eval/tests/evaluate_specs.rs:189:5:
-assertion failed: e.holds_at("Init", &init).unwrap()
-
----- ring_election_builds_its_initial_state stdout ----
-
-thread 'ring_election_builds_its_initial_state' (4096125) panicked at crates/tla-eval/tests/evaluate_specs.rs:331:39:
-called `Result::unwrap()` on an `Err` value: Undefined("m")
-
----- paxos_rejects_a_proposal_without_a_quorum stdout ----
-
-thread 'paxos_rejects_a_proposal_without_a_quorum' (4096121) panicked at crates/tla-eval/tests/evaluate_specs.rs:421:55:
-called `Result::unwrap()` on an `Err` value: Undefined("b")
-
----- raft_rejects_a_second_vote_in_the_same_term stdout ----
-
-thread 'raft_rejects_a_second_vote_in_the_same_term' (4096124) panicked at crates/tla-eval/tests/evaluate_specs.rs:263:66:
-called `Result::unwrap()` on an `Err` value: Undefined("s")
-
----- ring_election_rejects_forwarding_a_smaller_id stdout ----
-
-thread 'ring_election_rejects_forwarding_a_smaller_id' (4096126) panicked at crates/tla-eval/tests/evaluate_specs.rs:356:56:
-called `Result::unwrap()` on an `Err` value: Undefined("n")
-
 ---- paxos_accepts_a_first_phase stdout ----
 
-thread 'paxos_accepts_a_first_phase' (4096120) panicked at crates/tla-eval/tests/evaluate_specs.rs:401:5:
+thread 'paxos_accepts_a_first_phase' (242058) panicked at crates/tla-eval/tests/evaluate_specs.rs:401:5:
 assertion failed: e.holds_at("Init", &init).unwrap()
 
 ---- raft_rejects_a_leader_without_a_majority stdout ----
 
-thread 'raft_rejects_a_leader_without_a_majority' (4096123) panicked at crates/tla-eval/tests/evaluate_specs.rs:225:58:
+thread 'raft_rejects_a_leader_without_a_majority' (242061) panicked at crates/tla-eval/tests/evaluate_specs.rs:225:58:
 called `Result::unwrap()` on an `Err` value: Undefined("s")
 
----- two_phase_accepts_prepare_and_abort stdout ----
+---- ring_election_rejects_forwarding_a_smaller_id stdout ----
 
-thread 'two_phase_accepts_prepare_and_abort' (4096128) panicked at crates/tla-eval/tests/evaluate_specs.rs:89:5:
-assertion failed: e.holds_at("TPInit", &init).unwrap()
+thread 'ring_election_rejects_forwarding_a_smaller_id' (242064) panicked at crates/tla-eval/tests/evaluate_specs.rs:356:56:
+called `Result::unwrap()` on an `Err` value: Undefined("n")
 
----- the_closest_action_and_its_blocking_guard_are_named stdout ----
+---- ring_election_builds_its_initial_state stdout ----
 
-thread 'the_closest_action_and_its_blocking_guard_are_named' (4096127) panicked at crates/tla-eval/tests/evaluate_specs.rs:480:58:
-called `Result::unwrap()` on an `Err` value: Undefined("s")
+thread 'ring_election_builds_its_initial_state' (242063) panicked at crates/tla-eval/tests/evaluate_specs.rs:331:39:
+called `Result::unwrap()` on an `Err` value: Undefined("m")
+
+---- raft_accepts_an_election stdout ----
+
+thread 'raft_accepts_an_election' (242060) panicked at crates/tla-eval/tests/evaluate_specs.rs:189:5:
+assertion failed: e.holds_at("Init", &init).unwrap()
 
 ---- two_phase_rejects_commit_before_every_rm_prepared stdout ----
 
-thread 'two_phase_rejects_commit_before_every_rm_prepared' (4096129) panicked at crates/tla-eval/tests/evaluate_specs.rs:127:66:
+thread 'two_phase_rejects_commit_before_every_rm_prepared' (242069) panicked at crates/tla-eval/tests/evaluate_specs.rs:127:66:
 called `Result::unwrap()` on an `Err` value: Undefined("r")
+
+---- the_closest_action_and_its_blocking_guard_are_named stdout ----
+
+thread 'the_closest_action_and_its_blocking_guard_are_named' (242066) panicked at crates/tla-eval/tests/evaluate_specs.rs:480:58:
+called `Result::unwrap()` on an `Err` value: Undefined("s")
+
+---- paxos_rejects_a_proposal_without_a_quorum stdout ----
+
+thread 'paxos_rejects_a_proposal_without_a_quorum' (242059) panicked at crates/tla-eval/tests/evaluate_specs.rs:421:55:
+called `Result::unwrap()` on an `Err` value: Undefined("b")
+
+---- two_phase_accepts_prepare_and_abort stdout ----
+
+thread 'two_phase_accepts_prepare_and_abort' (242068) panicked at crates/tla-eval/tests/evaluate_specs.rs:89:5:
+assertion failed: e.holds_at("TPInit", &init).unwrap()
+
+---- raft_rejects_a_second_vote_in_the_same_term stdout ----
+
+thread 'raft_rejects_a_second_vote_in_the_same_term' (242062) panicked at crates/tla-eval/tests/evaluate_specs.rs:263:66:
+called `Result::unwrap()` on an `Err` value: Undefined("s")
 
 
 failures:

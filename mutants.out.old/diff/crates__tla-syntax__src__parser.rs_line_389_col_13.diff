@@ -1,0 +1,29 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Kw(Kw::Variable | Kw::Constant | Kw::Assume | Kw::Theorem | Kw::Local | Kw::Instance | Kw::Recursive,) in Parser::at_unit_start
+@@ -381,25 +381,17 @@
+ 
+     /// Does a new module unit begin here? Only tokens in the first column can,
+     /// which is what keeps a proof's own keywords from ending it early.
+     fn at_unit_start(&self) -> bool {
+         if self.col() != 1 {
+             return false;
+         }
+         match self.peek() {
+-            Tok::Kw(
+-                Kw::Variable
+-                | Kw::Constant
+-                | Kw::Assume
+-                | Kw::Theorem
+-                | Kw::Local
+-                | Kw::Instance
+-                | Kw::Recursive,
+-            ) => true,
++             /* ~ changed by cargo-mutants ~ */
+             Tok::Ident(_) => matches!(
+                 self.peek_at(1),
+                 Tok::DefEq | Tok::LParen | Tok::LBrack | Tok::Op(_)
+             ),
+             _ => false,
+         }
+     }
+ 

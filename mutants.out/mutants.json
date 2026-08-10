@@ -16083,7 +16083,7 @@
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_equals -> Result<Tok> with Ok(Default::default())\n@@ -356,42 +356,17 @@\n                     });\n                 }\n                 Some(c) => s.push(c),\n             }\n         }\n     }\n \n     fn scan_equals(&mut self) -> Result<Tok> {\n-        let run = self.run_of('=');\n-        if run >= 4 {\n-            self.advance(run);\n-            return Ok(Tok::ModuleEnd);\n-        }\n-        if run == 2 {\n-            self.advance(2);\n-            return Ok(Tok::DefEq);\n-        }\n-        if run == 1 {\n-            return Ok(match self.at(1) {\n-                Some('>') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Implies)\n-                }\n-                Some('<') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Le)\n-                }\n-                _ => {\n-                    self.bump();\n-                    Tok::Op(Op::Eq)\n-                }\n-            });\n-        }\n-        Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n \n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n         if self.starts_with(\"-+->\") {\n             self.advance(4);\n             return Tok::Op(Op::User(\"-+->\"));\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_equals -> Result<Tok> with Ok(Default::default())\n@@ -356,46 +356,17 @@\n                     });\n                 }\n                 Some(c) => s.push(c),\n             }\n         }\n     }\n \n     fn scan_equals(&mut self) -> Result<Tok> {\n-        let run = self.run_of('=');\n-        if run >= 4 {\n-            self.advance(run);\n-            return Ok(Tok::ModuleEnd);\n-        }\n-        if run == 2 {\n-            self.advance(2);\n-            return Ok(Tok::DefEq);\n-        }\n-        if run == 1 {\n-            return Ok(match self.at(1) {\n-                Some('>') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Implies)\n-                }\n-                Some('<') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Le)\n-                }\n-                Some('|') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::User(\"=|\"))\n-                }\n-                _ => {\n-                    self.bump();\n-                    Tok::Op(Op::Eq)\n-                }\n-            });\n-        }\n-        Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n \n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n         if self.starts_with(\"-+->\") {\n             self.advance(4);\n             return Tok::Op(Op::User(\"-+->\"));\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_equals",
@@ -16091,7 +16091,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16106,7 +16106,7 @@
     "span": {
       "end": {
         "column": 79,
-        "line": 389
+        "line": 393
       },
       "start": {
         "column": 9,
@@ -16123,7 +16123,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16155,7 +16155,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16187,7 +16187,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16211,7 +16211,7 @@
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm Some('>') in Lexer::scan_equals\n@@ -367,20 +367,17 @@\n             return Ok(Tok::ModuleEnd);\n         }\n         if run == 2 {\n             self.advance(2);\n             return Ok(Tok::DefEq);\n         }\n         if run == 1 {\n             return Ok(match self.at(1) {\n-                Some('>') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Implies)\n-                }\n+                 /* ~ changed by cargo-mutants ~ */\n                 Some('<') => {\n                     self.advance(2);\n                     Tok::Op(Op::Le)\n                 }\n                 _ => {\n                     self.bump();\n                     Tok::Op(Op::Eq)\n                 }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm Some('>') in Lexer::scan_equals\n@@ -367,20 +367,17 @@\n             return Ok(Tok::ModuleEnd);\n         }\n         if run == 2 {\n             self.advance(2);\n             return Ok(Tok::DefEq);\n         }\n         if run == 1 {\n             return Ok(match self.at(1) {\n-                Some('>') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Implies)\n-                }\n+                 /* ~ changed by cargo-mutants ~ */\n                 Some('<') => {\n                     self.advance(2);\n                     Tok::Op(Op::Le)\n                 }\n                 Some('|') => {\n                     self.advance(2);\n                     Tok::Op(Op::User(\"=|\"))\n                 }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_equals",
@@ -16219,7 +16219,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16243,7 +16243,7 @@
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm Some('<') in Lexer::scan_equals\n@@ -371,20 +371,17 @@\n             return Ok(Tok::DefEq);\n         }\n         if run == 1 {\n             return Ok(match self.at(1) {\n                 Some('>') => {\n                     self.advance(2);\n                     Tok::Op(Op::Implies)\n                 }\n-                Some('<') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Le)\n-                }\n+                 /* ~ changed by cargo-mutants ~ */\n                 _ => {\n                     self.bump();\n                     Tok::Op(Op::Eq)\n                 }\n             });\n         }\n         Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n     }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm Some('<') in Lexer::scan_equals\n@@ -371,20 +371,17 @@\n             return Ok(Tok::DefEq);\n         }\n         if run == 1 {\n             return Ok(match self.at(1) {\n                 Some('>') => {\n                     self.advance(2);\n                     Tok::Op(Op::Implies)\n                 }\n-                Some('<') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::Le)\n-                }\n+                 /* ~ changed by cargo-mutants ~ */\n                 Some('|') => {\n                     self.advance(2);\n                     Tok::Op(Op::User(\"=|\"))\n                 }\n                 _ => {\n                     self.bump();\n                     Tok::Op(Op::Eq)\n                 }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_equals",
@@ -16251,7 +16251,7 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 390
+          "line": 394
         },
         "start": {
           "column": 5,
@@ -16275,7 +16275,39 @@
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_dashes -> Tok with Default::default()\n@@ -387,33 +387,17 @@\n             });\n         }\n         Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n     }\n \n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n-        if self.starts_with(\"-+->\") {\n-            self.advance(4);\n-            return Tok::Op(Op::User(\"-+->\"));\n-        }\n-        let run = self.run_of('-');\n-        if run >= 4 {\n-            self.advance(run);\n-            return Tok::Separator;\n-        }\n-        for (text, tok) in [(\"->\", Tok::Arrow), (\"-|\", Tok::Op(Op::User(\"-|\")))] {\n-            if self.starts_with(text) {\n-                self.advance(2);\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Minus)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_lt(&mut self) -> Tok {\n         for (text, tok) in [\n             (\"<<\", Tok::LTup),\n             (\"<=>\", Tok::Op(Op::Equiv)),\n             (\"<=\", Tok::Op(Op::Le)),\n             (\"<-\", Tok::Gets),\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm Some('|') in Lexer::scan_equals\n@@ -375,20 +375,17 @@\n                 Some('>') => {\n                     self.advance(2);\n                     Tok::Op(Op::Implies)\n                 }\n                 Some('<') => {\n                     self.advance(2);\n                     Tok::Op(Op::Le)\n                 }\n-                Some('|') => {\n-                    self.advance(2);\n-                    Tok::Op(Op::User(\"=|\"))\n-                }\n+                 /* ~ changed by cargo-mutants ~ */\n                 _ => {\n                     self.bump();\n                     Tok::Op(Op::Eq)\n                 }\n             });\n         }\n         Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n     }\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_equals",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 394
+        },
+        "start": {
+          "column": 5,
+          "line": 363
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:383:17: delete match arm Some('|') in Lexer::scan_equals",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 18,
+        "line": 386
+      },
+      "start": {
+        "column": 17,
+        "line": 383
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_dashes -> Tok with Default::default()\n@@ -391,33 +391,17 @@\n             });\n         }\n         Err(self.err(\"`===` is neither a definition nor a module terminator\"))\n     }\n \n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n-        if self.starts_with(\"-+->\") {\n-            self.advance(4);\n-            return Tok::Op(Op::User(\"-+->\"));\n-        }\n-        let run = self.run_of('-');\n-        if run >= 4 {\n-            self.advance(run);\n-            return Tok::Separator;\n-        }\n-        for (text, tok) in [(\"->\", Tok::Arrow), (\"-|\", Tok::Op(Op::User(\"-|\")))] {\n-            if self.starts_with(text) {\n-                self.advance(2);\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Minus)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_lt(&mut self) -> Tok {\n         for (text, tok) in [\n             (\"<<\", Tok::LTup),\n             (\"<=>\", Tok::Op(Op::Equiv)),\n             (\"<=\", Tok::Op(Op::Le)),\n             (\"<-\", Tok::Gets),\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_dashes",
@@ -16283,31 +16315,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 412
+          "line": 416
         },
         "start": {
           "column": 5,
-          "line": 392
+          "line": 396
         }
       }
     },
     "genre": "FnValue",
-    "name": "crates/tla-syntax/src/lexer.rs:395:9: replace Lexer::scan_dashes -> Tok with Default::default()",
+    "name": "crates/tla-syntax/src/lexer.rs:399:9: replace Lexer::scan_dashes -> Tok with Default::default()",
     "package": "tla-syntax",
     "replacement": "Default::default()",
     "span": {
       "end": {
         "column": 27,
-        "line": 411
+        "line": 415
       },
       "start": {
         "column": 9,
-        "line": 395
+        "line": 399
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace >= with < in Lexer::scan_dashes\n@@ -392,17 +392,17 @@\n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n         if self.starts_with(\"-+->\") {\n             self.advance(4);\n             return Tok::Op(Op::User(\"-+->\"));\n         }\n         let run = self.run_of('-');\n-        if run >= 4 {\n+        if run < /* ~ changed by cargo-mutants ~ */ 4 {\n             self.advance(run);\n             return Tok::Separator;\n         }\n         for (text, tok) in [(\"->\", Tok::Arrow), (\"-|\", Tok::Op(Op::User(\"-|\")))] {\n             if self.starts_with(text) {\n                 self.advance(2);\n                 return tok;\n             }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace >= with < in Lexer::scan_dashes\n@@ -396,17 +396,17 @@\n     /// A run of four or more dashes is a separator, so the operators spelled\n     /// with dashes have to be recognised around it rather than before it.\n     fn scan_dashes(&mut self) -> Tok {\n         if self.starts_with(\"-+->\") {\n             self.advance(4);\n             return Tok::Op(Op::User(\"-+->\"));\n         }\n         let run = self.run_of('-');\n-        if run >= 4 {\n+        if run < /* ~ changed by cargo-mutants ~ */ 4 {\n             self.advance(run);\n             return Tok::Separator;\n         }\n         for (text, tok) in [(\"->\", Tok::Arrow), (\"-|\", Tok::Op(Op::User(\"-|\")))] {\n             if self.starts_with(text) {\n                 self.advance(2);\n                 return tok;\n             }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_dashes",
@@ -16315,31 +16347,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 412
+          "line": 416
         },
         "start": {
           "column": 5,
-          "line": 392
+          "line": 396
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:400:16: replace >= with < in Lexer::scan_dashes",
+    "name": "crates/tla-syntax/src/lexer.rs:404:16: replace >= with < in Lexer::scan_dashes",
     "package": "tla-syntax",
     "replacement": "<",
     "span": {
       "end": {
         "column": 18,
-        "line": 400
+        "line": 404
       },
       "start": {
         "column": 16,
-        "line": 400
+        "line": 404
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_lt -> Tok with Default::default()\n@@ -407,30 +407,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Minus)\n     }\n \n     fn scan_lt(&mut self) -> Tok {\n-        for (text, tok) in [\n-            (\"<<\", Tok::LTup),\n-            (\"<=>\", Tok::Op(Op::Equiv)),\n-            (\"<=\", Tok::Op(Op::Le)),\n-            (\"<-\", Tok::Gets),\n-            (\"<>\", Tok::Op(Op::Eventually)),\n-        ] {\n-            if self.starts_with(text) {\n-                self.advance(text.len());\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Lt)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_gt(&mut self) -> Tok {\n         for (text, tok) in [(\">>\", Tok::RTup), (\">=\", Tok::Op(Op::Ge))] {\n             if self.starts_with(text) {\n                 self.advance(text.len());\n                 return tok;\n             }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_lt -> Tok with Default::default()\n@@ -411,31 +411,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Minus)\n     }\n \n     fn scan_lt(&mut self) -> Tok {\n-        for (text, tok) in [\n-            (\"<<\", Tok::LTup),\n-            (\"<=>\", Tok::Op(Op::Equiv)),\n-            (\"<=\", Tok::Op(Op::Le)),\n-            (\"<-\", Tok::Gets),\n-            (\"<>\", Tok::Op(Op::Eventually)),\n-            (\"<:\", Tok::Op(Op::User(\"<:\"))),\n-        ] {\n-            if self.starts_with(text) {\n-                self.advance(text.len());\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Lt)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_gt(&mut self) -> Tok {\n         for (text, tok) in [(\">>\", Tok::RTup), (\">=\", Tok::Op(Op::Ge))] {\n             if self.starts_with(text) {\n                 self.advance(text.len());\n                 return tok;\n             }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_lt",
@@ -16347,31 +16379,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 429
+          "line": 434
         },
         "start": {
           "column": 5,
-          "line": 414
+          "line": 418
         }
       }
     },
     "genre": "FnValue",
-    "name": "crates/tla-syntax/src/lexer.rs:415:9: replace Lexer::scan_lt -> Tok with Default::default()",
+    "name": "crates/tla-syntax/src/lexer.rs:419:9: replace Lexer::scan_lt -> Tok with Default::default()",
     "package": "tla-syntax",
     "replacement": "Default::default()",
     "span": {
       "end": {
         "column": 24,
-        "line": 428
+        "line": 433
       },
       "start": {
         "column": 9,
-        "line": 415
+        "line": 419
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_gt -> Tok with Default::default()\n@@ -424,24 +424,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Lt)\n     }\n \n     fn scan_gt(&mut self) -> Tok {\n-        for (text, tok) in [(\">>\", Tok::RTup), (\">=\", Tok::Op(Op::Ge))] {\n-            if self.starts_with(text) {\n-                self.advance(text.len());\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Gt)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_slash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"/\\\\\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::And));\n         }\n         if self.starts_with(\"/=\") {\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_gt -> Tok with Default::default()\n@@ -429,24 +429,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Lt)\n     }\n \n     fn scan_gt(&mut self) -> Tok {\n-        for (text, tok) in [(\">>\", Tok::RTup), (\">=\", Tok::Op(Op::Ge))] {\n-            if self.starts_with(text) {\n-                self.advance(text.len());\n-                return tok;\n-            }\n-        }\n-        self.bump();\n-        Tok::Op(Op::Gt)\n+        Default::default() /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_slash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"/\\\\\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::And));\n         }\n         if self.starts_with(\"/=\") {\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_gt",
@@ -16379,31 +16411,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 440
+          "line": 445
         },
         "start": {
           "column": 5,
-          "line": 431
+          "line": 436
         }
       }
     },
     "genre": "FnValue",
-    "name": "crates/tla-syntax/src/lexer.rs:432:9: replace Lexer::scan_gt -> Tok with Default::default()",
+    "name": "crates/tla-syntax/src/lexer.rs:437:9: replace Lexer::scan_gt -> Tok with Default::default()",
     "package": "tla-syntax",
     "replacement": "Default::default()",
     "span": {
       "end": {
         "column": 24,
-        "line": 439
+        "line": 444
       },
       "start": {
         "column": 9,
-        "line": 432
+        "line": 437
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_slash -> Result<Tok> with Ok(Default::default())\n@@ -435,26 +435,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Gt)\n     }\n \n     fn scan_slash(&mut self) -> Result<Tok> {\n-        if self.starts_with(\"/\\\\\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::And));\n-        }\n-        if self.starts_with(\"/=\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::Neq));\n-        }\n-        self.user_symbol()\n-            .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_slash -> Result<Tok> with Ok(Default::default())\n@@ -440,26 +440,17 @@\n                 return tok;\n             }\n         }\n         self.bump();\n         Tok::Op(Op::Gt)\n     }\n \n     fn scan_slash(&mut self) -> Result<Tok> {\n-        if self.starts_with(\"/\\\\\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::And));\n-        }\n-        if self.starts_with(\"/=\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::Neq));\n-        }\n-        self.user_symbol()\n-            .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_slash",
@@ -16411,31 +16443,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 453
+          "line": 458
         },
         "start": {
           "column": 5,
-          "line": 442
+          "line": 447
         }
       }
     },
     "genre": "FnValue",
-    "name": "crates/tla-syntax/src/lexer.rs:443:9: replace Lexer::scan_slash -> Result<Tok> with Ok(Default::default())",
+    "name": "crates/tla-syntax/src/lexer.rs:448:9: replace Lexer::scan_slash -> Result<Tok> with Ok(Default::default())",
     "package": "tla-syntax",
     "replacement": "Ok(Default::default())",
     "span": {
       "end": {
         "column": 60,
-        "line": 452
+        "line": 457
       },
       "start": {
         "column": 9,
-        "line": 443
+        "line": 448
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_backslash -> Result<Tok> with Ok(Default::default())\n@@ -448,52 +448,11 @@\n             self.advance(2);\n             return Ok(Tok::Op(Op::Neq));\n         }\n         self.user_symbol()\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n-        if self.starts_with(\"\\\\/\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::Or));\n-        }\n-        let start = self.pos + 1;\n-        let mut end = start;\n-        while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n-        }\n-        if end == start {\n-            self.bump();\n-            return Ok(Tok::Op(Op::SetMinus));\n-        }\n-        let name: String = self.chars[start..end].iter().collect();\n-        let op = match name.as_str() {\n-            \"in\" => Op::In,\n-            \"notin\" => Op::NotIn,\n-            \"subseteq\" => Op::Subseteq,\n-            \"supseteq\" => Op::Supseteq,\n-            \"cup\" | \"union\" => Op::Cup,\n-            \"cap\" | \"intersect\" => Op::Cap,\n-            \"times\" | \"X\" => Op::Cartesian,\n-            \"div\" => Op::Div,\n-            \"o\" | \"circ\" => Op::Concat,\n-            \"equiv\" => Op::Equiv,\n-            \"lnot\" | \"neg\" => Op::Not,\n-            \"land\" => Op::And,\n-            \"lor\" => Op::Or,\n-            \"leq\" => Op::Le,\n-            \"geq\" => Op::Ge,\n-            \"neq\" => Op::Neq,\n-            \"A\" | \"forall\" => Op::Forall,\n-            \"E\" | \"exists\" => Op::Exists,\n-            \"AA\" => Op::TemporalForall,\n-            \"EE\" => Op::TemporalExists,\n-            _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n-                Some(op) => op,\n-                None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n-            },\n-        };\n-        self.advance(1 + name.len());\n-        Ok(Tok::Op(op))\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace Lexer::scan_backslash -> Result<Tok> with Ok(Default::default())\n@@ -453,52 +453,11 @@\n             self.advance(2);\n             return Ok(Tok::Op(Op::Neq));\n         }\n         self.user_symbol()\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n-        if self.starts_with(\"\\\\/\") {\n-            self.advance(2);\n-            return Ok(Tok::Op(Op::Or));\n-        }\n-        let start = self.pos + 1;\n-        let mut end = start;\n-        while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n-        }\n-        if end == start {\n-            self.bump();\n-            return Ok(Tok::Op(Op::SetMinus));\n-        }\n-        let name: String = self.chars[start..end].iter().collect();\n-        let op = match name.as_str() {\n-            \"in\" => Op::In,\n-            \"notin\" => Op::NotIn,\n-            \"subseteq\" => Op::Subseteq,\n-            \"supseteq\" => Op::Supseteq,\n-            \"cup\" | \"union\" => Op::Cup,\n-            \"cap\" | \"intersect\" => Op::Cap,\n-            \"times\" | \"X\" => Op::Cartesian,\n-            \"div\" => Op::Div,\n-            \"o\" | \"circ\" => Op::Concat,\n-            \"equiv\" => Op::Equiv,\n-            \"lnot\" | \"neg\" => Op::Not,\n-            \"land\" => Op::And,\n-            \"lor\" => Op::Or,\n-            \"leq\" => Op::Le,\n-            \"geq\" => Op::Ge,\n-            \"neq\" => Op::Neq,\n-            \"A\" | \"forall\" => Op::Forall,\n-            \"E\" | \"exists\" => Op::Exists,\n-            \"AA\" => Op::TemporalForall,\n-            \"EE\" => Op::TemporalExists,\n-            _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n-                Some(op) => op,\n-                None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n-            },\n-        };\n-        self.advance(1 + name.len());\n-        Ok(Tok::Op(op))\n+        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */\n     }\n }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16443,31 +16475,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "FnValue",
-    "name": "crates/tla-syntax/src/lexer.rs:456:9: replace Lexer::scan_backslash -> Result<Tok> with Ok(Default::default())",
+    "name": "crates/tla-syntax/src/lexer.rs:461:9: replace Lexer::scan_backslash -> Result<Tok> with Ok(Default::default())",
     "package": "tla-syntax",
     "replacement": "Ok(Default::default())",
     "span": {
       "end": {
         "column": 24,
-        "line": 497
+        "line": 502
       },
       "start": {
         "column": 9,
-        "line": 456
+        "line": 461
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with - in Lexer::scan_backslash\n@@ -452,17 +452,17 @@\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n-        let start = self.pos + 1;\n+        let start = self.pos - /* ~ changed by cargo-mutants ~ */ 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with - in Lexer::scan_backslash\n@@ -457,17 +457,17 @@\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n-        let start = self.pos + 1;\n+        let start = self.pos - /* ~ changed by cargo-mutants ~ */ 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16475,31 +16507,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:460:30: replace + with - in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:465:30: replace + with - in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "-",
     "span": {
       "end": {
         "column": 31,
-        "line": 460
+        "line": 465
       },
       "start": {
         "column": 30,
-        "line": 460
+        "line": 465
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with * in Lexer::scan_backslash\n@@ -452,17 +452,17 @@\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n-        let start = self.pos + 1;\n+        let start = self.pos * /* ~ changed by cargo-mutants ~ */ 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with * in Lexer::scan_backslash\n@@ -457,17 +457,17 @@\n             .map_or_else(|| Err(self.err(\"stray `/`\")), Ok)\n     }\n \n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n-        let start = self.pos + 1;\n+        let start = self.pos * /* ~ changed by cargo-mutants ~ */ 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16507,31 +16539,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:460:30: replace + with * in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:465:30: replace + with * in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "*",
     "span": {
       "end": {
         "column": 31,
-        "line": 460
+        "line": 465
       },
       "start": {
         "column": 30,
-        "line": 460
+        "line": 465
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace += with -= in Lexer::scan_backslash\n@@ -455,17 +455,17 @@\n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n+            end -= /* ~ changed by cargo-mutants ~ */ 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace += with -= in Lexer::scan_backslash\n@@ -460,17 +460,17 @@\n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n+            end -= /* ~ changed by cargo-mutants ~ */ 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16539,31 +16571,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:463:17: replace += with -= in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:468:17: replace += with -= in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "-=",
     "span": {
       "end": {
         "column": 19,
-        "line": 463
+        "line": 468
       },
       "start": {
         "column": 17,
-        "line": 463
+        "line": 468
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace += with *= in Lexer::scan_backslash\n@@ -455,17 +455,17 @@\n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n+            end *= /* ~ changed by cargo-mutants ~ */ 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace += with *= in Lexer::scan_backslash\n@@ -460,17 +460,17 @@\n     fn scan_backslash(&mut self) -> Result<Tok> {\n         if self.starts_with(\"\\\\/\") {\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n-            end += 1;\n+            end *= /* ~ changed by cargo-mutants ~ */ 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16571,31 +16603,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:463:17: replace += with *= in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:468:17: replace += with *= in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "*=",
     "span": {
       "end": {
         "column": 19,
-        "line": 463
+        "line": 468
       },
       "start": {
         "column": 17,
-        "line": 463
+        "line": 468
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace == with != in Lexer::scan_backslash\n@@ -457,17 +457,17 @@\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n-        if end == start {\n+        if end != /* ~ changed by cargo-mutants ~ */ start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace == with != in Lexer::scan_backslash\n@@ -462,17 +462,17 @@\n             self.advance(2);\n             return Ok(Tok::Op(Op::Or));\n         }\n         let start = self.pos + 1;\n         let mut end = start;\n         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {\n             end += 1;\n         }\n-        if end == start {\n+        if end != /* ~ changed by cargo-mutants ~ */ start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16603,31 +16635,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:465:16: replace == with != in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:470:16: replace == with != in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "!=",
     "span": {
       "end": {
         "column": 18,
-        "line": 465
+        "line": 470
       },
       "start": {
         "column": 16,
-        "line": 465
+        "line": 470
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"in\" in Lexer::scan_backslash\n@@ -463,17 +463,17 @@\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n-            \"in\" => Op::In,\n+             /* ~ changed by cargo-mutants ~ */\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"in\" in Lexer::scan_backslash\n@@ -468,17 +468,17 @@\n             end += 1;\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n-            \"in\" => Op::In,\n+             /* ~ changed by cargo-mutants ~ */\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16635,31 +16667,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:471:13: delete match arm \"in\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:476:13: delete match arm \"in\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 28,
-        "line": 471
+        "line": 476
       },
       "start": {
         "column": 13,
-        "line": 471
+        "line": 476
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"notin\" in Lexer::scan_backslash\n@@ -464,17 +464,17 @@\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n-            \"notin\" => Op::NotIn,\n+             /* ~ changed by cargo-mutants ~ */\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"notin\" in Lexer::scan_backslash\n@@ -469,17 +469,17 @@\n         }\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n-            \"notin\" => Op::NotIn,\n+             /* ~ changed by cargo-mutants ~ */\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16667,181 +16699,21 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:472:13: delete match arm \"notin\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:477:13: delete match arm \"notin\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 34,
-        "line": 472
-      },
-      "start": {
-        "column": 13,
-        "line": 472
-      }
-    }
-  },
-  {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"subseteq\" in Lexer::scan_backslash\n@@ -465,17 +465,17 @@\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n-            \"subseteq\" => Op::Subseteq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n",
-    "file": "crates/tla-syntax/src/lexer.rs",
-    "function": {
-      "function_name": "Lexer::scan_backslash",
-      "return_type": "-> Result<Tok>",
-      "span": {
-        "end": {
-          "column": 6,
-          "line": 498
-        },
-        "start": {
-          "column": 5,
-          "line": 455
-        }
-      }
-    },
-    "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:473:13: delete match arm \"subseteq\" in Lexer::scan_backslash",
-    "package": "tla-syntax",
-    "replacement": "",
-    "span": {
-      "end": {
-        "column": 40,
-        "line": 473
-      },
-      "start": {
-        "column": 13,
-        "line": 473
-      }
-    }
-  },
-  {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"supseteq\" in Lexer::scan_backslash\n@@ -466,17 +466,17 @@\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n-            \"supseteq\" => Op::Supseteq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n",
-    "file": "crates/tla-syntax/src/lexer.rs",
-    "function": {
-      "function_name": "Lexer::scan_backslash",
-      "return_type": "-> Result<Tok>",
-      "span": {
-        "end": {
-          "column": 6,
-          "line": 498
-        },
-        "start": {
-          "column": 5,
-          "line": 455
-        }
-      }
-    },
-    "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:474:13: delete match arm \"supseteq\" in Lexer::scan_backslash",
-    "package": "tla-syntax",
-    "replacement": "",
-    "span": {
-      "end": {
-        "column": 40,
-        "line": 474
-      },
-      "start": {
-        "column": 13,
-        "line": 474
-      }
-    }
-  },
-  {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"cup\" | \"union\" in Lexer::scan_backslash\n@@ -467,17 +467,17 @@\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n-            \"cup\" | \"union\" => Op::Cup,\n+             /* ~ changed by cargo-mutants ~ */\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n",
-    "file": "crates/tla-syntax/src/lexer.rs",
-    "function": {
-      "function_name": "Lexer::scan_backslash",
-      "return_type": "-> Result<Tok>",
-      "span": {
-        "end": {
-          "column": 6,
-          "line": 498
-        },
-        "start": {
-          "column": 5,
-          "line": 455
-        }
-      }
-    },
-    "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:475:13: delete match arm \"cup\" | \"union\" in Lexer::scan_backslash",
-    "package": "tla-syntax",
-    "replacement": "",
-    "span": {
-      "end": {
-        "column": 40,
-        "line": 475
-      },
-      "start": {
-        "column": 13,
-        "line": 475
-      }
-    }
-  },
-  {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"cap\" | \"intersect\" in Lexer::scan_backslash\n@@ -468,17 +468,17 @@\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n-            \"cap\" | \"intersect\" => Op::Cap,\n+             /* ~ changed by cargo-mutants ~ */\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n",
-    "file": "crates/tla-syntax/src/lexer.rs",
-    "function": {
-      "function_name": "Lexer::scan_backslash",
-      "return_type": "-> Result<Tok>",
-      "span": {
-        "end": {
-          "column": 6,
-          "line": 498
-        },
-        "start": {
-          "column": 5,
-          "line": 455
-        }
-      }
-    },
-    "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:476:13: delete match arm \"cap\" | \"intersect\" in Lexer::scan_backslash",
-    "package": "tla-syntax",
-    "replacement": "",
-    "span": {
-      "end": {
-        "column": 44,
-        "line": 476
-      },
-      "start": {
-        "column": 13,
-        "line": 476
-      }
-    }
-  },
-  {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"times\" | \"X\" in Lexer::scan_backslash\n@@ -469,17 +469,17 @@\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n-            \"times\" | \"X\" => Op::Cartesian,\n+             /* ~ changed by cargo-mutants ~ */\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n",
-    "file": "crates/tla-syntax/src/lexer.rs",
-    "function": {
-      "function_name": "Lexer::scan_backslash",
-      "return_type": "-> Result<Tok>",
-      "span": {
-        "end": {
-          "column": 6,
-          "line": 498
-        },
-        "start": {
-          "column": 5,
-          "line": 455
-        }
-      }
-    },
-    "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:477:13: delete match arm \"times\" | \"X\" in Lexer::scan_backslash",
-    "package": "tla-syntax",
-    "replacement": "",
-    "span": {
-      "end": {
-        "column": 44,
         "line": 477
       },
       "start": {
@@ -16851,7 +16723,7 @@
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"div\" in Lexer::scan_backslash\n@@ -470,17 +470,17 @@\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n-            \"div\" => Op::Div,\n+             /* ~ changed by cargo-mutants ~ */\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"subseteq\" in Lexer::scan_backslash\n@@ -470,17 +470,17 @@\n         if end == start {\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n-            \"subseteq\" => Op::Subseteq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16859,31 +16731,191 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:478:13: delete match arm \"div\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:478:13: delete match arm \"subseteq\" in Lexer::scan_backslash",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 40,
+        "line": 478
+      },
+      "start": {
+        "column": 13,
+        "line": 478
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"supseteq\" in Lexer::scan_backslash\n@@ -471,17 +471,17 @@\n             self.bump();\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n-            \"supseteq\" => Op::Supseteq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_backslash",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 503
+        },
+        "start": {
+          "column": 5,
+          "line": 460
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:479:13: delete match arm \"supseteq\" in Lexer::scan_backslash",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 40,
+        "line": 479
+      },
+      "start": {
+        "column": 13,
+        "line": 479
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"cup\" | \"union\" in Lexer::scan_backslash\n@@ -472,17 +472,17 @@\n             return Ok(Tok::Op(Op::SetMinus));\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n-            \"cup\" | \"union\" => Op::Cup,\n+             /* ~ changed by cargo-mutants ~ */\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_backslash",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 503
+        },
+        "start": {
+          "column": 5,
+          "line": 460
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:480:13: delete match arm \"cup\" | \"union\" in Lexer::scan_backslash",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 40,
+        "line": 480
+      },
+      "start": {
+        "column": 13,
+        "line": 480
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"cap\" | \"intersect\" in Lexer::scan_backslash\n@@ -473,17 +473,17 @@\n         }\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n-            \"cap\" | \"intersect\" => Op::Cap,\n+             /* ~ changed by cargo-mutants ~ */\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_backslash",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 503
+        },
+        "start": {
+          "column": 5,
+          "line": 460
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:481:13: delete match arm \"cap\" | \"intersect\" in Lexer::scan_backslash",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 44,
+        "line": 481
+      },
+      "start": {
+        "column": 13,
+        "line": 481
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"times\" | \"X\" in Lexer::scan_backslash\n@@ -474,17 +474,17 @@\n         let name: String = self.chars[start..end].iter().collect();\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n-            \"times\" | \"X\" => Op::Cartesian,\n+             /* ~ changed by cargo-mutants ~ */\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_backslash",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 503
+        },
+        "start": {
+          "column": 5,
+          "line": 460
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:482:13: delete match arm \"times\" | \"X\" in Lexer::scan_backslash",
+    "package": "tla-syntax",
+    "replacement": "",
+    "span": {
+      "end": {
+        "column": 44,
+        "line": 482
+      },
+      "start": {
+        "column": 13,
+        "line": 482
+      }
+    }
+  },
+  {
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"div\" in Lexer::scan_backslash\n@@ -475,17 +475,17 @@\n         let op = match name.as_str() {\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n-            \"div\" => Op::Div,\n+             /* ~ changed by cargo-mutants ~ */\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n",
+    "file": "crates/tla-syntax/src/lexer.rs",
+    "function": {
+      "function_name": "Lexer::scan_backslash",
+      "return_type": "-> Result<Tok>",
+      "span": {
+        "end": {
+          "column": 6,
+          "line": 503
+        },
+        "start": {
+          "column": 5,
+          "line": 460
+        }
+      }
+    },
+    "genre": "MatchArm",
+    "name": "crates/tla-syntax/src/lexer.rs:483:13: delete match arm \"div\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 30,
-        "line": 478
+        "line": 483
       },
       "start": {
         "column": 13,
-        "line": 478
+        "line": 483
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"o\" | \"circ\" in Lexer::scan_backslash\n@@ -471,17 +471,17 @@\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n-            \"o\" | \"circ\" => Op::Concat,\n+             /* ~ changed by cargo-mutants ~ */\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"o\" | \"circ\" in Lexer::scan_backslash\n@@ -476,17 +476,17 @@\n             \"in\" => Op::In,\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n-            \"o\" | \"circ\" => Op::Concat,\n+             /* ~ changed by cargo-mutants ~ */\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16891,31 +16923,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:479:13: delete match arm \"o\" | \"circ\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:484:13: delete match arm \"o\" | \"circ\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 40,
-        "line": 479
+        "line": 484
       },
       "start": {
         "column": 13,
-        "line": 479
+        "line": 484
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"equiv\" in Lexer::scan_backslash\n@@ -472,17 +472,17 @@\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n-            \"equiv\" => Op::Equiv,\n+             /* ~ changed by cargo-mutants ~ */\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"equiv\" in Lexer::scan_backslash\n@@ -477,17 +477,17 @@\n             \"notin\" => Op::NotIn,\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n-            \"equiv\" => Op::Equiv,\n+             /* ~ changed by cargo-mutants ~ */\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16923,31 +16955,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:480:13: delete match arm \"equiv\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:485:13: delete match arm \"equiv\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 34,
-        "line": 480
+        "line": 485
       },
       "start": {
         "column": 13,
-        "line": 480
+        "line": 485
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"lnot\" | \"neg\" in Lexer::scan_backslash\n@@ -473,17 +473,17 @@\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n-            \"lnot\" | \"neg\" => Op::Not,\n+             /* ~ changed by cargo-mutants ~ */\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"lnot\" | \"neg\" in Lexer::scan_backslash\n@@ -478,17 +478,17 @@\n             \"subseteq\" => Op::Subseteq,\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n-            \"lnot\" | \"neg\" => Op::Not,\n+             /* ~ changed by cargo-mutants ~ */\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16955,31 +16987,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:481:13: delete match arm \"lnot\" | \"neg\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:486:13: delete match arm \"lnot\" | \"neg\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 39,
-        "line": 481
+        "line": 486
       },
       "start": {
         "column": 13,
-        "line": 481
+        "line": 486
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"land\" in Lexer::scan_backslash\n@@ -474,17 +474,17 @@\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n-            \"land\" => Op::And,\n+             /* ~ changed by cargo-mutants ~ */\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"land\" in Lexer::scan_backslash\n@@ -479,17 +479,17 @@\n             \"supseteq\" => Op::Supseteq,\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n-            \"land\" => Op::And,\n+             /* ~ changed by cargo-mutants ~ */\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -16987,31 +17019,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:482:13: delete match arm \"land\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:487:13: delete match arm \"land\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 31,
-        "line": 482
+        "line": 487
       },
       "start": {
         "column": 13,
-        "line": 482
+        "line": 487
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"lor\" in Lexer::scan_backslash\n@@ -475,17 +475,17 @@\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n-            \"lor\" => Op::Or,\n+             /* ~ changed by cargo-mutants ~ */\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"lor\" in Lexer::scan_backslash\n@@ -480,17 +480,17 @@\n             \"cup\" | \"union\" => Op::Cup,\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n-            \"lor\" => Op::Or,\n+             /* ~ changed by cargo-mutants ~ */\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17019,31 +17051,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:483:13: delete match arm \"lor\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:488:13: delete match arm \"lor\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 29,
-        "line": 483
+        "line": 488
       },
       "start": {
         "column": 13,
-        "line": 483
+        "line": 488
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"leq\" in Lexer::scan_backslash\n@@ -476,17 +476,17 @@\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n-            \"leq\" => Op::Le,\n+             /* ~ changed by cargo-mutants ~ */\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"leq\" in Lexer::scan_backslash\n@@ -481,17 +481,17 @@\n             \"cap\" | \"intersect\" => Op::Cap,\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n-            \"leq\" => Op::Le,\n+             /* ~ changed by cargo-mutants ~ */\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17051,31 +17083,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:484:13: delete match arm \"leq\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:489:13: delete match arm \"leq\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 29,
-        "line": 484
+        "line": 489
       },
       "start": {
         "column": 13,
-        "line": 484
+        "line": 489
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"geq\" in Lexer::scan_backslash\n@@ -477,17 +477,17 @@\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n-            \"geq\" => Op::Ge,\n+             /* ~ changed by cargo-mutants ~ */\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"geq\" in Lexer::scan_backslash\n@@ -482,17 +482,17 @@\n             \"times\" | \"X\" => Op::Cartesian,\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n-            \"geq\" => Op::Ge,\n+             /* ~ changed by cargo-mutants ~ */\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17083,31 +17115,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:485:13: delete match arm \"geq\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:490:13: delete match arm \"geq\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 29,
-        "line": 485
+        "line": 490
       },
       "start": {
         "column": 13,
-        "line": 485
+        "line": 490
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"neq\" in Lexer::scan_backslash\n@@ -478,17 +478,17 @@\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n-            \"neq\" => Op::Neq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"neq\" in Lexer::scan_backslash\n@@ -483,17 +483,17 @@\n             \"div\" => Op::Div,\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n-            \"neq\" => Op::Neq,\n+             /* ~ changed by cargo-mutants ~ */\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17115,31 +17147,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:486:13: delete match arm \"neq\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:491:13: delete match arm \"neq\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 30,
-        "line": 486
+        "line": 491
       },
       "start": {
         "column": 13,
-        "line": 486
+        "line": 491
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"A\" | \"forall\" in Lexer::scan_backslash\n@@ -479,17 +479,17 @@\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n-            \"A\" | \"forall\" => Op::Forall,\n+             /* ~ changed by cargo-mutants ~ */\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"A\" | \"forall\" in Lexer::scan_backslash\n@@ -484,17 +484,17 @@\n             \"o\" | \"circ\" => Op::Concat,\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n-            \"A\" | \"forall\" => Op::Forall,\n+             /* ~ changed by cargo-mutants ~ */\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17147,31 +17179,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:487:13: delete match arm \"A\" | \"forall\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:492:13: delete match arm \"A\" | \"forall\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 42,
-        "line": 487
+        "line": 492
       },
       "start": {
         "column": 13,
-        "line": 487
+        "line": 492
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"E\" | \"exists\" in Lexer::scan_backslash\n@@ -480,17 +480,17 @@\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n-            \"E\" | \"exists\" => Op::Exists,\n+             /* ~ changed by cargo-mutants ~ */\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"E\" | \"exists\" in Lexer::scan_backslash\n@@ -485,17 +485,17 @@\n             \"equiv\" => Op::Equiv,\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n-            \"E\" | \"exists\" => Op::Exists,\n+             /* ~ changed by cargo-mutants ~ */\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17179,31 +17211,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:488:13: delete match arm \"E\" | \"exists\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:493:13: delete match arm \"E\" | \"exists\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 42,
-        "line": 488
+        "line": 493
       },
       "start": {
         "column": 13,
-        "line": 488
+        "line": 493
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"AA\" in Lexer::scan_backslash\n@@ -481,17 +481,17 @@\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n-            \"AA\" => Op::TemporalForall,\n+             /* ~ changed by cargo-mutants ~ */\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n         Ok(Tok::Op(op))\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"AA\" in Lexer::scan_backslash\n@@ -486,17 +486,17 @@\n             \"lnot\" | \"neg\" => Op::Not,\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n-            \"AA\" => Op::TemporalForall,\n+             /* ~ changed by cargo-mutants ~ */\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n         Ok(Tok::Op(op))\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17211,31 +17243,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:489:13: delete match arm \"AA\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:494:13: delete match arm \"AA\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 40,
-        "line": 489
+        "line": 494
       },
       "start": {
         "column": 13,
-        "line": 489
+        "line": 494
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"EE\" in Lexer::scan_backslash\n@@ -482,17 +482,17 @@\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n-            \"EE\" => Op::TemporalExists,\n+             /* ~ changed by cargo-mutants ~ */\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n         Ok(Tok::Op(op))\n     }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ delete match arm \"EE\" in Lexer::scan_backslash\n@@ -487,17 +487,17 @@\n             \"land\" => Op::And,\n             \"lor\" => Op::Or,\n             \"leq\" => Op::Le,\n             \"geq\" => Op::Ge,\n             \"neq\" => Op::Neq,\n             \"A\" | \"forall\" => Op::Forall,\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n-            \"EE\" => Op::TemporalExists,\n+             /* ~ changed by cargo-mutants ~ */\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n         self.advance(1 + name.len());\n         Ok(Tok::Op(op))\n     }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17243,31 +17275,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "MatchArm",
-    "name": "crates/tla-syntax/src/lexer.rs:490:13: delete match arm \"EE\" in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:495:13: delete match arm \"EE\" in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "",
     "span": {
       "end": {
         "column": 40,
-        "line": 490
+        "line": 495
       },
       "start": {
         "column": 13,
-        "line": 490
+        "line": 495
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with - in Lexer::scan_backslash\n@@ -488,12 +488,12 @@\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n-        self.advance(1 + name.len());\n+        self.advance(1 - /* ~ changed by cargo-mutants ~ */ name.len());\n         Ok(Tok::Op(op))\n     }\n }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with - in Lexer::scan_backslash\n@@ -493,12 +493,12 @@\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n-        self.advance(1 + name.len());\n+        self.advance(1 - /* ~ changed by cargo-mutants ~ */ name.len());\n         Ok(Tok::Op(op))\n     }\n }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17275,31 +17307,31 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:496:24: replace + with - in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:501:24: replace + with - in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "-",
     "span": {
       "end": {
         "column": 25,
-        "line": 496
+        "line": 501
       },
       "start": {
         "column": 24,
-        "line": 496
+        "line": 501
       }
     }
   },
   {
-    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with * in Lexer::scan_backslash\n@@ -488,12 +488,12 @@\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n-        self.advance(1 + name.len());\n+        self.advance(1 * /* ~ changed by cargo-mutants ~ */ name.len());\n         Ok(Tok::Op(op))\n     }\n }\n",
+    "diff": "--- crates/tla-syntax/src/lexer.rs\n+++ replace + with * in Lexer::scan_backslash\n@@ -493,12 +493,12 @@\n             \"E\" | \"exists\" => Op::Exists,\n             \"AA\" => Op::TemporalForall,\n             \"EE\" => Op::TemporalExists,\n             _ => match token::user_operator(&format!(\"\\\\{name}\")) {\n                 Some(op) => op,\n                 None => return Err(self.err(format!(\"unknown operator `\\\\{name}`\"))),\n             },\n         };\n-        self.advance(1 + name.len());\n+        self.advance(1 * /* ~ changed by cargo-mutants ~ */ name.len());\n         Ok(Tok::Op(op))\n     }\n }\n",
     "file": "crates/tla-syntax/src/lexer.rs",
     "function": {
       "function_name": "Lexer::scan_backslash",
@@ -17307,26 +17339,26 @@
       "span": {
         "end": {
           "column": 6,
-          "line": 498
+          "line": 503
         },
         "start": {
           "column": 5,
-          "line": 455
+          "line": 460
         }
       }
     },
     "genre": "BinaryOperator",
-    "name": "crates/tla-syntax/src/lexer.rs:496:24: replace + with * in Lexer::scan_backslash",
+    "name": "crates/tla-syntax/src/lexer.rs:501:24: replace + with * in Lexer::scan_backslash",
     "package": "tla-syntax",
     "replacement": "*",
     "span": {
       "end": {
         "column": 25,
-        "line": 496
+        "line": 501
       },
       "start": {
         "column": 24,
-        "line": 496
+        "line": 501
       }
     }
   },

@@ -1,0 +1,64 @@
+
+*** crates/tla-syntax/src/parser.rs:969:9: replace Parser::field_list -> Result<Vec<(String, Expr)>> with Ok(vec![("xyzzy".into(), Default::default())])
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::field_list -> Result<Vec<(String, Expr)>> with Ok(vec![("xyzzy".into(), Default::default())])
+@@ -961,25 +961,17 @@
+         let subscript = self.subscript()?;
+         Ok(Expr::ActionBox {
+             action: Box::new(inner),
+             subscript: Box::new(subscript),
+         })
+     }
+ 
+     fn field_list(&mut self, sep: &Tok) -> Result<Vec<(String, Expr)>> {
+-        let mut out = Vec::new();
+-        loop {
+-            let name = self.expect_ident()?;
+-            self.expect(sep)?;
+-            out.push((name, self.expr(0)?));
+-            if !self.eat(&Tok::Comma) {
+-                return Ok(out);
+-            }
+-        }
++        Ok(vec![("xyzzy".into(), Default::default())]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn except_updates(&mut self) -> Result<Vec<(Vec<ExceptPath>, Expr)>> {
+         let mut out = Vec::new();
+         loop {
+             self.expect(&Tok::Bang)?;
+             let mut path = Vec::new();
+             loop {
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786402348.958185479s, 392024005ns after last build at 1786402348.566161474s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps`
+error[E0277]: the trait bound `Expr: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:969:34
+    |
+969 |         Ok(vec![("xyzzy".into(), Default::default())]) /* ~ changed by cargo-mutants ~ */
+    |                                  ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Expr`
+   --> crates/tla-syntax/src/ast.rs:132:1
+    |
+132 | pub enum Expr {
+    | ^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ot8uTz.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)
