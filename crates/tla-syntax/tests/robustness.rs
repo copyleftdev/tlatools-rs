@@ -8,7 +8,7 @@
 
 use std::path::Path;
 
-use tla_syntax::{parse_expression, parse_module};
+use tla_syntax::{DEFAULT_NESTING_LIMIT, parse_expression, parse_module, parse_module_bounded};
 
 fn fixtures() -> Vec<(String, String)> {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../specs");
@@ -111,25 +111,50 @@ fn hostile_fragments_are_errors_and_not_panics() {
     }
 }
 
+fn nested(depth: usize) -> String {
+    format!(
+        "---- MODULE M ----\nX == {}1{}\n====",
+        "(".repeat(depth),
+        ")".repeat(depth)
+    )
+}
+
 /// Nesting has to be bounded, or a file of open brackets takes the process
 /// down with it. Anything within the bound must still parse.
+///
+/// Run on a thread with a stack chosen from the measurement in
+/// `examples/depth.rs`: the default limit costs about 5 MiB unoptimised, and
+/// tests are unoptimised, so the 2 MiB a spawned thread is given by default
+/// would not do. That the caller has to think about this is the reason
+/// `parse_module_bounded` exists.
 #[test]
 fn nesting_is_bounded_rather_than_fatal() {
-    let nested = |depth: usize| {
-        format!(
-            "---- MODULE M ----\nX == {}1{}\n====",
-            "(".repeat(depth),
-            ")".repeat(depth)
-        )
-    };
-    for depth in [1, 8, 32, 60] {
-        assert!(
-            parse_module(&nested(depth)).is_ok(),
-            "nesting {depth} deep is within the bound and should parse"
-        );
-    }
-    for depth in [200, 5_000] {
-        let err = parse_module(&nested(depth)).expect_err("beyond the bound");
-        assert!(err.message.contains("nest"), "{err}");
-    }
+    std::thread::Builder::new()
+        .stack_size(16 * 1024 * 1024)
+        .spawn(|| {
+            for depth in [1, 8, 32, DEFAULT_NESTING_LIMIT - 4] {
+                assert!(
+                    parse_module(&nested(depth)).is_ok(),
+                    "nesting {depth} deep is within the bound and should parse"
+                );
+            }
+            for depth in [DEFAULT_NESTING_LIMIT + 1, 20_000] {
+                let err = parse_module(&nested(depth)).expect_err("beyond the bound");
+                assert!(err.message.contains("nest"), "{err}");
+            }
+        })
+        .expect("thread")
+        .join()
+        .expect("the parser does not exhaust a stack sized for it");
+}
+
+/// A caller with less stack than the default assumes can ask for less, and
+/// gets an error where it would otherwise have run out.
+#[test]
+fn the_nesting_limit_can_be_lowered() {
+    assert!(parse_module_bounded(&nested(8), 16).is_ok());
+    let err = parse_module_bounded(&nested(20), 16).expect_err("beyond the given bound");
+    assert!(err.message.contains("16"), "the limit is named: {err}");
+    // A deeply nested file is refused without the stack ever being at risk.
+    assert!(parse_module_bounded(&nested(100_000), 16).is_err());
 }

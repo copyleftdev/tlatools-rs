@@ -4,13 +4,24 @@ use crate::lexer::lex;
 use crate::token::{Kw, Op, Tok, Token};
 
 pub fn parse_module(src: &str) -> Result<Module> {
-    Parser::new(lex(src)?).module()
+    parse_module_bounded(src, DEFAULT_NESTING_LIMIT)
+}
+
+/// Parse with a nesting limit of your own, for a caller whose stack is smaller
+/// than [`DEFAULT_NESTING_LIMIT`] assumes.
+pub fn parse_module_bounded(src: &str, nesting_limit: usize) -> Result<Module> {
+    Parser::new(lex(src)?, nesting_limit).module()
 }
 
 /// Parse a bare expression, with no surrounding module. Task definitions carry
 /// predicates as strings, and they have nowhere else to live.
 pub fn parse_expression(src: &str) -> Result<Expr> {
-    let mut p = Parser::new(lex(src)?);
+    parse_expression_bounded(src, DEFAULT_NESTING_LIMIT)
+}
+
+/// As [`parse_expression`], with a nesting limit of your own.
+pub fn parse_expression_bounded(src: &str, nesting_limit: usize) -> Result<Expr> {
+    let mut p = Parser::new(lex(src)?, nesting_limit);
     let e = p.expr(0)?;
     if matches!(p.peek(), Tok::Eof) {
         Ok(e)
@@ -19,25 +30,28 @@ pub fn parse_expression(src: &str) -> Result<Expr> {
     }
 }
 
-/// How deeply expressions may nest.
+/// How deeply expressions may nest before the parser gives up on them.
 ///
 /// The parser descends recursively, so without a bound a file of enough open
-/// brackets exhausts the stack, and a parser that aborts the process on bad
-/// input is worse than one that rejects it.
+/// brackets exhausts the stack — and a parser that aborts the process on bad
+/// input is worse than one that rejects it. SANY, the reference parser, has no
+/// such bound and dies with a `StackOverflowError`.
 ///
-/// The figure is measured rather than guessed, by `examples/depth.rs`. Across
-/// the 432 modules of the public corpus the deepest expression nests 24. On a
-/// 2 MiB stack — what a spawned thread gets — an unoptimised build reaches
-/// 116 before the stack runs out; an optimised one reaches far more, and the
-/// smaller number is the one that has to be respected. Sixty-four sits at
-/// nearly three times what real specifications ask for and a little over half
-/// of what the tightest build can carry.
-const MAX_NESTING: usize = 64;
+/// The figure is measured, by `examples/depth.rs`, not chosen. Across the 432
+/// modules of the public corpus the deepest expression nests 24, so this is
+/// ten times anything real. Reaching it costs about 512 KiB of stack in an
+/// optimised build and 5 MiB in an unoptimised one, which fits the 8 MiB a
+/// main thread is given but not the 2 MiB a spawned thread gets in a debug
+/// build. A caller in that position should use [`parse_module_bounded`] with
+/// a limit of its own; the cost is close to linear, at roughly 2 KiB per level
+/// optimised and 20 KiB unoptimised.
+pub const DEFAULT_NESTING_LIMIT: usize = 256;
 
 struct Parser {
     toks: Vec<Token>,
     pos: usize,
     depth: usize,
+    nesting_limit: usize,
     /// Column fences from enclosing junction lists. A token at or left of the
     /// innermost fence ends the current conjunct; a bracketed context pushes 0
     /// to suspend the rule while inside it.
@@ -55,11 +69,12 @@ enum Shape {
 }
 
 impl Parser {
-    fn new(toks: Vec<Token>) -> Self {
+    fn new(toks: Vec<Token>, nesting_limit: usize) -> Self {
         Self {
             toks,
             pos: 0,
             depth: 0,
+            nesting_limit,
             fences: Vec::new(),
         }
     }
@@ -483,8 +498,9 @@ impl Parser {
     // ------------------------------------------------------------ expression
 
     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
-        if self.depth >= MAX_NESTING {
-            return Err(self.err(format!("expressions nest more than {MAX_NESTING} deep")));
+        if self.depth >= self.nesting_limit {
+            let limit = self.nesting_limit;
+            return Err(self.err(format!("expressions nest more than {limit} deep")));
         }
         self.depth += 1;
         let parsed = self.expr_inner(min_prec);

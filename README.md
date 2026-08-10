@@ -179,25 +179,31 @@ tools/               corpus runners for this oracle and for TLC
 ```bash
 cargo test
 cargo clippy --all-targets
-cargo mutants                    # are the tests worth having?
+CARGO_MUTANTS_JOBS=4 nice -n 19 cargo mutants   # are the tests worth having?
 cargo run --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')
 cargo run --example depth -p tla-syntax -- $(find CORPUS -name '*.tla')
 ```
 
-Mutation coverage is 85% (603 of 712 viable mutants caught). CI gates the
+Mutation coverage is 85% (603 of 712 viable mutants caught). The run is
+deliberately bounded to four jobs and niced — it will otherwise take every core
+on the machine, for twenty minutes. CI gates the
 *diff* at zero survivors, so it rises rather than drifts. The survivors are
 concentrated in the parser's internal bookkeeping and are listed by
 `cargo mutants`.
 
-`examples/depth.rs` is where the recursion limit comes from: it reports how
-deeply real specifications nest and how far the parser gets on a small stack,
-and the constant is set from those two numbers rather than chosen.
+`examples/depth.rs` is where the nesting limit comes from. Across the public
+corpus the deepest expression nests 24; the default limit is 256, which costs
+about 512 KiB of stack in an optimised build and 5 MiB in an unoptimised one.
+A caller with less stack than that can use `parse_module_bounded`. SANY, the
+reference parser, has no such limit and dies with a `StackOverflowError`
+somewhere past 500.
 
 ## What it will not do
 
-- **Integers are 64-bit.** TLA+'s are unbounded. Arithmetic that would overflow
-  reports an error rather than wrapping, so nothing is silently wrong, but a
-  specification that genuinely needs big numbers is out of reach.
+- **Integers are 64-bit.** TLA+'s are unbounded, so this is not the language.
+  It is, however, wider than the reference implementation: TLC's integers are
+  32-bit, and it refuses the literal `2147483648` outright. Both report
+  overflow rather than wrapping, so neither is ever silently wrong.
 - **Temporal formulas are refused, not evaluated.** `[]P`, `<>P`, `WF_v(A)` and
   `ENABLED A` are about behaviours; this crate is about states and steps.
 - **Proofs are skipped, not checked.** TLAPS proof syntax is recognised so the

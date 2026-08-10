@@ -1,0 +1,11 @@
+# `cargo mutants` runs a build-and-test cycle per mutant and will take every
+# core it is offered. That is antisocial on a machine doing other work, so the
+# repository convention is to bound it explicitly:
+#
+#     CARGO_MUTANTS_JOBS=4 nice -n 19 cargo mutants
+#
+# The job count is not settable here — it is a flag or the environment variable
+# above — but the timeouts are, and they need to be generous when the run is
+# deliberately not using the whole machine.
+timeout_multiplier = 8.0
+minimum_test_timeout = 60

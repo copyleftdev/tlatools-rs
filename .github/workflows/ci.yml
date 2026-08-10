@@ -73,3 +73,5 @@ jobs:
           tool: cargo-mutants
       - name: mutation coverage of the diff
         run: cargo mutants --in-diff <(git diff origin/main...HEAD) -j 2
+        env:
+          CARGO_MUTANTS_JOBS: 2
