@@ -1,0 +1,13 @@
+[package]
+name = "tla-eval"
+description = "Evaluate TLA+ expressions at concrete states"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+tla-syntax = { path = "../tla-syntax" }
+
+[lints]
+workspace = true

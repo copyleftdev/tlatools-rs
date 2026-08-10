@@ -9,13 +9,13 @@ use tla_syntax::{Expr, QuantKind, Unit, parse_module};
 
 fn fixture(name: &str) -> String {
     let path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/specs")
+        .join("../../specs")
         .join(name);
     std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("reading {}: {e}", path.display()))
 }
 
 fn all_fixtures() -> Vec<String> {
-    let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/specs");
+    let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../specs");
     let mut names: Vec<String> = std::fs::read_dir(dir)
         .expect("fixture directory")
         .map(|e| e.expect("dir entry").file_name().to_string_lossy().into())

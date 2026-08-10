@@ -37,6 +37,19 @@ indices corrected by chunk offset afterwards.
 An evaluator answers the question that was actually being asked, and the
 encoding goes away with it.
 
+## Using it
+
+```rust
+let spec = Spec::parse(&std::fs::read_to_string("TwoPhase.tla")?)?;
+let eval = Evaluator::new(&spec, constants)?;
+
+eval.holds_at("TPInit", &state)?;          // is this a legal initial state?
+eval.step_allowed("TPNext", &from, &to)?;  // is this a legal step?
+```
+
+No generated modules, no subprocess, no counterexample to parse back out: the
+answer to the question asked is the value returned.
+
 ## Status
 
 **Phase 0 — parser.** Complete. `tla-syntax` lexes and parses the module,
@@ -46,14 +59,33 @@ conjunction lists, `EXCEPT` updates, function/record/set constructors and
 the generated refinement modules; temporal operators parse but carry no meaning
 here.
 
-Next: `tla-eval` (values and the ground evaluator), then a drop-in replacement
-for the oracle's TLC calls, differentially tested against Java TLC on every
+**Phase 1 — evaluator.** Complete. `tla-eval` evaluates a specification's
+predicates and actions at concrete states. It runs every benchmark spec,
+including the ones that stress the corners: `RECURSIVE` operators, `CHOOSE`,
+nested set comprehensions, `EXCEPT` with `@` and multiple sequential updates,
+record sets and function sets.
+
+Two choices are worth stating. Sequences, records and functions are one thing in
+TLA+, so a value's representation is derived from its domain rather than from
+how it was written — otherwise `[r \in {"a"} |-> 1]` and `[a |-> 1]` would
+compare unequal. And a formula that one state cannot decide is refused rather
+than guessed: `[]P`, `WF_v(A)` and `ENABLED A` return an error naming why.
+
+Verified against Java TLC, not only against itself. Seven transitions across
+four protocols — Chang-Roberts forwarding, Raft's majority rule, two-phase
+commit's prepare barrier, Paxos's Phase2a safety condition — were encoded into
+the oracle's trace form and run through `tla2tools.jar`. TLC returns the same
+verdict on all seven, in both directions.
+
+Next: a drop-in replacement for the oracle's TLC calls, run against every
 reference implementation and mutant the benchmark ships.
 
 ## Layout
 
 ```
 crates/tla-syntax    lexer, parser, AST
+crates/tla-eval      values and the ground evaluator
+specs/               the specifications both crates are tested on
 ```
 
 ## Development

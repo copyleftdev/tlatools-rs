@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
+name = "tla-eval"
+version = "0.1.0"
+dependencies = [
+ "tla-syntax",
+]
+
+[[package]]
 name = "tla-syntax"
 version = "0.1.0"
