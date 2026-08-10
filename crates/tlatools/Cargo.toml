@@ -1,0 +1,18 @@
+[package]
+name = "tlatools"
+description = "Command-line TLA+ refinement oracle"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "tlatools"
+path = "src/main.rs"
+
+[dependencies]
+tla-oracle = { path = "../tla-oracle" }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

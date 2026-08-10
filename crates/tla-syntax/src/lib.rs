@@ -14,4 +14,4 @@ pub mod token;
 pub use ast::{Bound, Decl, Def, ExceptPath, Expr, Module, QuantKind, Unit};
 pub use error::{Error, Result, Stage};
 pub use lexer::lex;
-pub use parser::parse_module;
+pub use parser::{parse_expression, parse_module};

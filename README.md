@@ -39,6 +39,8 @@ encoding goes away with it.
 
 ## Using it
 
+As a library, the evaluator answers one question at a time:
+
 ```rust
 let spec = Spec::parse(&std::fs::read_to_string("TwoPhase.tla")?)?;
 let eval = Evaluator::new(&spec, constants)?;
@@ -47,8 +49,18 @@ eval.holds_at("TPInit", &state)?;          // is this a legal initial state?
 eval.step_allowed("TPNext", &from, &to)?;  // is this a legal step?
 ```
 
-No generated modules, no subprocess, no counterexample to parse back out: the
-answer to the question asked is the value returned.
+As a command, the oracle takes a whole state graph and returns a verdict:
+
+```console
+$ tlatools check job.json
+{"status":"refines","detail":"no action of the specification takes ... to ...",
+ "edge":{"index":37,"source":12,"target":40,"label":"put(3)"},
+ "stats":{"states":9,"edges":10,"edges_checked":38,"outcomes_checked":0}}
+```
+
+The exit status is the verdict — 0 refines, 1 does not, 2 the job could not be
+carried out — so a caller can branch without parsing. No generated modules, no
+JVM, no counterexample to scrape back out of stdout.
 
 ## Status
 
@@ -71,21 +83,46 @@ how it was written — otherwise `[r \in {"a"} |-> 1]` and `[a |-> 1]` would
 compare unequal. And a formula that one state cannot decide is refused rather
 than guessed: `[]P`, `WF_v(A)` and `ENABLED A` return an error naming why.
 
-Verified against Java TLC, not only against itself. Seven transitions across
-four protocols — Chang-Roberts forwarding, Raft's majority rule, two-phase
-commit's prepare barrier, Paxos's Phase2a safety condition — were encoded into
-the oracle's trace form and run through `tla2tools.jar`. TLC returns the same
-verdict on all seven, in both directions.
+**Phase 2 — the oracle.** Complete. `tla-oracle` decides all three obligations
+from a state graph, and `tlatools check` is a JSON-in, JSON-out command the
+existing Python harness can call in place of TLC.
 
-Next: a drop-in replacement for the oracle's TLC calls, run against every
-reference implementation and mutant the benchmark ships.
+## Does it decide what TLC decides?
+
+The benchmark is a labelled corpus: six reference implementations that must
+pass, thirty-three mutants that must each be caught, and a record of which arm
+catches each one. Both oracles were run over it and their verdicts compared.
+
+```
+$ diff <(tools/tlc_corpus.py --json) <(tools/corpus.py --json)
+$
+```
+
+Identical. Thirty-nine verdicts, every one agreeing — not merely pass/fail, but
+the same arm for every mutant, down to `m06_prepared_is_a_list` landing on
+`contract_violation` and the do-nothing mutants landing on `coverage`.
+
+Timing, measured on the same machine with the same exploration:
+
+| | exploration | deciding | total |
+| --- | --- | --- | --- |
+| Java TLC | 3.7 s | 72.3 s | 76.0 s |
+| this | 3.7 s | 0.5 s | 4.2 s |
+
+Exploration is the benchmark's own Python worker and is unchanged, which is why
+it appears in both rows; it now dominates. The honest claim is about the
+deciding step, and it is not really a claim about Rust — TLC was being asked to
+search a state space in order to answer a question about two known states.
 
 ## Layout
 
 ```
 crates/tla-syntax    lexer, parser, AST
 crates/tla-eval      values and the ground evaluator
-specs/               the specifications both crates are tested on
+crates/tla-oracle    the three obligations, over a state graph
+crates/tlatools      the command-line interface
+specs/               the specifications the crates are tested on
+tools/               corpus runners for this oracle and for TLC
 ```
 
 ## Development

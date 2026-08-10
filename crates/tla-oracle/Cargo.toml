@@ -1,0 +1,16 @@
+[package]
+name = "tla-oracle"
+description = "Decide whether an implementation's state graph refines a TLA+ specification"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+tla-eval = { path = "../tla-eval" }
+tla-syntax = { path = "../tla-syntax" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

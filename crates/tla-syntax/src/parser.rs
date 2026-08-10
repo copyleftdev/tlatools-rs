@@ -7,6 +7,18 @@ pub fn parse_module(src: &str) -> Result<Module> {
     Parser::new(lex(src)?).module()
 }
 
+/// Parse a bare expression, with no surrounding module. Task definitions carry
+/// predicates as strings, and they have nowhere else to live.
+pub fn parse_expression(src: &str) -> Result<Expr> {
+    let mut p = Parser::new(lex(src)?);
+    let e = p.expr(0)?;
+    if matches!(p.peek(), Tok::Eof) {
+        Ok(e)
+    } else {
+        Err(p.err(format!("unexpected {:?} after the expression", p.peek())))
+    }
+}
+
 struct Parser {
     toks: Vec<Token>,
     pos: usize,
