@@ -1,0 +1,18 @@
+--- crates/tla-eval/src/spec.rs
++++ replace == with != in complete
+@@ -294,14 +294,14 @@
+ 
+ /// A `WITH` clause need not mention every declared name; the ones it leaves
+ /// out keep their names, and so refer to whatever bears that name where the
+ /// instance was written.
+ fn complete(target: &Facts, given: &[(String, Expr)]) -> Vec<(String, Expr)> {
+     let mut subs = given.to_vec();
+     let declared = target.constants.iter().chain(target.variables.iter());
+     for name in declared {
+-        if !subs.iter().any(|(given, _)| given == name) {
++        if !subs.iter().any(|(given, _)| given != /* ~ changed by cargo-mutants ~ */ name) {
+             subs.push((name.clone(), Expr::Ident(name.clone())));
+         }
+     }
+     subs
+ }

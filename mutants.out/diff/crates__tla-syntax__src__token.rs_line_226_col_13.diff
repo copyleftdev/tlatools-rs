@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm Self::Plus | Self::Minus in Op::infix_prec
+@@ -218,17 +218,17 @@
+             | Self::In
+             | Self::NotIn
+             | Self::Subseteq
+             | Self::Supseteq => 5,
+             Self::AtAt => 6,
+             Self::OneTo => 7,
+             Self::Cup | Self::Cap | Self::SetMinus => 8,
+             Self::DotDot => 9,
+-            Self::Plus | Self::Minus => 10,
++             /* ~ changed by cargo-mutants ~ */
+             Self::Times | Self::Div | Self::Mod | Self::Cartesian => 11,
+             Self::Concat => 12,
+             Self::Pow => 13,
+             Self::User(_) if self.is_postfix() => return None,
+             Self::User(symbol) => {
+                 return USER_OPERATORS
+                     .iter()
+                     .find(|(name, _)| *name == symbol)

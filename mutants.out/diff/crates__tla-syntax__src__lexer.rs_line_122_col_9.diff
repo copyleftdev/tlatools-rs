@@ -1,0 +1,34 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::skip_trivia -> Result<()> with Ok(())
+@@ -114,30 +114,17 @@
+             tok: Tok::Eof,
+             line: self.line,
+             col: self.col,
+         });
+         Ok(self.out)
+     }
+ 
+     fn skip_trivia(&mut self) -> Result<()> {
+-        loop {
+-            match self.peek() {
+-                Some(c) if c.is_whitespace() => {
+-                    self.bump();
+-                }
+-                Some('\\') if self.at(1) == Some('*') => {
+-                    while !matches!(self.peek(), None | Some('\n')) {
+-                        self.bump();
+-                    }
+-                }
+-                Some('(') if self.at(1) == Some('*') => self.skip_block_comment()?,
+-                _ => return Ok(()),
+-            }
+-        }
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn skip_block_comment(&mut self) -> Result<()> {
+         let (line, col) = (self.line, self.col);
+         let mut depth = 0usize;
+         loop {
+             if self.peek().is_none() {
+                 return Err(Error::lex("unterminated (* comment", line, col));

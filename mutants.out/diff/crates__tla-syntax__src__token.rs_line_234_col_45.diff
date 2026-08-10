@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ replace == with != in Op::infix_prec
+@@ -226,17 +226,17 @@
+             Self::Plus | Self::Minus => 10,
+             Self::Times | Self::Div | Self::Mod | Self::Cartesian => 11,
+             Self::Concat => 12,
+             Self::Pow => 13,
+             Self::User(_) if self.is_postfix() => return None,
+             Self::User(symbol) => {
+                 return USER_OPERATORS
+                     .iter()
+-                    .find(|(name, _)| *name == symbol)
++                    .find(|(name, _)| *name != /* ~ changed by cargo-mutants ~ */ symbol)
+                     .map(|(_, prec)| *prec);
+             }
+             _ => return None,
+         })
+     }
+ 
+     /// `s^+`, `s^*` and `s^#` follow their operand rather than sitting
+     /// between two, so they are never infix.

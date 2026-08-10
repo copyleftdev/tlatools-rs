@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "MODULE" in Kw::lookup
+@@ -29,17 +29,17 @@
+     Union,
+     Enabled,
+     Unchanged,
+ }
+ 
+ impl Kw {
+     pub fn lookup(word: &str) -> Option<Self> {
+         Some(match word {
+-            "MODULE" => Self::Module,
++             /* ~ changed by cargo-mutants ~ */
+             "EXTENDS" => Self::Extends,
+             "CONSTANT" | "CONSTANTS" => Self::Constant,
+             "VARIABLE" | "VARIABLES" => Self::Variable,
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+             "ELSE" => Self::Else,

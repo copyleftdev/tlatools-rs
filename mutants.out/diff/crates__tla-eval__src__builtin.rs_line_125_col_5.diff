@@ -1,0 +1,17 @@
+--- crates/tla-eval/src/builtin.rs
++++ replace int -> Result<i64> with Ok(0)
+@@ -117,13 +117,10 @@
+ fn seq<'a>(v: &'a Value, who: &str) -> Result<&'a [Value]> {
+     match v {
+         Value::Seq(items) => Ok(items),
+         other => type_error(format!("{who} expects a sequence, got {other}")),
+     }
+ }
+ 
+ fn int(v: &Value, who: &str) -> Result<i64> {
+-    match v {
+-        Value::Int(n) => Ok(*n),
+-        other => type_error(format!("{who} expects an integer, got {other}")),
+-    }
++    Ok(0) /* ~ changed by cargo-mutants ~ */
+ }

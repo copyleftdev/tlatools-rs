@@ -1,0 +1,28 @@
+--- crates/tla-oracle/src/check.rs
++++ replace <impl From<Blocked> for BlockedReport>::from -> Self with Default::default()
+@@ -83,24 +83,17 @@
+     /// false when it was not available at all.
+     pub about_next_state: bool,
+     #[serde(skip_serializing_if = "Option::is_none")]
+     pub error: Option<String>,
+ }
+ 
+ impl From<Blocked> for BlockedReport {
+     fn from(b: Blocked) -> Self {
+-        Self {
+-            action: b.action,
+-            satisfied: b.satisfied,
+-            total: b.total,
+-            conjunct: b.conjunct,
+-            about_next_state: b.about_next_state,
+-            error: b.error,
+-        }
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// Beyond a handful, the list stops being a diagnosis and becomes a dump of
+ /// every action the specification has.
+ const MAX_BLOCKED: usize = 4;
+ 
+ #[derive(Debug, Clone, Copy, Default, Serialize)]

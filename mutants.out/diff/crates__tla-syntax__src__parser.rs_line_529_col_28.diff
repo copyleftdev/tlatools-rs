@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace == with != in Parser::junction
+@@ -521,17 +521,17 @@
+         Ok(lhs)
+     }
+ 
+     /// A bulleted `/\` or `\/` list, scoped by the column of its bullets.
+     fn junction(&mut self, op: Op) -> Result<Expr> {
+         let col = self.col();
+         self.fences.push(col);
+         let mut items = Vec::new();
+-        while *self.peek() == Tok::Op(op) && self.col() == col {
++        while *self.peek() != /* ~ changed by cargo-mutants ~ */ Tok::Op(op) && self.col() == col {
+             self.advance();
+             items.push(self.expr(0)?);
+         }
+         self.fences.pop();
+         Ok(if op == Op::And {
+             Expr::conjunction(items)
+         } else {
+             Expr::disjunction(items)

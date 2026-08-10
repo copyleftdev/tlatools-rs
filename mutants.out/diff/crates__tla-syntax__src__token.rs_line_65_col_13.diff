@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "ENABLED" in Kw::lookup
+@@ -57,17 +57,17 @@
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+             "SUBSET" => Self::Subset,
+             "UNION" => Self::Union,
+-            "ENABLED" => Self::Enabled,
++             /* ~ changed by cargo-mutants ~ */
+             "UNCHANGED" => Self::Unchanged,
+             _ => return None,
+         })
+     }
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub enum Op {

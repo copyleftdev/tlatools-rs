@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "UNION" in Kw::lookup
+@@ -56,17 +56,17 @@
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+             "SUBSET" => Self::Subset,
+-            "UNION" => Self::Union,
++             /* ~ changed by cargo-mutants ~ */
+             "ENABLED" => Self::Enabled,
+             "UNCHANGED" => Self::Unchanged,
+             _ => return None,
+         })
+     }
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]

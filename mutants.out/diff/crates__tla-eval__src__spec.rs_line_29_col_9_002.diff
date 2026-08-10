@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace <impl Modules for Directory>::source -> Option<String> with Some("xyzzy".into())
+@@ -21,17 +21,17 @@
+     }
+ }
+ 
+ /// Modules as `<directory>/<Name>.tla`, which is how TLA+ tools find them.
+ pub struct Directory(pub std::path::PathBuf);
+ 
+ impl Modules for Directory {
+     fn source(&self, name: &str) -> Option<String> {
+-        std::fs::read_to_string(self.0.join(format!("{name}.tla"))).ok()
++        Some("xyzzy".into()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// The standard modules, whose operators this crate implements directly.
+ const BUILT_IN: &[&str] = &[
+     "Naturals",
+     "Integers",
+     "Reals",

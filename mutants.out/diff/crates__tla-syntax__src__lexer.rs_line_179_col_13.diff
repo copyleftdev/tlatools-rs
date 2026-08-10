@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '>' in Lexer::scan
+@@ -171,17 +171,17 @@
+         {
+             return Ok(self.scan_word());
+         }
+         match c {
+             '"' => self.scan_string(),
+             '=' => self.scan_equals(),
+             '-' => Ok(self.scan_dashes()),
+             '<' => Ok(self.scan_lt()),
+-            '>' => Ok(self.scan_gt()),
++             /* ~ changed by cargo-mutants ~ */
+             '\\' => self.scan_backslash(),
+             '/' => self.scan_slash(),
+             '|' => {
+                 if self.starts_with("|->") {
+                     self.advance(3);
+                     return Ok(Tok::MapsTo);
+                 }
+                 self.user_symbol()

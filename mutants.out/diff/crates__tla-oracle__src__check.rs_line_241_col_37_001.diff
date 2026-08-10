@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/check.rs
++++ replace + with * in check_edges
+@@ -233,17 +233,17 @@
+     for (index, (source, target, label)) in job.edges.iter().enumerate() {
+         let (Some(from), Some(to)) = (states.get(*source), states.get(*target)) else {
+             return Some(Report::of(
+                 Status::Error,
+                 format!("edge {index} refers to a state index outside the graph"),
+                 *stats,
+             ));
+         };
+-        stats.edges_checked = index + 1;
++        stats.edges_checked = index * /* ~ changed by cargo-mutants ~ */ 1;
+         match evaluator.step_allowed(&job.next_op, from, to) {
+             Ok(true) => {}
+             Ok(false) => {
+                 let blocked: Vec<BlockedReport> = evaluator
+                     .why_not(&job.next_op, from, to)
+                     .unwrap_or_default()
+                     .into_iter()
+                     .take(MAX_BLOCKED)

@@ -1,0 +1,30 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::module -> Result<Module> with Ok(Default::default())
+@@ -132,26 +132,17 @@
+         let out = f(self);
+         self.fences.pop();
+         out
+     }
+ 
+     // ---------------------------------------------------------------- module
+ 
+     fn module(&mut self) -> Result<Module> {
+-        while !(matches!(self.peek(), Tok::Separator)
+-            && matches!(self.peek_at(1), Tok::Kw(Kw::Module)))
+-        {
+-            if matches!(self.peek(), Tok::Eof) {
+-                return Err(self.err("no `---- MODULE ----` header found"));
+-            }
+-            self.advance();
+-        }
+-        self.advance();
+-        self.module_body()
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Everything from `MODULE` to the terminator. Modules nest, so this is
+     /// reached both at the top of a file and part-way through one.
+     fn module_body(&mut self) -> Result<Module> {
+         self.expect(&Tok::Kw(Kw::Module))?;
+         let name = self.expect_ident()?;
+         self.expect(&Tok::Separator)?;

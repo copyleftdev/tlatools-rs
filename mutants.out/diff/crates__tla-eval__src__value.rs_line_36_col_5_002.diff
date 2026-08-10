@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/value.rs
++++ replace count -> i64 with -1
+@@ -28,17 +28,17 @@
+     Strings,
+     /// `Seq(S)` — every finite sequence over `S`.
+     Sequences(Box<Value>),
+ }
+ 
+ /// A length or cardinality as a TLA+ integer. No collection can hold more than
+ /// `isize::MAX` elements, so this never loses information.
+ pub(crate) fn count(n: usize) -> i64 {
+-    i64::try_from(n).expect("no collection exceeds isize::MAX elements")
++    -1 /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ impl Value {
+     pub fn set(items: impl IntoIterator<Item = Value>) -> Value {
+         Value::Set(items.into_iter().collect())
+     }
+ 
+     pub fn string(s: impl Into<String>) -> Value {

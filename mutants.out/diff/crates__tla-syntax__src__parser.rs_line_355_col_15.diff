@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::skip_proof
+@@ -347,17 +347,17 @@
+     ///
+     /// Proofs are checked by a prover, not by an evaluator, so this crate
+     /// recognises them in order to get past them. A proof runs until the next
+     /// token that can only begin a new module unit.
+     fn skip_proof(&mut self) {
+         if !self.at_proof() {
+             return;
+         }
+-        while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
++        while  /* ~ changed by cargo-mutants ~ */matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+             if self.at_unit_start() {
+                 return;
+             }
+             self.advance();
+         }
+     }
+ 
+     /// Advance to whatever comes after something that could not be read.

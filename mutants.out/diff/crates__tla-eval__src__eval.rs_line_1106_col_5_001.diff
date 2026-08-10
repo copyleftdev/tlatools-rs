@@ -1,0 +1,24 @@
+--- crates/tla-eval/src/eval.rs
++++ replace elements -> Result<Vec<Value>> with Ok(vec![Default::default()])
+@@ -1098,20 +1098,17 @@
+     }
+     Ok(())
+ }
+ 
+ /// Every member of a set, for the operations that have to visit them all.
+ /// Membership of an infinite set is decidable where enumeration is not, so the
+ /// two failures are reported differently.
+ fn elements(v: &Value) -> Result<Vec<Value>> {
+-    if matches!(v, Value::Infinite(_)) {
+-        return Err(Error::Unbounded(format!("{v} cannot be enumerated")));
+-    }
+-    Ok(set_of(v)?.iter().cloned().collect())
++    Ok(vec![Default::default()]) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn member(elem: &Value, set: &Value) -> Result<bool> {
+     match set {
+         Value::Set(s) => Ok(s.contains(elem)),
+         Value::Infinite(Infinite::Nat) => Ok(matches!(elem, Value::Int(n) if *n >= 0)),
+         Value::Infinite(Infinite::Int) => Ok(matches!(elem, Value::Int(_))),
+         Value::Infinite(Infinite::Strings) => Ok(matches!(elem, Value::Str(_))),

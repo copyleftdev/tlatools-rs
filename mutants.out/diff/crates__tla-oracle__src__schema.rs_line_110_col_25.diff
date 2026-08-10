@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/schema.rs
++++ replace != with == in decode
+@@ -102,17 +102,17 @@
+                 out.insert(k.clone(), decode(v, of, &format!("{path}.{k}"))?);
+             }
+             Ok(Value::Record(out))
+         }
+         Schema::Rec { fields } => {
+             let given = object(json, path)?;
+             let expected: BTreeSet<&String> = fields.keys().collect();
+             let actual: BTreeSet<&String> = given.keys().collect();
+-            if expected != actual {
++            if expected == /* ~ changed by cargo-mutants ~ */ actual {
+                 return fail(
+                     path,
+                     format!(
+                         "field mismatch (missing={:?}, unexpected={:?})",
+                         sorted_diff(&expected, &actual),
+                         sorted_diff(&actual, &expected)
+                     ),
+                 );

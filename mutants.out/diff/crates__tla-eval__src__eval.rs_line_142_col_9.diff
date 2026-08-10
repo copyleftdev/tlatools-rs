@@ -1,0 +1,121 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::eval -> Result<Value> with Ok(Default::default())
+@@ -134,117 +134,17 @@
+             at: Vec::new(),
+             depth: 0,
+         }
+     }
+ 
+     // ------------------------------------------------------------ evaluation
+ 
+     pub(crate) fn eval(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        match e {
+-            Expr::Num(n) => Ok(Value::Int(*n)),
+-            Expr::Str(s) => Ok(Value::Str(s.clone())),
+-            Expr::Bool(b) => Ok(Value::Bool(*b)),
+-            Expr::Ident(name) => self.ident(name, ctx),
+-            Expr::Prime(inner) => self.primed(inner, ctx),
+-            Expr::At => ctx
+-                .at
+-                .last()
+-                .cloned()
+-                .ok_or_else(|| Error::Malformed("`@` outside an EXCEPT update".to_string())),
+-            Expr::Apply(head, args) => self.apply(head, args, ctx),
+-            Expr::FnApply(f, args) => {
+-                let func = self.eval(f, ctx)?;
+-                let key = self.key(args, ctx)?;
+-                func.apply(&key)
+-                    .ok_or_else(|| Error::Type(format!("{func} is not defined at {key}")))
+-            }
+-            Expr::Field(inner, name) => {
+-                let v = self.eval(inner, ctx)?;
+-                v.apply(&Value::Str(name.clone()))
+-                    .ok_or_else(|| Error::Type(format!("{v} has no field `{name}`")))
+-            }
+-            Expr::Qualified {
+-                instance,
+-                name,
+-                args,
+-            } => self.qualified(instance, name, args, ctx),
+-            Expr::Unary(op, inner) => self.unary(*op, inner, ctx),
+-            Expr::Binary(op, l, r) => self.binary(*op, l, r, ctx),
+-            Expr::Tuple(items) => Ok(Value::Seq(self.eval_all(items, ctx)?)),
+-            Expr::SetEnum(items) => Ok(Value::set(self.eval_all(items, ctx)?)),
+-            Expr::SetFilter { bound, pred } => self.set_filter(bound, pred, ctx),
+-            Expr::SetMap { expr, bounds } => self.set_map(expr, bounds, ctx),
+-            Expr::Record(fields) => {
+-                let mut out = BTreeMap::new();
+-                for (k, v) in fields {
+-                    out.insert(k.clone(), self.eval(v, ctx)?);
+-                }
+-                Ok(Value::Record(out))
+-            }
+-            Expr::RecordSet(fields) => self.record_set(fields, ctx),
+-            Expr::FnDef { bounds, body } => self.fn_def(bounds, body, ctx),
+-            Expr::FnSet { domain, range } => self.fn_set(domain, range, ctx),
+-            Expr::Except { base, updates } => {
+-                let mut v = self.eval(base, ctx)?;
+-                for (path, rhs) in updates {
+-                    v = self.update(v, path, rhs, ctx)?;
+-                }
+-                Ok(v)
+-            }
+-            Expr::Quant { kind, bounds, body } => self.quantify(*kind, bounds, body, ctx),
+-            Expr::Choose { bound, body } => self.choose(bound, body, ctx),
+-            Expr::Let { defs, body } => {
+-                let base = ctx.locals.len();
+-                let scope = base + defs.len();
+-                for def in defs {
+-                    ctx.locals
+-                        .push((def.name.clone(), Local::Def { def, scope }));
+-                }
+-                let out = self.eval(body, ctx);
+-                ctx.locals.truncate(base);
+-                out
+-            }
+-            Expr::If {
+-                cond,
+-                then,
+-                otherwise,
+-            } => {
+-                if self.eval_bool(cond, ctx)? {
+-                    self.eval(then, ctx)
+-                } else {
+-                    self.eval(otherwise, ctx)
+-                }
+-            }
+-            Expr::Case { arms, other } => {
+-                for (guard, result) in arms {
+-                    if self.eval_bool(guard, ctx)? {
+-                        return self.eval(result, ctx);
+-                    }
+-                }
+-                match other {
+-                    Some(e) => self.eval(e, ctx),
+-                    None => Err(Error::Malformed("no CASE arm applies".to_string())),
+-                }
+-            }
+-            // `[A]_v` is `A \/ UNCHANGED v`, which one step decides.
+-            Expr::ActionBox { action, subscript } => {
+-                if self.eval_bool(action, ctx)? {
+-                    return Ok(Value::Bool(true));
+-                }
+-                self.unchanged(subscript, ctx)
+-            }
+-            Expr::Lambda { .. } => Err(Error::Malformed(
+-                "a LAMBDA is an operator, and can only be passed to one".to_string(),
+-            )),
+-            Expr::ActionAngle { .. } | Expr::Fairness { .. } => Err(Error::NotGround(
+-                "a fairness or angle-bracket formula is about behaviours, not about one step"
+-                    .to_string(),
+-            )),
+-        }
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub(crate) fn eval_bool(&self, e: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<bool> {
+         match self.eval(e, ctx)? {
+             Value::Bool(b) => Ok(b),
+             other => type_error(format!("expected a boolean, got {other}")),
+         }
+     }

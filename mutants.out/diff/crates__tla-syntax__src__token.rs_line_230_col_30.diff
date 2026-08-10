@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ replace match guard self.is_postfix() with true in Op::infix_prec
+@@ -222,17 +222,17 @@
+             Self::AtAt => 6,
+             Self::OneTo => 7,
+             Self::Cup | Self::Cap | Self::SetMinus => 8,
+             Self::DotDot => 9,
+             Self::Plus | Self::Minus => 10,
+             Self::Times | Self::Div | Self::Mod | Self::Cartesian => 11,
+             Self::Concat => 12,
+             Self::Pow => 13,
+-            Self::User(_) if self.is_postfix() => return None,
++            Self::User(_) if true /* ~ changed by cargo-mutants ~ */ => return None,
+             Self::User(symbol) => {
+                 return USER_OPERATORS
+                     .iter()
+                     .find(|(name, _)| *name == symbol)
+                     .map(|(_, prec)| *prec);
+             }
+             _ => return None,
+         })

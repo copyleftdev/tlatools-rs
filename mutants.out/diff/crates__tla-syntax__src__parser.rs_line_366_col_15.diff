@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::skip_to_unit
+@@ -358,17 +358,17 @@
+             }
+             self.advance();
+         }
+     }
+ 
+     /// Advance to whatever comes after something that could not be read.
+     fn skip_to_unit(&mut self) {
+         self.advance();
+-        while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
++        while  /* ~ changed by cargo-mutants ~ */matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+             if self.at_unit_start() {
+                 return;
+             }
+             self.advance();
+         }
+     }
+ 
+     fn at_proof(&self) -> bool {

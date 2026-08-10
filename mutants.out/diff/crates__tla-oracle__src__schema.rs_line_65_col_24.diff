@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/schema.rs
++++ replace match guard !json.is_boolean() with true in decode
+@@ -57,17 +57,17 @@
+         path: path.to_string(),
+         message: message.into(),
+     })
+ }
+ 
+ pub fn decode(json: &Json, schema: &Schema, path: &str) -> Result<Value> {
+     match schema {
+         Schema::Int => match json.as_i64() {
+-            Some(n) if !json.is_boolean() => Ok(Value::Int(n)),
++            Some(n) if true /* ~ changed by cargo-mutants ~ */ => Ok(Value::Int(n)),
+             _ => fail(path, format!("expected an integer, got {}", kind_of(json))),
+         },
+         Schema::Bool => match json.as_bool() {
+             Some(b) => Ok(Value::Bool(b)),
+             None => fail(path, format!("expected a boolean, got {}", kind_of(json))),
+         },
+         Schema::Str => match json.as_str() {
+             Some(s) => Ok(Value::string(s)),

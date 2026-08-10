@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace += with *= in Parser::expr
+@@ -481,17 +481,17 @@
+     }
+ 
+     // ------------------------------------------------------------ expression
+ 
+     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
+         if self.depth >= MAX_NESTING {
+             return Err(self.err(format!("expressions nest more than {MAX_NESTING} deep")));
+         }
+-        self.depth += 1;
++        self.depth *= /* ~ changed by cargo-mutants ~ */ 1;
+         let parsed = self.expr_inner(min_prec);
+         self.depth -= 1;
+         parsed
+     }
+ 
+     fn expr_inner(&mut self, min_prec: u8) -> Result<Expr> {
+         // A bulleted list is an operand, not a whole expression: after
+         //

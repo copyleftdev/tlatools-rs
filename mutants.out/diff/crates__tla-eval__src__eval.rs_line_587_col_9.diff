@@ -1,0 +1,35 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::run -> Result<Value> with Ok(Default::default())
+@@ -579,31 +579,17 @@
+         &self,
+         name: &str,
+         body: &'m Expr,
+         scope: usize,
+         params: &[Param],
+         bindings: Vec<Local<'m>>,
+         ctx: &mut Ctx<'m, '_>,
+     ) -> Result<Value> {
+-        if ctx.depth >= MAX_DEPTH {
+-            return Err(Error::Malformed(format!(
+-                "`{name}` recursed more than {MAX_DEPTH} deep"
+-            )));
+-        }
+-        let hidden = ctx.locals.split_off(scope);
+-        for (param, binding) in params.iter().zip(bindings) {
+-            ctx.locals.push((param.name.clone(), binding));
+-        }
+-        ctx.depth += 1;
+-        let out = self.eval(body, ctx);
+-        ctx.depth -= 1;
+-        ctx.locals.truncate(scope);
+-        ctx.locals.extend(hidden);
+-        out
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn call(
+         &self,
+         def: &'m Def,
+         scope: usize,
+         args: &[Value],
+         ctx: &mut Ctx<'m, '_>,

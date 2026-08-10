@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "ASSUME" | "ASSUMPTION" in Kw::lookup
+@@ -41,17 +41,17 @@
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+             "ELSE" => Self::Else,
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+-            "ASSUME" | "ASSUMPTION" => Self::Assume,
++             /* ~ changed by cargo-mutants ~ */
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+             "LAMBDA" => Self::Lambda,
+             "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"

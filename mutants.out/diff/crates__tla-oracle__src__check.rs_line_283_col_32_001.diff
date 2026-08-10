@@ -1,0 +1,21 @@
+--- crates/tla-oracle/src/check.rs
++++ replace += with *= in check_outcomes
+@@ -275,17 +275,17 @@
+ fn check_outcomes(
+     job: &Job,
+     coverage: &Evaluator<'_>,
+     outcomes: &[(String, Expr)],
+     stats: &mut Stats,
+ ) -> Option<Report> {
+     let nowhere = State::new();
+     for (name, expr) in outcomes {
+-        stats.outcomes_checked += 1;
++        stats.outcomes_checked *= /* ~ changed by cargo-mutants ~ */ 1;
+         match coverage.eval_at(expr, &nowhere, None) {
+             Ok(Value::Bool(true)) => {}
+             Ok(Value::Bool(false)) => {
+                 let mut report = Report::of(
+                     Status::Coverage,
+                     format!(
+                         "every transition is legal, but no reachable state satisfies the \
+                          required outcome `{name}`: {}",

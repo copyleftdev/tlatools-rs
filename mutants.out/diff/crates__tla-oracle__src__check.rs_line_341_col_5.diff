@@ -1,0 +1,27 @@
+--- crates/tla-oracle/src/check.rs
++++ replace decode_states -> Result<Vec<State>, String> with Ok(vec![])
+@@ -333,23 +333,17 @@
+             decode(&spec.value, &spec.schema, name)
+                 .map(|v| (name.clone(), v))
+                 .map_err(|e| format!("constant {e}"))
+         })
+         .collect()
+ }
+ 
+ fn decode_states(job: &Job) -> Result<Vec<State>, String> {
+-    job.states
+-        .iter()
+-        .enumerate()
+-        .map(|(i, json)| {
+-            decode_state(json, &job.schema, &format!("state[{i}]")).map_err(|e| e.to_string())
+-        })
+-        .collect()
++    Ok(vec![]) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn parse_outcomes(job: &Job) -> Result<Vec<(String, Expr)>, String> {
+     job.outcomes
+         .iter()
+         .map(|(name, src)| {
+             parse_expression(src)
+                 .map(|e| (name.clone(), e))

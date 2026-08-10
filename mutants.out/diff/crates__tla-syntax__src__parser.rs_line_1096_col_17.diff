@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Kw(Kw::Except) in Parser::shape
+@@ -1088,17 +1088,17 @@
+                     depth -= 1;
+                 }
+                 Tok::Eof => break,
+                 _ if depth > 0 => {}
+                 Tok::Op(Op::In) => saw_in = true,
+                 Tok::MapsTo => return Shape::MapsTo { bounded: saw_in },
+                 Tok::Colon => return Shape::Colon { bounded: saw_in },
+                 Tok::Arrow => return Shape::Arrow,
+-                Tok::Kw(Kw::Except) => return Shape::Except,
++                 /* ~ changed by cargo-mutants ~ */
+                 _ => {}
+             }
+         }
+         Shape::Closed
+     }
+ }
+ 
+ /// Read `x \in S` back as the bound it is, so `{x \in S : P}` can be told from

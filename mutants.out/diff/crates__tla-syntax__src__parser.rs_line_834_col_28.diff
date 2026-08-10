@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace != with == in Parser::tuple_or_action
+@@ -826,17 +826,17 @@
+             }
+         }
+     }
+ 
+     fn tuple_or_action(&mut self) -> Result<Expr> {
+         let items = self.bracketed(|p| p.expr_list(&Tok::RTup))?;
+         self.expect(&Tok::RTup)?;
+         if self.at_subscript() {
+-            if items.len() != 1 {
++            if items.len() == /* ~ changed by cargo-mutants ~ */ 1 {
+                 return Err(self.err("`<<A>>_v` takes a single action"));
+             }
+             let subscript = self.subscript()?;
+             return Ok(Expr::ActionAngle {
+                 action: Box::new(items.into_iter().next().expect("length checked")),
+                 subscript: Box::new(subscript),
+             });
+         }

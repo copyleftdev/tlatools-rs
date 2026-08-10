@@ -1,0 +1,25 @@
+--- crates/tlatools/src/main.rs
++++ replace read_stdin -> Result<String, String> with Ok(String::new())
+@@ -50,21 +50,17 @@
+     Ok(match report.status {
+         Status::Pass => ExitCode::SUCCESS,
+         Status::Error => ExitCode::from(2),
+         _ => ExitCode::from(1),
+     })
+ }
+ 
+ fn read_stdin() -> Result<String, String> {
+-    let mut buffer = String::new();
+-    std::io::stdin()
+-        .read_to_string(&mut buffer)
+-        .map_err(|e| format!("reading stdin: {e}"))?;
+-    Ok(buffer)
++    Ok(String::new()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn usage() -> &'static str {
+     "usage: tlatools check [JOB.json]
+ 
+ Decide whether an implementation's reachable state graph refines a TLA+
+ specification. The job is read from JOB.json, or from stdin when the path is
+ omitted or is `-`. The verdict is written to stdout as JSON.

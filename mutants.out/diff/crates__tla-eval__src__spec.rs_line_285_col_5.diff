@@ -1,0 +1,28 @@
+--- crates/tla-eval/src/spec.rs
++++ replace collect with ()
+@@ -277,24 +277,17 @@
+ }
+ 
+ fn collect(
+     position: usize,
+     facts: &[Facts],
+     seen: &mut BTreeSet<usize>,
+     out: &mut (BTreeSet<String>, BTreeSet<String>),
+ ) {
+-    for &parent in &facts[position].extends {
+-        if !seen.insert(parent) {
+-            continue;
+-        }
+-        out.0.extend(facts[parent].variables.iter().cloned());
+-        out.1.extend(facts[parent].constants.iter().cloned());
+-        collect(parent, facts, seen, out);
+-    }
++    () /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ /// A `WITH` clause need not mention every declared name; the ones it leaves
+ /// out keep their names, and so refer to whatever bears that name where the
+ /// instance was written.
+ fn complete(target: &Facts, given: &[(String, Expr)]) -> Vec<(String, Expr)> {
+     let mut subs = given.to_vec();
+     let declared = target.constants.iter().chain(target.variables.iter());

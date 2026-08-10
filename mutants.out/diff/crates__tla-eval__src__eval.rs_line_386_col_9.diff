@@ -1,0 +1,32 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::apply_symbol -> Result<Value> with Ok(Default::default())
+@@ -378,28 +378,17 @@
+             return self.in_module(module, ctx, |me, ctx| me.invoke(def, 0, args, ctx));
+         }
+         let values = self.eval_all(args, ctx)?;
+         builtin::call(name, &values)
+     }
+ 
+     /// An operator symbol used as a value: `+` in `FoldSet(+, 0, S)`.
+     fn apply_symbol(op: Op, mut values: Vec<Value>) -> Result<Value> {
+-        match values.len() {
+-            2 => {
+-                let right = values.pop().expect("length checked");
+-                let left = values.pop().expect("length checked");
+-                combine(op, left, right)
+-            }
+-            _ => Err(Error::Malformed(format!(
+-                "`{}` takes two arguments, given {}",
+-                op.symbol(),
+-                values.len()
+-            ))),
+-        }
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Call a definition with argument *expressions*, so that an argument for
+     /// an operator parameter is bound rather than evaluated.
+     fn invoke(
+         &self,
+         def: &'m Def,
+         scope: usize,

@@ -1,0 +1,26 @@
+--- crates/tla-syntax/src/print.rs
++++ replace <impl fmt::Display for Param>::fmt -> fmt::Result with Ok(Default::default())
+@@ -207,22 +207,17 @@
+             write!(f, "({})", params_list(&self.params))?;
+         }
+         write!(f, " == {}", self.body)
+     }
+ }
+ 
+ impl fmt::Display for Param {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-        f.write_str(&self.name)?;
+-        if self.arity > 0 {
+-            let holes = vec!["_"; self.arity].join(", ");
+-            write!(f, "({holes})")?;
+-        }
+-        Ok(())
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ fn params_list(params: &[Param]) -> String {
+     params
+         .iter()
+         .map(ToString::to_string)
+         .collect::<Vec<_>>()

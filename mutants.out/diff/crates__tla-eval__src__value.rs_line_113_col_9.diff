@@ -1,0 +1,29 @@
+--- crates/tla-eval/src/value.rs
++++ replace Value::apply -> Option<Value> with None
+@@ -105,25 +105,17 @@
+             Value::Seq(items) => Some((1..=count(items.len())).map(Value::Int).collect()),
+             Value::Record(fields) => Some(fields.keys().cloned().map(Value::Str).collect()),
+             Value::Func(map) => Some(map.keys().cloned().collect()),
+             _ => None,
+         }
+     }
+ 
+     pub fn apply(&self, key: &Value) -> Option<Value> {
+-        match (self, key) {
+-            (Value::Seq(items), Value::Int(i)) => usize::try_from(*i)
+-                .ok()?
+-                .checked_sub(1)
+-                .and_then(|i| items.get(i).cloned()),
+-            (Value::Record(fields), Value::Str(k)) => fields.get(k).cloned(),
+-            (Value::Func(map), k) => map.get(k).cloned(),
+-            _ => None,
+-        }
++        None /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn type_name(&self) -> &'static str {
+         match self {
+             Value::Bool(_) => "a boolean",
+             Value::Int(_) => "an integer",
+             Value::Str(_) => "a string",
+             Value::Seq(_) => "a sequence",

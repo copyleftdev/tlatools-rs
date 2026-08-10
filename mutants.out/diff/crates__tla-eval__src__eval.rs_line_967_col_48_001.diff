@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace - with / in Evaluator<'m>::expand_into
+@@ -959,17 +959,17 @@
+                     ));
+                 }
+                 let restore = ctx.locals.len();
+                 for (name, part) in first.names.iter().zip(parts) {
+                     current.push((name.clone(), part.clone()));
+                     ctx.locals.push((name.clone(), Local::Val(part.clone())));
+                 }
+                 self.expand_into(rest, ctx, current, out)?;
+-                current.truncate(current.len() - first.names.len());
++                current.truncate(current.len() / /* ~ changed by cargo-mutants ~ */ first.names.len());
+                 ctx.locals.truncate(restore);
+             }
+             return Ok(());
+         }
+         self.product(&first.names, &items, rest, ctx, current, out)
+     }
+ 
+     fn product(

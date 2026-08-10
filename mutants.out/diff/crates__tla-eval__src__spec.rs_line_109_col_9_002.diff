@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace Spec::constants -> impl Iterator<Item =&str> with ::std::iter::once("xyzzy")
+@@ -101,17 +101,17 @@
+     }
+ 
+     /// The variables of the root module, including any it inherits.
+     pub fn variables(&self) -> impl Iterator<Item = &str> {
+         self.facts[self.root].variables.iter().map(String::as_str)
+     }
+ 
+     pub fn constants(&self) -> impl Iterator<Item = &str> {
+-        self.facts[self.root].constants.iter().map(String::as_str)
++        ::std::iter::once("xyzzy") /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn defines(&self, name: &str) -> bool {
+         self.definition(self.root, name).is_some()
+     }
+ 
+     pub(crate) fn root(&self) -> usize {
+         self.root

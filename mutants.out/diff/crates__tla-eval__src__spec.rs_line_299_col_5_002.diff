@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace complete -> Vec<(String, Expr)> with vec![("xyzzy".into(), Default::default())]
+@@ -291,17 +291,10 @@
+         collect(parent, facts, seen, out);
+     }
+ }
+ 
+ /// A `WITH` clause need not mention every declared name; the ones it leaves
+ /// out keep their names, and so refer to whatever bears that name where the
+ /// instance was written.
+ fn complete(target: &Facts, given: &[(String, Expr)]) -> Vec<(String, Expr)> {
+-    let mut subs = given.to_vec();
+-    let declared = target.constants.iter().chain(target.variables.iter());
+-    for name in declared {
+-        if !subs.iter().any(|(given, _)| given == name) {
+-            subs.push((name.clone(), Expr::Ident(name.clone())));
+-        }
+-    }
+-    subs
++    vec![("xyzzy".into(), Default::default())] /* ~ changed by cargo-mutants ~ */
+ }

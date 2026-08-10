@@ -1,0 +1,29 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '[' in Lexer::scan
+@@ -227,25 +227,17 @@
+                 if self.starts_with("..") {
+                     self.advance(2);
+                     Ok(Tok::Op(Op::DotDot))
+                 } else {
+                     self.bump();
+                     Ok(Tok::Dot)
+                 }
+             }
+-            '[' => {
+-                if self.starts_with("[]") {
+-                    self.advance(2);
+-                    Ok(Tok::Op(Op::Always))
+-                } else {
+-                    self.bump();
+-                    Ok(Tok::LBrack)
+-                }
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             _ => self.scan_punctuation(c),
+         }
+     }
+ 
+     fn scan_punctuation(&mut self, c: char) -> Result<Tok> {
+         let at = (self.line, self.col);
+         self.bump();
+         Ok(match c {

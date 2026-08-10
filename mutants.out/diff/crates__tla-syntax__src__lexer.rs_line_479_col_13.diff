@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm "supseteq" in Lexer::scan_backslash
+@@ -471,17 +471,17 @@
+             self.bump();
+             return Ok(Tok::Op(Op::SetMinus));
+         }
+         let name: String = self.chars[start..end].iter().collect();
+         let op = match name.as_str() {
+             "in" => Op::In,
+             "notin" => Op::NotIn,
+             "subseteq" => Op::Subseteq,
+-            "supseteq" => Op::Supseteq,
++             /* ~ changed by cargo-mutants ~ */
+             "cup" | "union" => Op::Cup,
+             "cap" | "intersect" => Op::Cap,
+             "times" | "X" => Op::Cartesian,
+             "div" => Op::Div,
+             "o" | "circ" => Op::Concat,
+             "equiv" => Op::Equiv,
+             "lnot" | "neg" => Op::Not,
+             "land" => Op::And,

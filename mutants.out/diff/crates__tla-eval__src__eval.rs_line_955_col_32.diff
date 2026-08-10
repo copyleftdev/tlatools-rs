@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace != with == in Evaluator<'m>::expand_into
+@@ -947,17 +947,17 @@
+         };
+         let items = elements(&self.eval(domain, ctx)?)?;
+ 
+         if first.destructure {
+             for item in items {
+                 let Value::Seq(parts) = &item else {
+                     return type_error(format!("cannot destructure {item}, which is not a tuple"));
+                 };
+-                if parts.len() != first.names.len() {
++                if parts.len() == /* ~ changed by cargo-mutants ~ */ first.names.len() {
+                     return type_error(format!(
+                         "cannot destructure {item} into {} names",
+                         first.names.len()
+                     ));
+                 }
+                 let restore = ctx.locals.len();
+                 for (name, part) in first.names.iter().zip(parts) {
+                     current.push((name.clone(), part.clone()));

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm Tok::ModuleEnd in Lexer::run
+@@ -96,17 +96,17 @@
+         let mut depth = 0usize;
+         loop {
+             self.skip_trivia()?;
+             let (line, col) = (self.line, self.col);
+             let Some(c) = self.peek() else { break };
+             let tok = self.scan(c)?;
+             match tok {
+                 Tok::Kw(Kw::Module) => depth += 1,
+-                Tok::ModuleEnd => depth = depth.saturating_sub(1),
++                 /* ~ changed by cargo-mutants ~ */
+                 _ => {}
+             }
+             let closed = matches!(tok, Tok::ModuleEnd) && depth == 0;
+             self.out.push(Token { tok, line, col });
+             if closed {
+                 break;
+             }
+         }

@@ -1,0 +1,22 @@
+--- crates/tla-eval/src/spec.rs
++++ replace Spec::instance -> Option<&Instance> with Some(Box::leak(Box::new(Default::default())))
+@@ -147,18 +147,17 @@
+         self.facts[module]
+             .extends
+             .iter()
+             .find_map(|&parent| self.search(parent, name, seen))
+     }
+ 
+     /// Find an instance by the name it was given, following `EXTENDS`.
+     pub(crate) fn instance(&self, module: usize, name: &str) -> Option<&Instance> {
+-        let mut seen = BTreeSet::new();
+-        self.find_instance(module, name, &mut seen)
++        Some(Box::leak(Box::new(Default::default()))) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn find_instance(
+         &self,
+         module: usize,
+         name: &str,
+         seen: &mut BTreeSet<usize>,
+     ) -> Option<&Instance> {

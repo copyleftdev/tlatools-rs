@@ -184,6 +184,11 @@ cargo run --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')
 cargo run --example depth -p tla-syntax -- $(find CORPUS -name '*.tla')
 ```
 
+Mutation coverage is 85% (603 of 712 viable mutants caught). CI gates the
+*diff* at zero survivors, so it rises rather than drifts. The survivors are
+concentrated in the parser's internal bookkeeping and are listed by
+`cargo mutants`.
+
 `examples/depth.rs` is where the recursion limit comes from: it reports how
 deeply real specifications nest and how far the parser gets on a small stack,
 and the constant is set from those two numbers rather than chosen.

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "LAMBDA" in Kw::lookup
+@@ -46,17 +46,17 @@
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,
+             "RECURSIVE" => Self::Recursive,
+-            "LAMBDA" => Self::Lambda,
++             /* ~ changed by cargo-mutants ~ */
+             "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
+             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,

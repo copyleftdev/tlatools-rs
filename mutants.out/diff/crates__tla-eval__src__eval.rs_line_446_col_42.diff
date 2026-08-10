@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace == with != in Evaluator<'m>::enter_closure
+@@ -438,17 +438,17 @@
+             return Err(Error::Malformed(format!(
+                 "`{name}` takes {} argument(s), given {}",
+                 params.len(),
+                 args.len()
+             )));
+         }
+         let mut bindings = Vec::with_capacity(args.len());
+         for (param, arg) in params.iter().zip(args) {
+-            bindings.push(if param.arity == 0 {
++            bindings.push(if param.arity != /* ~ changed by cargo-mutants ~ */ 0 {
+                 Local::Val(self.eval(arg, ctx)?)
+             } else {
+                 self.operator_argument(arg, ctx)?
+             });
+         }
+         self.run(name, body, scope, params, bindings, ctx)
+     }
+ 

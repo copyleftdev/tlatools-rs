@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/value.rs
++++ replace Value::string -> Value with Default::default()
+@@ -37,17 +37,17 @@
+ }
+ 
+ impl Value {
+     pub fn set(items: impl IntoIterator<Item = Value>) -> Value {
+         Value::Set(items.into_iter().collect())
+     }
+ 
+     pub fn string(s: impl Into<String>) -> Value {
+-        Value::Str(s.into())
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub fn interval(lo: i64, hi: i64) -> Value {
+         Value::Set((lo..=hi).map(Value::Int).collect())
+     }
+ 
+     pub fn record(fields: impl IntoIterator<Item = (String, Value)>) -> Value {
+         Value::Record(fields.into_iter().collect())

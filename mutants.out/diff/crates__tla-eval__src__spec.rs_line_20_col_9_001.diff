@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace <impl Modules for NoModules>::source -> Option<String> with Some("xyzzy".into())
+@@ -12,17 +12,17 @@
+     fn source(&self, name: &str) -> Option<String>;
+ }
+ 
+ /// No modules beyond the one given and whatever it declares inside itself.
+ pub struct NoModules;
+ 
+ impl Modules for NoModules {
+     fn source(&self, _name: &str) -> Option<String> {
+-        None
++        Some("xyzzy".into()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ /// Modules as `<directory>/<Name>.tla`, which is how TLA+ tools find them.
+ pub struct Directory(pub std::path::PathBuf);
+ 
+ impl Modules for Directory {
+     fn source(&self, name: &str) -> Option<String> {

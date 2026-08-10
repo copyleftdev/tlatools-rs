@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace Spec::name -> &str with ""
+@@ -92,17 +92,17 @@
+         Ok(Self {
+             modules,
+             facts,
+             root,
+         })
+     }
+ 
+     pub fn name(&self) -> &str {
+-        &self.modules[self.root].name
++        "" /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// The variables of the root module, including any it inherits.
+     pub fn variables(&self) -> impl Iterator<Item = &str> {
+         self.facts[self.root].variables.iter().map(String::as_str)
+     }
+ 
+     pub fn constants(&self) -> impl Iterator<Item = &str> {

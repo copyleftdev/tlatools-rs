@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm "lor" in Lexer::scan_backslash
+@@ -480,17 +480,17 @@
+             "cup" | "union" => Op::Cup,
+             "cap" | "intersect" => Op::Cap,
+             "times" | "X" => Op::Cartesian,
+             "div" => Op::Div,
+             "o" | "circ" => Op::Concat,
+             "equiv" => Op::Equiv,
+             "lnot" | "neg" => Op::Not,
+             "land" => Op::And,
+-            "lor" => Op::Or,
++             /* ~ changed by cargo-mutants ~ */
+             "leq" => Op::Le,
+             "geq" => Op::Ge,
+             "neq" => Op::Neq,
+             "A" | "forall" => Op::Forall,
+             "E" | "exists" => Op::Exists,
+             "AA" => Op::TemporalForall,
+             "EE" => Op::TemporalExists,
+             _ => match token::user_operator(&format!("\\{name}")) {

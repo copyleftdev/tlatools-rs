@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::bracketed -> Result<T> with Ok(Default::default())
+@@ -123,20 +123,17 @@
+ 
+     /// True when the upcoming token belongs to an enclosing junction list
+     /// rather than to the expression being parsed.
+     fn fenced(&self) -> bool {
+         self.fences.last().is_some_and(|&f| self.col() <= f)
+     }
+ 
+     fn bracketed<T>(&mut self, f: impl FnOnce(&mut Self) -> Result<T>) -> Result<T> {
+-        self.fences.push(0);
+-        let out = f(self);
+-        self.fences.pop();
+-        out
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     // ---------------------------------------------------------------- module
+ 
+     fn module(&mut self) -> Result<Module> {
+         while !(matches!(self.peek(), Tok::Separator)
+             && matches!(self.peek_at(1), Tok::Kw(Kw::Module)))
+         {

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace || with && in Lexer::scan
+@@ -159,17 +159,17 @@
+ 
+     fn scan(&mut self, c: char) -> Result<Tok> {
+         if c.is_ascii_digit() {
+             return self.scan_number();
+         }
+         // A lone `_` is the placeholder in `Op(_, _)`; followed by more, it is
+         // an ordinary identifier, and `]_vars` is disambiguated by the parser.
+         if c.is_ascii_alphabetic()
+-            || (c == '_'
++            && /* ~ changed by cargo-mutants ~ */ (c == '_'
+                 && self
+                     .at(1)
+                     .is_some_and(|n| n.is_ascii_alphanumeric() || n == '_'))
+         {
+             return Ok(self.scan_word());
+         }
+         match c {
+             '"' => self.scan_string(),

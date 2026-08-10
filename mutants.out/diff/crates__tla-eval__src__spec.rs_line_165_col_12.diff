@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ delete ! in Spec::find_instance
+@@ -157,17 +157,17 @@
+     }
+ 
+     fn find_instance(
+         &self,
+         module: usize,
+         name: &str,
+         seen: &mut BTreeSet<usize>,
+     ) -> Option<&Instance> {
+-        if !seen.insert(module) {
++        if  /* ~ changed by cargo-mutants ~ */seen.insert(module) {
+             return None;
+         }
+         let here = self.facts[module]
+             .instances
+             .iter()
+             .find(|i| i.name.as_deref() == Some(name));
+         if here.is_some() {
+             return here;

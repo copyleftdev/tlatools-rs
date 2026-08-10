@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Bound::mentions_next_state -> bool with false
+@@ -97,17 +97,17 @@
+     /// Absent for the unbounded forms, as in `\E x : P`.
+     pub domain: Option<Expr>,
+     /// True for `<<x, y>> \in S`, which destructures each element.
+     pub destructure: bool,
+ }
+ 
+ impl Bound {
+     pub fn mentions_next_state(&self) -> bool {
+-        self.domain.as_ref().is_some_and(Expr::mentions_next_state)
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub enum QuantKind {
+     Forall,
+     Exists,
+     /// `\AA` and `\EE`, which quantify over a hidden *variable* rather than a

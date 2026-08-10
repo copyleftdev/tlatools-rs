@@ -1,0 +1,28 @@
+--- crates/tla-eval/src/diagnose.rs
++++ replace conjuncts -> Vec<&Expr> with vec![Box::leak(Box::new(Default::default()))]
+@@ -222,24 +222,17 @@
+             _ => {
+                 found.best.insert(key, candidate);
+             }
+         }
+     }
+ }
+ 
+ fn conjuncts(e: &Expr) -> Vec<&Expr> {
+-    match e {
+-        Expr::Binary(Op::And, lhs, rhs) => {
+-            let mut out = conjuncts(lhs);
+-            out.extend(conjuncts(rhs));
+-            out
+-        }
+-        other => vec![other],
+-    }
++    vec![Box::leak(Box::new(Default::default()))] /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn render_call(name: &str, params: &[Param], values: &[Value]) -> String {
+     if params.is_empty() {
+         return name.to_string();
+     }
+     let bindings: Vec<String> = params
+         .iter()

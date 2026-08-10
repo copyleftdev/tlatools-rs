@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Num(n) in Parser::postfix
+@@ -652,20 +652,17 @@
+                         Expr::Qualified { instance, name, .. } => format!("{instance}!{name}"),
+                         Expr::Apply(head, _) => head.to_string(),
+                         _ => return Err(self.err("`!` must follow an instance name")),
+                     };
+                     self.advance();
+                     // `Inv!2` picks the second conjunct of `Inv`, and `Inv!:`
+                     // its whole body; both are proof notation, not values.
+                     let name = match self.peek().clone() {
+-                        Tok::Num(n) => {
+-                            self.advance();
+-                            n.to_string()
+-                        }
++                         /* ~ changed by cargo-mutants ~ */
+                         Tok::Op(op) => {
+                             self.advance();
+                             op.symbol().to_string()
+                         }
+                         Tok::Colon => {
+                             self.advance();
+                             String::new()
+                         }

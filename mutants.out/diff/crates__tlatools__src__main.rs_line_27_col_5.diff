@@ -1,0 +1,48 @@
+--- crates/tlatools/src/main.rs
++++ replace run -> Result<ExitCode, String> with Ok(Default::default())
+@@ -19,44 +19,17 @@
+         Err(message) => {
+             eprintln!("tlatools: {message}");
+             ExitCode::from(2)
+         }
+     }
+ }
+ 
+ fn run() -> Result<ExitCode, String> {
+-    let args: Vec<String> = std::env::args().skip(1).collect();
+-    let rest = match args.first().map(String::as_str) {
+-        Some("check") => &args[1..],
+-        Some("--help" | "-h") => {
+-            println!("{}", usage());
+-            return Ok(ExitCode::SUCCESS);
+-        }
+-        Some(other) => return Err(format!("unknown command `{other}`\n\n{}", usage())),
+-        None => return Err(format!("no command given\n\n{}", usage())),
+-    };
+-
+-    let source = match rest.first().map(String::as_str) {
+-        None | Some("-") => read_stdin()?,
+-        Some(path) => std::fs::read_to_string(path).map_err(|e| format!("reading {path}: {e}"))?,
+-    };
+-
+-    let job: Job = serde_json::from_str(&source).map_err(|e| format!("reading the job: {e}"))?;
+-    let report = check(&job);
+-    let rendered =
+-        serde_json::to_string(&report).map_err(|e| format!("writing the report: {e}"))?;
+-    let mut out = std::io::stdout().lock();
+-    writeln!(out, "{rendered}").map_err(|e| e.to_string())?;
+-
+-    Ok(match report.status {
+-        Status::Pass => ExitCode::SUCCESS,
+-        Status::Error => ExitCode::from(2),
+-        _ => ExitCode::from(1),
+-    })
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn read_stdin() -> Result<String, String> {
+     let mut buffer = String::new();
+     std::io::stdin()
+         .read_to_string(&mut buffer)
+         .map_err(|e| format!("reading stdin: {e}"))?;
+     Ok(buffer)

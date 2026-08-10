@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/value.rs
++++ delete match arm Value::Str(s) in Value::function
+@@ -65,17 +65,17 @@
+         {
+             return Value::Seq(entries.into_values().collect());
+         }
+         if entries.keys().all(|k| matches!(k, Value::Str(_))) {
+             return Value::Record(
+                 entries
+                     .into_iter()
+                     .map(|(k, v)| match k {
+-                        Value::Str(s) => (s, v),
++                         /* ~ changed by cargo-mutants ~ */
+                         _ => unreachable!("keys checked to be strings"),
+                     })
+                     .collect(),
+             );
+         }
+         Value::Func(entries)
+     }
+ 

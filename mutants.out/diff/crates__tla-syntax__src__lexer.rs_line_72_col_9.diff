@@ -1,0 +1,23 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::advance with ()
+@@ -64,19 +64,17 @@
+             self.col = 1;
+         } else {
+             self.col += 1;
+         }
+         Some(c)
+     }
+ 
+     fn advance(&mut self, n: usize) {
+-        for _ in 0..n {
+-            self.bump();
+-        }
++        () /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn starts_with(&self, s: &str) -> bool {
+         s.chars().enumerate().all(|(i, c)| self.at(i) == Some(c))
+     }
+ 
+     fn run_of(&self, c: char) -> usize {
+         let mut n = 0;

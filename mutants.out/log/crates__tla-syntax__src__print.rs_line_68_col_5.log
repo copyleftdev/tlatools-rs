@@ -1,0 +1,342 @@
+
+*** crates/tla-syntax/src/print.rs:68:5: replace bare -> fmt::Result with Ok(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/print.rs
++++ replace bare -> fmt::Result with Ok(Default::default())
+@@ -60,149 +60,17 @@
+     bare(e, f)
+ }
+ 
+ #[expect(
+     clippy::too_many_lines,
+     reason = "one arm per syntactic form; splitting it would only scatter the grammar"
+ )]
+ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-    match e {
+-        Expr::Num(n) => write!(f, "{n}"),
+-        Expr::Str(s) => write!(f, "\"{}\"", s.replace('\\', "\\\\").replace('"', "\\\"")),
+-        Expr::Bool(b) => f.write_str(if *b { "TRUE" } else { "FALSE" }),
+-        Expr::Ident(name) => f.write_str(name),
+-        Expr::At => f.write_str("@"),
+-        Expr::Prime(inner) => {
+-            write(inner, ATOM, f)?;
+-            f.write_str("'")
+-        }
+-        Expr::Apply(head, args) => {
+-            write(head, ATOM, f)?;
+-            write!(f, "({})", list(args))
+-        }
+-        Expr::FnApply(head, args) => {
+-            write(head, ATOM, f)?;
+-            write!(f, "[{}]", list(args))
+-        }
+-        Expr::Field(inner, name) => {
+-            write(inner, ATOM, f)?;
+-            write!(f, ".{name}")
+-        }
+-        Expr::Qualified {
+-            instance,
+-            name,
+-            args,
+-        } => {
+-            write!(f, "{instance}!{name}")?;
+-            if args.is_empty() {
+-                Ok(())
+-            } else {
+-                write!(f, "({})", list(args))
+-            }
+-        }
+-        Expr::Unary(op, operand) if op.is_postfix() => {
+-            write(operand, ATOM, f)?;
+-            f.write_str(op.symbol())
+-        }
+-        Expr::Unary(op, operand) => {
+-            f.write_str(op.symbol())?;
+-            if op.is_word() {
+-                f.write_str(" ")?;
+-            }
+-            write(operand, op.prefix_prec(), f)
+-        }
+-        Expr::Binary(op, lhs, rhs) => {
+-            let prec = op.infix_prec().unwrap_or(TRAILING);
+-            let (left, right) = if op.is_right_assoc() {
+-                (prec + 1, prec)
+-            } else {
+-                (prec, prec + 1)
+-            };
+-            write(lhs, left, f)?;
+-            write!(f, " {} ", op.symbol())?;
+-            write(rhs, right, f)
+-        }
+-        Expr::Tuple(items) => write!(f, "<<{}>>", list(items)),
+-        Expr::SetEnum(items) => write!(f, "{{{}}}", list(items)),
+-        Expr::SetFilter { bound, pred } => write!(f, "{{{bound} : {pred}}}"),
+-        Expr::SetMap { expr, bounds } => write!(f, "{{{expr} : {}}}", bounds_list(bounds)),
+-        Expr::Record(fields) => write!(f, "[{}]", fields_list(fields, "|->")),
+-        Expr::RecordSet(fields) => write!(f, "[{}]", fields_list(fields, ":")),
+-        Expr::FnDef { bounds, body } => {
+-            write!(f, "[{} |-> {body}]", bounds_list(bounds))
+-        }
+-        Expr::FnSet { domain, range } => write!(f, "[{domain} -> {range}]"),
+-        Expr::Except { base, updates } => {
+-            write!(f, "[{base} EXCEPT ")?;
+-            for (i, (path, value)) in updates.iter().enumerate() {
+-                if i > 0 {
+-                    f.write_str(", ")?;
+-                }
+-                f.write_str("!")?;
+-                for step in path {
+-                    match step {
+-                        ExceptPath::Index(index) => write!(f, "[{index}]")?,
+-                        ExceptPath::Field(name) => write!(f, ".{name}")?,
+-                    }
+-                }
+-                write!(f, " = {value}")?;
+-            }
+-            f.write_str("]")
+-        }
+-        Expr::Quant { kind, bounds, body } => {
+-            let symbol = match kind {
+-                QuantKind::Forall => Op::Forall,
+-                QuantKind::Exists => Op::Exists,
+-                QuantKind::TemporalForall => Op::TemporalForall,
+-                QuantKind::TemporalExists => Op::TemporalExists,
+-            };
+-            write!(f, "{} {} : {body}", symbol.symbol(), bounds_list(bounds))
+-        }
+-        Expr::Choose { bound, body } => write!(f, "CHOOSE {bound} : {body}"),
+-        Expr::Let { defs, body } => {
+-            f.write_str("LET ")?;
+-            for (i, def) in defs.iter().enumerate() {
+-                if i > 0 {
+-                    f.write_str(" ")?;
+-                }
+-                write!(f, "{def}")?;
+-            }
+-            write!(f, " IN {body}")
+-        }
+-        Expr::If {
+-            cond,
+-            then,
+-            otherwise,
+-        } => write!(f, "IF {cond} THEN {then} ELSE {otherwise}"),
+-        Expr::Case { arms, other } => {
+-            f.write_str("CASE ")?;
+-            for (i, (guard, result)) in arms.iter().enumerate() {
+-                if i > 0 {
+-                    f.write_str(" [] ")?;
+-                }
+-                write!(f, "{guard} -> {result}")?;
+-            }
+-            match other {
+-                Some(value) => write!(f, " [] OTHER -> {value}"),
+-                None => Ok(()),
+-            }
+-        }
+-        Expr::Lambda { params, body } => write!(f, "LAMBDA {} : {body}", params_list(params)),
+-        Expr::ActionBox { action, subscript } => write!(f, "[{action}]_{subscript}"),
+-        Expr::ActionAngle { action, subscript } => write!(f, "<<{action}>>_{subscript}"),
+-        Expr::Fairness {
+-            strong,
+-            subscript,
+-            action,
+-        } => {
+-            let kind = if *strong { "SF" } else { "WF" };
+-            write!(f, "{kind}_{subscript}({action})")
+-        }
+-    }
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ impl fmt::Display for Def {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         f.write_str(&self.name)?;
+         if !self.params.is_empty() {
+             write!(f, "({})", params_list(&self.params))?;
+         }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/print.rs` has changed (1786402982.664938562s, 4s after last build at 1786402978.534686149s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps`
+warning: unused imports: `ExceptPath` and `QuantKind`
+  --> crates/tla-syntax/src/print.rs:10:30
+   |
+10 | use crate::ast::{Bound, Def, ExceptPath, Expr, Param, QuantKind};
+   |                              ^^^^^^^^^^               ^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::token::Op`
+  --> crates/tla-syntax/src/print.rs:11:5
+   |
+11 | use crate::token::Op;
+   |     ^^^^^^^^^^^^^^^^
+
+warning: unused variable: `e`
+  --> crates/tla-syntax/src/print.rs:67:9
+   |
+67 | fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+   |         ^ help: if this is intentional, prefix it with an underscore: `_e`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `f`
+  --> crates/tla-syntax/src/print.rs:67:19
+   |
+67 | fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+   |                   ^ help: if this is intentional, prefix it with an underscore: `_f`
+
+warning: function `list` is never used
+   --> crates/tla-syntax/src/print.rs:100:4
+    |
+100 | fn list(items: &[Expr]) -> String {
+    |    ^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `bounds_list` is never used
+   --> crates/tla-syntax/src/print.rs:108:4
+    |
+108 | fn bounds_list(bounds: &[Bound]) -> String {
+    |    ^^^^^^^^^^^
+
+warning: function `fields_list` is never used
+   --> crates/tla-syntax/src/print.rs:116:4
+    |
+116 | fn fields_list(fields: &[(String, Expr)], separator: &str) -> String {
+    |    ^^^^^^^^^^^
+
+warning: `tla-syntax` (lib test) generated 7 warnings (run `cargo fix --lib -p tla-syntax --tests` to apply 4 suggestions)
+warning: `tla-syntax` (lib) generated 7 warnings (7 duplicates)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name printing --edition=2024 crates/tla-syntax/tests/printing.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=630f5e3de7b96aa4 -C extra-filename=-a0b972b47931cbf0 --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name grammar --edition=2024 crates/tla-syntax/tests/grammar.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0802b3514e0199db -C extra-filename=-209c7b39092f9a9f --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name queries --edition=2024 crates/tla-syntax/tests/queries.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=fc19234c6e95ae98 -C extra-filename=-2cacbc55350fea8e --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name parse_specs --edition=2024 crates/tla-syntax/tests/parse_specs.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=a8f81c428969cd5b -C extra-filename=-f79b0d0a70f894ac --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name robustness --edition=2024 crates/tla-syntax/tests/robustness.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=3b1de0d84c0f7391 -C extra-filename=-4657dcdff6c43e2f --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name audit --edition=2024 crates/tla-syntax/examples/audit.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=dbbf919ed7279ef0 -C extra-filename=-0e703b0c6e8c99ba --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name depth --edition=2024 crates/tla-syntax/examples/depth.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=945ad0d3a4da74b3 -C extra-filename=-2ef4d05ce566e5e5 --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/examples -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.50s
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/parse_specs-f79b0d0a70f894ac`
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/printing-a0b972b47931cbf0`
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/queries-2cacbc55350fea8e`
+  Executable `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/robustness-4657dcdff6c43e2f`
+
+*** result: Success
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --verbose --package=tla-syntax@0.1.0
+warning: unused imports: `ExceptPath` and `QuantKind`
+  --> crates/tla-syntax/src/print.rs:10:30
+   |
+10 | use crate::ast::{Bound, Def, ExceptPath, Expr, Param, QuantKind};
+   |                              ^^^^^^^^^^               ^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `crate::token::Op`
+  --> crates/tla-syntax/src/print.rs:11:5
+   |
+11 | use crate::token::Op;
+   |     ^^^^^^^^^^^^^^^^
+
+warning: unused variable: `e`
+  --> crates/tla-syntax/src/print.rs:67:9
+   |
+67 | fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+   |         ^ help: if this is intentional, prefix it with an underscore: `_e`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `f`
+  --> crates/tla-syntax/src/print.rs:67:19
+   |
+67 | fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+   |                   ^ help: if this is intentional, prefix it with an underscore: `_f`
+
+warning: function `list` is never used
+   --> crates/tla-syntax/src/print.rs:100:4
+    |
+100 | fn list(items: &[Expr]) -> String {
+    |    ^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `bounds_list` is never used
+   --> crates/tla-syntax/src/print.rs:108:4
+    |
+108 | fn bounds_list(bounds: &[Bound]) -> String {
+    |    ^^^^^^^^^^^
+
+warning: function `fields_list` is never used
+   --> crates/tla-syntax/src/print.rs:116:4
+    |
+116 | fn fields_list(fields: &[(String, Expr)], separator: &str) -> String {
+    |    ^^^^^^^^^^^
+
+warning: `tla-syntax` (lib) generated 7 warnings (run `cargo fix --lib -p tla-syntax` to apply 4 suggestions)
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-syntax)
+warning: `tla-syntax` (lib test) generated 7 warnings (7 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.04s
+     Running `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/tla_syntax-7b1a32620c4b87af`
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running `/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/grammar-209c7b39092f9a9f`
+
+running 23 tests
+test a_choose_inside_braces_is_not_a_set_filter ... ok
+test a_function_may_be_defined_by_its_graph ... ok
+test a_module_may_contain_another ... ok
+test a_name_may_begin_with_a_digit_or_an_underscore ... ok
+test a_postfix_operator_binds_to_what_precedes_it ... ok
+test a_named_theorem_keeps_its_statement ... ok
+test a_fairness_subscript_may_be_a_tuple ... ok
+test a_lambda_may_be_passed_where_an_operator_is_wanted ... ok
+test a_proof_is_skipped_and_the_module_continues ... ok
+test an_action_subscript_is_recognised_past_an_inner_colon ... ok
+test an_infix_operator_can_be_defined ... ok
+test an_operator_may_be_passed_as_an_argument ... ok
+test an_operator_may_follow_a_bulleted_list ... ok
+test case_arms_are_separated_by_boxes ... ok
+test except_accepts_several_indices_at_once ... ok
+test higher_order_parameters_record_their_arity ... ok
+test instance_names_may_be_chained_and_take_arguments ... ok
+test prefix_and_postfix_operators_can_be_defined ... ok
+test labels_are_read_and_dropped ... FAILED
+test prose_outside_the_module_is_not_lexed ... ok
+test set_filters_and_set_maps_are_told_apart ... ok
+test temporal_quantifiers_parse_and_are_marked_as_such ... ok
+test the_new_forms_round_trip ... FAILED
+
+failures:
+
+---- labels_are_read_and_dropped stdout ----
+
+thread 'labels_are_read_and_dropped' (1028021) panicked at crates/tla-syntax/tests/grammar.rs:223:5:
+assertion `left == right` failed
+  left: ""
+ right: "x = 1 /\\ y = 2"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- the_new_forms_round_trip stdout ----
+
+thread 'the_new_forms_round_trip' (1028033) panicked at crates/tla-syntax/tests/grammar.rs:260:33:
+re-reading ``: parse error at 1:1: expected an expression, found Eof
+
+
+failures:
+    labels_are_read_and_dropped
+    the_new_forms_round_trip
+
+test result: FAILED. 21 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+error: test failed, to rerun pass `-p tla-syntax --test grammar`
+
+*** result: Failure(101)

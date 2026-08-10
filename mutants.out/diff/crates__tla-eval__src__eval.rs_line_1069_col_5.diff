@@ -1,0 +1,25 @@
+--- crates/tla-eval/src/eval.rs
++++ replace element_of -> Value with Default::default()
+@@ -1061,21 +1061,17 @@
+         ctx.locals.push((name.clone(), Local::Val(value.clone())));
+     }
+     restore
+ }
+ 
+ /// The value a binding contributes to a set or a function's domain: the single
+ /// bound variable, or the tuple of them.
+ fn element_of(binding: &[(String, Value)]) -> Value {
+-    if let [(_, only)] = binding {
+-        only.clone()
+-    } else {
+-        Value::Seq(binding.iter().map(|(_, v)| v.clone()).collect())
+-    }
++    Default::default() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn powerset(items: &[Value]) -> Result<Value> {
+     let bits = u32::try_from(items.len()).unwrap_or(u32::MAX);
+     let count = 1usize.checked_shl(bits).unwrap_or(usize::MAX);
+     check_size(count, "SUBSET")?;
+     let mut out = BTreeSet::new();
+     for mask in 0..count {

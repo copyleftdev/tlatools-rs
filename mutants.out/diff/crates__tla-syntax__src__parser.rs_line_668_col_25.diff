@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Colon in Parser::postfix
+@@ -660,20 +660,17 @@
+                         Tok::Num(n) => {
+                             self.advance();
+                             n.to_string()
+                         }
+                         Tok::Op(op) => {
+                             self.advance();
+                             op.symbol().to_string()
+                         }
+-                        Tok::Colon => {
+-                            self.advance();
+-                            String::new()
+-                        }
++                         /* ~ changed by cargo-mutants ~ */
+                         _ => self.expect_ident()?,
+                     };
+                     let mut args = Vec::new();
+                     if self.eat(&Tok::LParen) {
+                         args = self.bracketed(|p| p.expr_list(&Tok::RParen))?;
+                         self.expect(&Tok::RParen)?;
+                     }
+                     e = Expr::Qualified {

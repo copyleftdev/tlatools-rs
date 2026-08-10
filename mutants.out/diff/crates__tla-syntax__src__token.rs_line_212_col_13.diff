@@ -1,0 +1,30 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm Self::Eq | Self::Neq | Self::Lt | Self::Gt | Self::Le | Self::Ge | Self::In | Self::NotIn | Self::Subseteq | Self::Supseteq in Op::infix_prec
+@@ -204,26 +204,17 @@
+     /// binds tighter than `=`, and `:>` tighter than `@@`, so `a \cup {b} = c`
+     /// and `("k" :> v) @@ rest` parse without parentheses.
+     pub fn infix_prec(self) -> Option<u8> {
+         Some(match self {
+             Self::Implies => 1,
+             Self::Equiv | Self::LeadsTo => 2,
+             Self::Or => 3,
+             Self::And => 4,
+-            Self::Eq
+-            | Self::Neq
+-            | Self::Lt
+-            | Self::Gt
+-            | Self::Le
+-            | Self::Ge
+-            | Self::In
+-            | Self::NotIn
+-            | Self::Subseteq
+-            | Self::Supseteq => 5,
++             /* ~ changed by cargo-mutants ~ */
+             Self::AtAt => 6,
+             Self::OneTo => 7,
+             Self::Cup | Self::Cap | Self::SetMinus => 8,
+             Self::DotDot => 9,
+             Self::Plus | Self::Minus => 10,
+             Self::Times | Self::Div | Self::Mod | Self::Cartesian => 11,
+             Self::Concat => 12,
+             Self::Pow => 13,

@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace || with && in Evaluator<'m>::binary
+@@ -685,17 +685,17 @@
+             }
+             Op::Or => {
+                 return Ok(Value::Bool(
+                     self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,
+                 ));
+             }
+             Op::Implies => {
+                 return Ok(Value::Bool(
+-                    !self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,
++                    !self.eval_bool(lhs, ctx)? && /* ~ changed by cargo-mutants ~ */ self.eval_bool(rhs, ctx)?,
+                 ));
+             }
+             _ => {}
+         }
+         // `\prec`, `\oplus`, `&` and the rest have a symbol and a precedence
+         // but no meaning until a specification gives them one.
+         if let Op::User(symbol) = op
+             && let Some((module, def)) = self.spec.definition(ctx.module, symbol)

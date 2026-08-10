@@ -1,0 +1,27 @@
+--- crates/tlatools/src/main.rs
++++ replace main -> ExitCode with Default::default()
+@@ -9,23 +9,17 @@
+ //! could not be carried out.
+ 
+ use std::io::{Read, Write};
+ use std::process::ExitCode;
+ 
+ use tla_oracle::{Job, Status, check};
+ 
+ fn main() -> ExitCode {
+-    match run() {
+-        Ok(code) => code,
+-        Err(message) => {
+-            eprintln!("tlatools: {message}");
+-            ExitCode::from(2)
+-        }
+-    }
++    Default::default() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn run() -> Result<ExitCode, String> {
+     let args: Vec<String> = std::env::args().skip(1).collect();
+     let rest = match args.first().map(String::as_str) {
+         Some("check") => &args[1..],
+         Some("--help" | "-h") => {
+             println!("{}", usage());

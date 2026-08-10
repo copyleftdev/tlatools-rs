@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace != with == in Parser::primary
+@@ -763,17 +763,17 @@
+                     defs,
+                     body: Box::new(body),
+                 })
+             }
+             Tok::Kw(Kw::Choose) => {
+                 let mut bounds = self.bounds(&Tok::Colon)?;
+                 self.expect(&Tok::Colon)?;
+                 let body = self.expr(0)?;
+-                if bounds.len() != 1 {
++                if bounds.len() == /* ~ changed by cargo-mutants ~ */ 1 {
+                     return Err(self.err("CHOOSE takes exactly one bound variable"));
+                 }
+                 Ok(Expr::Choose {
+                     bound: Box::new(bounds.remove(0)),
+                     body: Box::new(body),
+                 })
+             }
+             Tok::Kw(Kw::Case) => self.case_form(),

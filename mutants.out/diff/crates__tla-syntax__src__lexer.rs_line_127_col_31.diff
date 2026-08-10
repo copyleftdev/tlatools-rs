@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace match guard self.at(1) == Some('*') with true in Lexer::skip_trivia
+@@ -119,17 +119,17 @@
+     }
+ 
+     fn skip_trivia(&mut self) -> Result<()> {
+         loop {
+             match self.peek() {
+                 Some(c) if c.is_whitespace() => {
+                     self.bump();
+                 }
+-                Some('\\') if self.at(1) == Some('*') => {
++                Some('\\') if true /* ~ changed by cargo-mutants ~ */ => {
+                     while !matches!(self.peek(), None | Some('\n')) {
+                         self.bump();
+                     }
+                 }
+                 Some('(') if self.at(1) == Some('*') => self.skip_block_comment()?,
+                 _ => return Ok(()),
+             }
+         }

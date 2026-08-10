@@ -1,0 +1,39 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::skip_block_comment -> Result<()> with Ok(())
+@@ -131,35 +131,17 @@
+                 }
+                 Some('(') if self.at(1) == Some('*') => self.skip_block_comment()?,
+                 _ => return Ok(()),
+             }
+         }
+     }
+ 
+     fn skip_block_comment(&mut self) -> Result<()> {
+-        let (line, col) = (self.line, self.col);
+-        let mut depth = 0usize;
+-        loop {
+-            if self.peek().is_none() {
+-                return Err(Error::lex("unterminated (* comment", line, col));
+-            }
+-            if self.starts_with("(*") {
+-                depth += 1;
+-                self.advance(2);
+-            } else if self.starts_with("*)") {
+-                depth -= 1;
+-                self.advance(2);
+-                if depth == 0 {
+-                    return Ok(());
+-                }
+-            } else {
+-                self.bump();
+-            }
+-        }
++        Ok(()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan(&mut self, c: char) -> Result<Tok> {
+         if c.is_ascii_digit() {
+             return self.scan_number();
+         }
+         // A lone `_` is the placeholder in `Op(_, _)`; followed by more, it is
+         // an ordinary identifier, and `]_vars` is disambiguated by the parser.

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "CONSTANT" | "CONSTANTS" in Kw::lookup
+@@ -31,17 +31,17 @@
+     Unchanged,
+ }
+ 
+ impl Kw {
+     pub fn lookup(word: &str) -> Option<Self> {
+         Some(match word {
+             "MODULE" => Self::Module,
+             "EXTENDS" => Self::Extends,
+-            "CONSTANT" | "CONSTANTS" => Self::Constant,
++             /* ~ changed by cargo-mutants ~ */
+             "VARIABLE" | "VARIABLES" => Self::Variable,
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+             "THEN" => Self::Then,
+             "ELSE" => Self::Else,
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,

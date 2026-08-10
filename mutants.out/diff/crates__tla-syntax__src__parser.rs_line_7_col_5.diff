@@ -1,0 +1,19 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace parse_module -> Result<Module> with Ok(Default::default())
+@@ -1,15 +1,15 @@
+ use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
+ use crate::error::{Error, Result};
+ use crate::lexer::lex;
+ use crate::token::{Kw, Op, Tok, Token};
+ 
+ pub fn parse_module(src: &str) -> Result<Module> {
+-    Parser::new(lex(src)?).module()
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ /// Parse a bare expression, with no surrounding module. Task definitions carry
+ /// predicates as strings, and they have nowhere else to live.
+ pub fn parse_expression(src: &str) -> Result<Expr> {
+     let mut p = Parser::new(lex(src)?);
+     let e = p.expr(0)?;
+     if matches!(p.peek(), Tok::Eof) {

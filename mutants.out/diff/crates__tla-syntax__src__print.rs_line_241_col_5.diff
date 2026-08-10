@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/print.rs
++++ replace bounds_list -> String with String::new()
+@@ -233,21 +233,17 @@
+     items
+         .iter()
+         .map(ToString::to_string)
+         .collect::<Vec<_>>()
+         .join(", ")
+ }
+ 
+ fn bounds_list(bounds: &[Bound]) -> String {
+-    bounds
+-        .iter()
+-        .map(ToString::to_string)
+-        .collect::<Vec<_>>()
+-        .join(", ")
++    String::new() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn fields_list(fields: &[(String, Expr)], separator: &str) -> String {
+     fields
+         .iter()
+         .map(|(name, value)| format!("{name} {separator} {value}"))
+         .collect::<Vec<_>>()
+         .join(", ")

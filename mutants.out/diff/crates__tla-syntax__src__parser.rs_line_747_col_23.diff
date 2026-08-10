@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::primary
+@@ -739,17 +739,17 @@
+                 Ok(Expr::If {
+                     cond: Box::new(cond),
+                     then: Box::new(then),
+                     otherwise: Box::new(otherwise),
+                 })
+             }
+             Tok::Kw(Kw::Let) => {
+                 let mut defs = Vec::new();
+-                while !matches!(self.peek(), Tok::Kw(Kw::In)) {
++                while  /* ~ changed by cargo-mutants ~ */matches!(self.peek(), Tok::Kw(Kw::In)) {
+                     if self.eat(&Tok::Kw(Kw::Recursive)) {
+                         self.decl_list()?;
+                         continue;
+                     }
+                     let Tok::Ident(name) = self.peek().clone() else {
+                         return Err(self.err("expected a definition inside LET"));
+                     };
+                     match self.named_definition(name, false)? {

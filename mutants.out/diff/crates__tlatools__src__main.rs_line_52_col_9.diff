@@ -1,0 +1,21 @@
+--- crates/tlatools/src/main.rs
++++ delete match arm Status::Error in run
+@@ -44,17 +44,17 @@
+     let report = check(&job);
+     let rendered =
+         serde_json::to_string(&report).map_err(|e| format!("writing the report: {e}"))?;
+     let mut out = std::io::stdout().lock();
+     writeln!(out, "{rendered}").map_err(|e| e.to_string())?;
+ 
+     Ok(match report.status {
+         Status::Pass => ExitCode::SUCCESS,
+-        Status::Error => ExitCode::from(2),
++         /* ~ changed by cargo-mutants ~ */
+         _ => ExitCode::from(1),
+     })
+ }
+ 
+ fn read_stdin() -> Result<String, String> {
+     let mut buffer = String::new();
+     std::io::stdin()
+         .read_to_string(&mut buffer)

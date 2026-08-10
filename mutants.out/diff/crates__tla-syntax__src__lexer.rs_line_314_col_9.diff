@@ -1,0 +1,44 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_word -> Tok with Default::default()
+@@ -306,40 +306,17 @@
+         }
+         let text: String = self.chars[start..self.pos].iter().collect();
+         text.parse()
+             .map(Tok::Num)
+             .map_err(|_| self.err(format!("integer literal out of range: {text}")))
+     }
+ 
+     fn scan_word(&mut self) -> Tok {
+-        let start = self.pos;
+-        while self
+-            .peek()
+-            .is_some_and(|c| c.is_ascii_alphanumeric() || c == '_')
+-        {
+-            self.bump();
+-        }
+-        let word: String = self.chars[start..self.pos].iter().collect();
+-
+-        // `WF_vars` is one word to the lexer but an operator plus a subscript.
+-        // `WF_vars` is one word; `WF_<<a, b>>` is the same operator with a
+-        // subscript the lexer cannot see, so the name is left empty.
+-        for (prefix, strong) in [("WF_", false), ("SF_", true)] {
+-            if let Some(rest) = word.strip_prefix(prefix) {
+-                return Tok::Fair {
+-                    strong,
+-                    subscript: rest.to_string(),
+-                };
+-            }
+-        }
+-        match Kw::lookup(&word) {
+-            Some(kw) => Tok::Kw(kw),
+-            None => Tok::Ident(word),
+-        }
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan_string(&mut self) -> Result<Tok> {
+         let (line, col) = (self.line, self.col);
+         self.bump();
+         let mut s = String::new();
+         loop {
+             match self.bump() {

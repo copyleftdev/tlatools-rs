@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "UNCHANGED" in Kw::lookup
+@@ -58,17 +58,17 @@
+             | "NEW" | "ONLY" => Self::Proof,
+             "EXCEPT" => Self::Except,
+             "TRUE" => Self::True,
+             "FALSE" => Self::False,
+             "DOMAIN" => Self::Domain,
+             "SUBSET" => Self::Subset,
+             "UNION" => Self::Union,
+             "ENABLED" => Self::Enabled,
+-            "UNCHANGED" => Self::Unchanged,
++             /* ~ changed by cargo-mutants ~ */
+             _ => return None,
+         })
+     }
+ }
+ 
+ #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+ pub enum Op {
+     Implies,

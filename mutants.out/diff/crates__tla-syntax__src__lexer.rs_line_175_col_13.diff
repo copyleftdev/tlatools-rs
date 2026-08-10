@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm '"' in Lexer::scan
+@@ -167,17 +167,17 @@
+             || (c == '_'
+                 && self
+                     .at(1)
+                     .is_some_and(|n| n.is_ascii_alphanumeric() || n == '_'))
+         {
+             return Ok(self.scan_word());
+         }
+         match c {
+-            '"' => self.scan_string(),
++             /* ~ changed by cargo-mutants ~ */
+             '=' => self.scan_equals(),
+             '-' => Ok(self.scan_dashes()),
+             '<' => Ok(self.scan_lt()),
+             '>' => Ok(self.scan_gt()),
+             '\\' => self.scan_backslash(),
+             '/' => self.scan_slash(),
+             '|' => {
+                 if self.starts_with("|->") {

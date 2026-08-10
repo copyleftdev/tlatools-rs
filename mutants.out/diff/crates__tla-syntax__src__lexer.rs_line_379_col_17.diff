@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm Some('<') in Lexer::scan_equals
+@@ -371,20 +371,17 @@
+             return Ok(Tok::DefEq);
+         }
+         if run == 1 {
+             return Ok(match self.at(1) {
+                 Some('>') => {
+                     self.advance(2);
+                     Tok::Op(Op::Implies)
+                 }
+-                Some('<') => {
+-                    self.advance(2);
+-                    Tok::Op(Op::Le)
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 Some('|') => {
+                     self.advance(2);
+                     Tok::Op(Op::User("=|"))
+                 }
+                 _ => {
+                     self.bump();
+                     Tok::Op(Op::Eq)
+                 }

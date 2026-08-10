@@ -1,0 +1,31 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::opt_params -> Result<Vec<Param>> with Ok(vec![Default::default()])
+@@ -425,27 +425,17 @@
+                 }
+             }
+             self.expect(&Tok::RParen)?;
+         }
+         Ok(Decl { name, arity })
+     }
+ 
+     fn opt_params(&mut self) -> Result<Vec<Param>> {
+-        let mut params = Vec::new();
+-        if self.eat(&Tok::LParen) {
+-            loop {
+-                params.push(self.param()?);
+-                if !self.eat(&Tok::Comma) {
+-                    break;
+-                }
+-            }
+-            self.expect(&Tok::RParen)?;
+-        }
+-        Ok(params)
++        Ok(vec![Default::default()]) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// A formal parameter: a name, or `f(_, _)` for one that is itself an
+     /// operator and so has to be applied rather than used as a value.
+     fn param(&mut self) -> Result<Param> {
+         let name = self.expect_ident()?;
+         let mut arity = 0;
+         if self.eat(&Tok::LParen) {

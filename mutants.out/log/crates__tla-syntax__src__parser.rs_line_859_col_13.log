@@ -1,0 +1,49 @@
+
+*** crates/tla-syntax/src/parser.rs:859:13: replace && with || in Parser::subscript
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace && with || in Parser::subscript
+@@ -851,17 +851,17 @@
+             Tok::Ident(name) => name.starts_with('_'),
+             _ => false,
+         }
+     }
+ 
+     /// The `v` of `[A]_v`, parsed tightly so it cannot swallow what follows.
+     fn subscript(&mut self) -> Result<Expr> {
+         if let Tok::Ident(name) = self.peek()
+-            && let Some(rest) = name.strip_prefix('_')
++            || /* ~ changed by cargo-mutants ~ */ let Some(rest) = name.strip_prefix('_')
+             && !rest.is_empty()
+         {
+             let subscript = Expr::Ident(rest.to_string());
+             self.advance();
+             return Ok(subscript);
+         }
+         self.expect(&Tok::Underscore)?;
+         self.postfix()
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps`
+error: `||` operators are not supported in let chain conditions
+   --> crates/tla-syntax/src/parser.rs:859:13
+    |
+859 |             || /* ~ changed by cargo-mutants ~ */ let Some(rest) = name.strip_prefix('_')
+    |             ^^
+
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-DsWQO2.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

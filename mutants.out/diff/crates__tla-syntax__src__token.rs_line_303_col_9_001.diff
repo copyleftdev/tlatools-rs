@@ -1,0 +1,25 @@
+--- crates/tla-syntax/src/token.rs
++++ replace Op::prefix_prec -> u8 with 1
+@@ -295,21 +295,17 @@
+             Self::TemporalExists => "\\EE",
+             Self::User(symbol) => symbol,
+         }
+     }
+ 
+     /// How tightly the operator holds its operand when used as a prefix, and
+     /// so how tightly it binds as a node in printed output.
+     pub fn prefix_prec(self) -> u8 {
+-        match self {
+-            Self::Minus => 11,
+-            Self::Domain | Self::Subset | Self::BigUnion => 9,
+-            _ => 5,
+-        }
++        1 /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// True for the word-shaped prefix operators, which need a space before
+     /// their operand where the symbolic ones do not.
+     pub fn is_word(self) -> bool {
+         matches!(
+             self,
+             Self::Domain | Self::Subset | Self::BigUnion | Self::Enabled | Self::Unchanged

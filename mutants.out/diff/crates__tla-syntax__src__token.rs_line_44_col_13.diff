@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm "THEN" in Kw::lookup
+@@ -36,17 +36,17 @@
+         Some(match word {
+             "MODULE" => Self::Module,
+             "EXTENDS" => Self::Extends,
+             "CONSTANT" | "CONSTANTS" => Self::Constant,
+             "VARIABLE" | "VARIABLES" => Self::Variable,
+             "LET" => Self::Let,
+             "IN" => Self::In,
+             "IF" => Self::If,
+-            "THEN" => Self::Then,
++             /* ~ changed by cargo-mutants ~ */
+             "ELSE" => Self::Else,
+             "CHOOSE" => Self::Choose,
+             "CASE" => Self::Case,
+             "OTHER" => Self::Other,
+             "ASSUME" | "ASSUMPTION" => Self::Assume,
+             "INSTANCE" => Self::Instance,
+             "WITH" => Self::With,
+             "LOCAL" => Self::Local,

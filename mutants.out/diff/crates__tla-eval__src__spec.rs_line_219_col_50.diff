@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/spec.rs
++++ replace || with && in Builder<'_, M>::add
+@@ -211,17 +211,17 @@
+         }
+ 
+         let mut wanted: Vec<String> = self.modules[position].extends.clone();
+         wanted.extend(self.modules[position].units.iter().filter_map(|u| match u {
+             Unit::Instance { module, .. } => Some(module.clone()),
+             _ => None,
+         }));
+         for name in wanted {
+-            if BUILT_IN.contains(&name.as_str()) || self.index.contains_key(&name) {
++            if BUILT_IN.contains(&name.as_str()) && /* ~ changed by cargo-mutants ~ */ self.index.contains_key(&name) {
+                 continue;
+             }
+             let Some(src) = self.source.source(&name) else {
+                 return Err(Error::Undefined(format!(
+                     "module `{name}` is neither a standard module nor one that could be found"
+                 )));
+             };
+             let parsed = parse_module(&src)?;

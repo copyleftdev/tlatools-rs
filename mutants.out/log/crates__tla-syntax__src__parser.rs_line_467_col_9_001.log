@@ -1,0 +1,71 @@
+
+*** crates/tla-syntax/src/parser.rs:467:9: replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok((String::new(), vec![(String::new(), Default::default())]))
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok((String::new(), vec![(String::new(), Default::default())]))
+@@ -459,30 +459,17 @@
+                 }
+             }
+             self.expect(&Tok::RParen)?;
+         }
+         Ok(Param { name, arity })
+     }
+ 
+     fn instance_tail(&mut self) -> Result<(String, Vec<(String, Expr)>)> {
+-        self.expect(&Tok::Kw(Kw::Instance))?;
+-        let module = self.expect_ident()?;
+-        let mut subs = Vec::new();
+-        if self.eat(&Tok::Kw(Kw::With)) {
+-            loop {
+-                let name = self.expect_ident()?;
+-                self.expect(&Tok::Gets)?;
+-                subs.push((name, self.expr(0)?));
+-                if !self.eat(&Tok::Comma) {
+-                    break;
+-                }
+-            }
+-        }
+-        Ok((module, subs))
++        Ok((String::new(), vec![(String::new(), Default::default())])) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     // ------------------------------------------------------------ expression
+ 
+     fn expr(&mut self, min_prec: u8) -> Result<Expr> {
+         if self.depth >= MAX_NESTING {
+             return Err(self.err(format!("expressions nest more than {MAX_NESTING} deep")));
+         }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786402873.697279208s, 2s after last build at 1786402871.974173904s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps`
+error[E0277]: the trait bound `Expr: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:467:49
+    |
+467 |         Ok((String::new(), vec![(String::new(), Default::default())])) /* ~ changed by cargo-mutants ~ */
+    |                                                 ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Expr`
+   --> crates/tla-syntax/src/ast.rs:132:1
+    |
+132 | pub enum Expr {
+    | ^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-ZasLz6.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

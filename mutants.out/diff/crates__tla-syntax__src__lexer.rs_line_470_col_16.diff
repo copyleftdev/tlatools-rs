@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace == with != in Lexer::scan_backslash
+@@ -462,17 +462,17 @@
+             self.advance(2);
+             return Ok(Tok::Op(Op::Or));
+         }
+         let start = self.pos + 1;
+         let mut end = start;
+         while self.chars.get(end).is_some_and(char::is_ascii_alphabetic) {
+             end += 1;
+         }
+-        if end == start {
++        if end != /* ~ changed by cargo-mutants ~ */ start {
+             self.bump();
+             return Ok(Tok::Op(Op::SetMinus));
+         }
+         let name: String = self.chars[start..end].iter().collect();
+         let op = match name.as_str() {
+             "in" => Op::In,
+             "notin" => Op::NotIn,
+             "subseteq" => Op::Subseteq,

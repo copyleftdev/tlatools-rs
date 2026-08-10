@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace << with >>
+@@ -6,17 +6,17 @@
+ use crate::builtin;
+ use crate::error::{Error, Result, type_error};
+ use crate::spec::Spec;
+ use crate::value::{Infinite, Value};
+ 
+ /// Nothing enumerable is materialized beyond this many elements. The bound
+ /// exists so a `SUBSET` or `[S -> T]` over an unexpectedly large set reports a
+ /// limit instead of exhausting memory.
+-pub const MAX_ELEMENTS: usize = 1 << 20;
++pub const MAX_ELEMENTS: usize = 1 >> /* ~ changed by cargo-mutants ~ */ 20;
+ 
+ const MAX_DEPTH: usize = 512;
+ 
+ /// A binding of every variable the specification declares.
+ pub type State = BTreeMap<String, Value>;
+ 
+ #[derive(Debug)]
+ pub struct Evaluator<'m> {

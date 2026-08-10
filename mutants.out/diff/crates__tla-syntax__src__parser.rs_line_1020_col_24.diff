@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete ! in Parser::bounds
+@@ -1012,17 +1012,17 @@
+         let mut out = Vec::new();
+         loop {
+             let mut destructure = false;
+             let mut names = Vec::new();
+             if self.eat(&Tok::LTup) {
+                 destructure = true;
+                 loop {
+                     names.push(self.expect_ident()?);
+-                    if !self.eat(&Tok::Comma) {
++                    if  /* ~ changed by cargo-mutants ~ */self.eat(&Tok::Comma) {
+                         break;
+                     }
+                 }
+                 self.expect(&Tok::RTup)?;
+             } else {
+                 names.push(self.expect_ident()?);
+                 while *self.peek() == Tok::Comma && matches!(self.peek_at(1), Tok::Ident(_)) {
+                     self.advance();

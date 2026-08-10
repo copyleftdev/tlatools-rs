@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace || with && in Expr::mentions_next_state
+@@ -261,17 +261,17 @@
+             }
+             Expr::FnSet { domain, range } => {
+                 domain.mentions_next_state() || range.mentions_next_state()
+             }
+             Expr::Except { base, updates } => {
+                 base.mentions_next_state()
+                     || updates.iter().any(|(path, value)| {
+                         value.mentions_next_state()
+-                            || path.iter().any(|step| match step {
++                            && /* ~ changed by cargo-mutants ~ */ path.iter().any(|step| match step {
+                                 ExceptPath::Index(e) => e.mentions_next_state(),
+                                 ExceptPath::Field(_) => false,
+                             })
+                     })
+             }
+             Expr::FnDef { bounds, body } | Expr::Quant { bounds, body, .. } => {
+                 body.mentions_next_state() || bounds.iter().any(Bound::mentions_next_state)
+             }

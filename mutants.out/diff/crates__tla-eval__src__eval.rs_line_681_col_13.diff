@@ -1,0 +1,25 @@
+--- crates/tla-eval/src/eval.rs
++++ delete match arm Op::And in Evaluator<'m>::binary
+@@ -673,21 +673,17 @@
+         Ok(Value::Bool(before == after))
+     }
+ 
+     fn binary(&self, op: Op, lhs: &'m Expr, rhs: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+         // The propositional connectives must not evaluate their right operand
+         // when the left already decides the answer: a guard like
+         // `Len(buf) > 0 /\ Head(buf) = x` relies on it.
+         match op {
+-            Op::And => {
+-                return Ok(Value::Bool(
+-                    self.eval_bool(lhs, ctx)? && self.eval_bool(rhs, ctx)?,
+-                ));
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             Op::Or => {
+                 return Ok(Value::Bool(
+                     self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,
+                 ));
+             }
+             Op::Implies => {
+                 return Ok(Value::Bool(
+                     !self.eval_bool(lhs, ctx)? || self.eval_bool(rhs, ctx)?,

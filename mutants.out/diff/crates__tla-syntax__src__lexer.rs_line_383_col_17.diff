@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm Some('|') in Lexer::scan_equals
+@@ -375,20 +375,17 @@
+                 Some('>') => {
+                     self.advance(2);
+                     Tok::Op(Op::Implies)
+                 }
+                 Some('<') => {
+                     self.advance(2);
+                     Tok::Op(Op::Le)
+                 }
+-                Some('|') => {
+-                    self.advance(2);
+-                    Tok::Op(Op::User("=|"))
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 _ => {
+                     self.bump();
+                     Tok::Op(Op::Eq)
+                 }
+             });
+         }
+         Err(self.err("`===` is neither a definition nor a module terminator"))
+     }

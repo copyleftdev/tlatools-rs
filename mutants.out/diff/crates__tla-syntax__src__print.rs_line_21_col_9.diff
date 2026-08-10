@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/print.rs
++++ replace <impl fmt::Display for Expr>::fmt -> fmt::Result with Ok(Default::default())
+@@ -13,17 +13,17 @@
+ /// The binding power of the constructs that run to the end of the expression.
+ /// They are parenthesized inside any operator, which is what makes
+ /// `(\A x \in S : P) /\ Q` come back as itself.
+ const TRAILING: u8 = 0;
+ const ATOM: u8 = u8::MAX;
+ 
+ impl fmt::Display for Expr {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+-        write(self, TRAILING, f)
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ }
+ 
+ impl fmt::Display for Bound {
+     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+         if self.destructure {
+             write!(f, "<<{}>>", self.names.join(", "))?;
+         } else {

@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/token.rs
++++ delete match arm Self::And in Op::infix_prec
+@@ -203,17 +203,17 @@
+     /// Ordering follows TLA+'s table where it matters for these specs: `\cup`
+     /// binds tighter than `=`, and `:>` tighter than `@@`, so `a \cup {b} = c`
+     /// and `("k" :> v) @@ rest` parse without parentheses.
+     pub fn infix_prec(self) -> Option<u8> {
+         Some(match self {
+             Self::Implies => 1,
+             Self::Equiv | Self::LeadsTo => 2,
+             Self::Or => 3,
+-            Self::And => 4,
++             /* ~ changed by cargo-mutants ~ */
+             Self::Eq
+             | Self::Neq
+             | Self::Lt
+             | Self::Gt
+             | Self::Le
+             | Self::Ge
+             | Self::In
+             | Self::NotIn

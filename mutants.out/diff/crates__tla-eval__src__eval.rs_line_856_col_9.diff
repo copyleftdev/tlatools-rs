@@ -1,0 +1,42 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::fn_set -> Result<Value> with Ok(Default::default())
+@@ -848,38 +848,17 @@
+             let v = self.eval(body, ctx);
+             ctx.locals.truncate(restore);
+             entries.insert(key, v?);
+         }
+         Ok(Value::function(entries))
+     }
+ 
+     fn fn_set(&self, domain: &'m Expr, range: &'m Expr, ctx: &mut Ctx<'m, '_>) -> Result<Value> {
+-        let keys = elements(&self.eval(domain, ctx)?)?;
+-        let range = self.eval(range, ctx)?;
+-        let values = elements(&range)?;
+-        let count = values
+-            .len()
+-            .checked_pow(u32::try_from(keys.len()).unwrap_or(u32::MAX))
+-            .unwrap_or(usize::MAX);
+-        check_size(count, "a function set")?;
+-
+-        let mut out = BTreeSet::new();
+-        for mut index in 0..count {
+-            let mut entries = BTreeMap::new();
+-            for key in &keys {
+-                entries.insert(key.clone(), values[index % values.len()].clone());
+-                index /= values.len();
+-            }
+-            out.insert(Value::function(entries));
+-        }
+-        if keys.is_empty() {
+-            out.insert(Value::Seq(Vec::new()));
+-        }
+-        Ok(Value::Set(out))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn quantify(
+         &self,
+         kind: QuantKind,
+         bounds: &'m [Bound],
+         body: &'m Expr,
+         ctx: &mut Ctx<'m, '_>,

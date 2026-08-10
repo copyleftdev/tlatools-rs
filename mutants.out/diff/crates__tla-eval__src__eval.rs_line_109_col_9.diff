@@ -1,0 +1,21 @@
+--- crates/tla-eval/src/eval.rs
++++ replace Evaluator<'m>::eval_at -> Result<Value> with Ok(Default::default())
+@@ -101,17 +101,17 @@
+     }
+ 
+     pub fn value_of(&self, name: &str, state: &State) -> Result<Value> {
+         let body = self.body_of(name)?;
+         self.eval(body, &mut self.ctx(state, None))
+     }
+ 
+     pub fn eval_at(&self, expr: &'m Expr, from: &State, to: Option<&State>) -> Result<Value> {
+-        self.eval(expr, &mut self.ctx(from, to))
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     pub(crate) fn body_of(&self, name: &str) -> Result<&'m Expr> {
+         let (_, def) = self
+             .spec
+             .definition(self.spec.root(), name)
+             .ok_or_else(|| Error::Undefined(name.to_string()))?;
+         if def.params.is_empty() {

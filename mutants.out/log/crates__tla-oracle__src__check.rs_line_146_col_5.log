@@ -1,0 +1,157 @@
+
+*** crates/tla-oracle/src/check.rs:146:5: replace check -> Report with Default::default()
+
+*** mutation diff:
+--- crates/tla-oracle/src/check.rs
++++ replace check -> Report with Default::default()
+@@ -138,95 +138,17 @@
+             outcome: None,
+             blocked: Vec::new(),
+             stats,
+         }
+     }
+ }
+ 
+ pub fn check(job: &Job) -> Report {
+-    let mut stats = Stats {
+-        states: job.states.len(),
+-        edges: job.edges.len(),
+-        ..Stats::default()
+-    };
+-
+-    let spec = match Spec::parse(&job.spec) {
+-        Ok(s) => s,
+-        Err(e) => return Report::of(Status::Error, format!("specification: {e}"), stats),
+-    };
+-
+-    let constants = match decode_constants(&job.constants) {
+-        Ok(c) => c,
+-        Err(detail) => return Report::of(Status::Error, detail, stats),
+-    };
+-
+-    let states = match decode_states(job) {
+-        Ok(s) => s,
+-        Err(detail) => return Report::of(Status::Contract, detail, stats),
+-    };
+-    let Some(root) = states.first() else {
+-        return Report::of(
+-            Status::Contract,
+-            "the implementation reported no states at all",
+-            stats,
+-        );
+-    };
+-
+-    let outcomes = match parse_outcomes(job) {
+-        Ok(o) => o,
+-        Err(detail) => return Report::of(Status::Error, detail, stats),
+-    };
+-
+-    let evaluator = match Evaluator::new(&spec, constants.clone()) {
+-        Ok(e) => e,
+-        Err(e) => return Report::of(Status::Error, e.to_string(), stats),
+-    };
+-
+-    match evaluator.holds_at(&job.init_op, root) {
+-        Ok(true) => {}
+-        Ok(false) => {
+-            return Report::of(
+-                Status::Init,
+-                format!(
+-                    "the first state the implementation reports is not a legal initial \
+-                     state of the specification: {}",
+-                    render(root)
+-                ),
+-                stats,
+-            );
+-        }
+-        Err(e) => return Report::of(classify(&e), format!("{}: {e}", job.init_op), stats),
+-    }
+-
+-    if let Some(failure) = check_edges(job, &evaluator, &states, &mut stats) {
+-        return failure;
+-    }
+-
+-    if outcomes.is_empty() {
+-        return Report::of(Status::Pass, "all obligations discharged", stats);
+-    }
+-
+-    // `Reached` is what a coverage predicate quantifies over, and it behaves
+-    // exactly like a constant: fixed for the whole check, mentioning no
+-    // variable.
+-    let mut with_reached = constants;
+-    with_reached.insert(
+-        "Reached".to_string(),
+-        Value::set(states.iter().cloned().map(Value::Record)),
+-    );
+-    let coverage = match Evaluator::new(&spec, with_reached) {
+-        Ok(e) => e,
+-        Err(e) => return Report::of(Status::Error, e.to_string(), stats),
+-    };
+-    if let Some(failure) = check_outcomes(job, &coverage, &outcomes, &mut stats) {
+-        return failure;
+-    }
+-
+-    Report::of(Status::Pass, "all obligations discharged", stats)
++    Default::default() /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ fn check_edges(
+     job: &Job,
+     evaluator: &Evaluator<'_>,
+     states: &[State],
+     stats: &mut Stats,
+ ) -> Option<Report> {
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-oracle@0.1.0
+       Fresh unicode-ident v1.0.24
+       Fresh itoa v1.0.18
+       Fresh memchr v2.8.3
+       Fresh tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-syntax)
+       Fresh proc-macro2 v1.0.107
+       Fresh tla-eval v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-eval)
+       Fresh quote v1.0.47
+       Fresh serde_core v1.0.229
+       Fresh zmij v1.0.23
+       Fresh syn v3.0.3
+       Fresh serde_json v1.0.151
+       Fresh serde_derive v1.0.229
+       Fresh serde v1.0.229
+       Dirty tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-oracle): couldn't read metadata for file `target/debug/deps/libtla_oracle-05e96871ddace9ec.rlib`
+   Compiling tla-oracle v0.1.0 (/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/crates/tla-oracle)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+warning: unused import: `Spec`
+ --> crates/tla-oracle/src/check.rs:5:56
+  |
+5 | use tla_eval::{Blocked, Error as EvalError, Evaluator, Spec, State, Value};
+  |                                                        ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0277]: the trait bound `check::Report: Default` is not satisfied
+   --> crates/tla-oracle/src/check.rs:146:5
+    |
+146 |     Default::default() /* ~ changed by cargo-mutants ~ */
+    |     ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `check::Report`
+   --> crates/tla-oracle/src/check.rs:115:1
+    |
+115 | pub struct Report {
+    | ^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+warning: `tla-oracle` (lib test) generated 1 warning
+error: could not compile `tla-oracle` (lib test) due to 1 previous error; 1 warning emitted
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ab41740dcdd59c9 -C extra-filename=-1cfd7f127e84a435 --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde-50e58405f4925bd5.rlib --extern serde_json=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rlib --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rlib --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+warning: `tla-oracle` (lib) generated 1 warning (1 duplicate)
+error: could not compile `tla-oracle` (lib) due to 1 previous error; 1 warning emitted
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_oracle --edition=2024 crates/tla-oracle/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b83f616a193d2c4f -C extra-filename=-05e96871ddace9ec --out-dir /tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps --extern serde=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde-50e58405f4925bd5.rmeta --extern serde_json=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libserde_json-1f53e1b7a8e26068.rmeta --extern tla_eval=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_eval-9723028bc8fab821.rmeta --extern tla_syntax=/tmp/cargo-mutants-tlatools-rs-Oau2N9.tmp/target/debug/deps/libtla_syntax-169d03993c2aec3f.rmeta` (exit status: 1)
+
+*** result: Failure(101)

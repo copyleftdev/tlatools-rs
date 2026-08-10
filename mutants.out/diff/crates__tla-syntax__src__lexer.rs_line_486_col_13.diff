@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ delete match arm "lnot" | "neg" in Lexer::scan_backslash
+@@ -478,17 +478,17 @@
+             "subseteq" => Op::Subseteq,
+             "supseteq" => Op::Supseteq,
+             "cup" | "union" => Op::Cup,
+             "cap" | "intersect" => Op::Cap,
+             "times" | "X" => Op::Cartesian,
+             "div" => Op::Div,
+             "o" | "circ" => Op::Concat,
+             "equiv" => Op::Equiv,
+-            "lnot" | "neg" => Op::Not,
++             /* ~ changed by cargo-mutants ~ */
+             "land" => Op::And,
+             "lor" => Op::Or,
+             "leq" => Op::Le,
+             "geq" => Op::Ge,
+             "neq" => Op::Neq,
+             "A" | "forall" => Op::Forall,
+             "E" | "exists" => Op::Exists,
+             "AA" => Op::TemporalForall,

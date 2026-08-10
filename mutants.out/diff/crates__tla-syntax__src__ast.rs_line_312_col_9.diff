@@ -1,0 +1,17 @@
+--- crates/tla-syntax/src/ast.rs
++++ replace Expr::fold -> Expr with Default::default()
+@@ -304,13 +304,11 @@
+         Self::fold(items, Op::And)
+     }
+ 
+     pub fn disjunction(items: Vec<Expr>) -> Expr {
+         Self::fold(items, Op::Or)
+     }
+ 
+     fn fold(items: Vec<Expr>, op: Op) -> Expr {
+-        let mut iter = items.into_iter();
+-        let first = iter.next().expect("junction list has at least one item");
+-        iter.fold(first, |acc, e| Expr::Binary(op, Box::new(acc), Box::new(e)))
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ }

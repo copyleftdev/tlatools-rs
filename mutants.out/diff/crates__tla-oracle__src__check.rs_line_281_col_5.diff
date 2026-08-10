@@ -1,0 +1,55 @@
+--- crates/tla-oracle/src/check.rs
++++ replace check_outcomes -> Option<Report> with None
+@@ -273,51 +273,17 @@
+ }
+ 
+ fn check_outcomes(
+     job: &Job,
+     coverage: &Evaluator<'_>,
+     outcomes: &[(String, Expr)],
+     stats: &mut Stats,
+ ) -> Option<Report> {
+-    let nowhere = State::new();
+-    for (name, expr) in outcomes {
+-        stats.outcomes_checked += 1;
+-        match coverage.eval_at(expr, &nowhere, None) {
+-            Ok(Value::Bool(true)) => {}
+-            Ok(Value::Bool(false)) => {
+-                let mut report = Report::of(
+-                    Status::Coverage,
+-                    format!(
+-                        "every transition is legal, but no reachable state satisfies the \
+-                         required outcome `{name}`: {}",
+-                        job.outcomes[name]
+-                    ),
+-                    *stats,
+-                );
+-                report.outcome = Some(name.clone());
+-                return Some(report);
+-            }
+-            Ok(other) => {
+-                return Some(Report::of(
+-                    Status::Error,
+-                    format!("outcome `{name}` is {other}, not a boolean"),
+-                    *stats,
+-                ));
+-            }
+-            Err(e) => {
+-                return Some(Report::of(
+-                    Status::Error,
+-                    format!("outcome `{name}`: {e}"),
+-                    *stats,
+-                ));
+-            }
+-        }
+-    }
+-    None
++    None /* ~ changed by cargo-mutants ~ */
+ }
+ 
+ /// A type error means the state does not fit the shape the specification reads
+ /// it with — the schema let it through, but the specification cannot use it.
+ fn classify(e: &EvalError) -> Status {
+     match e {
+         EvalError::Type(_) => Status::Contract,
+         _ => Status::Error,

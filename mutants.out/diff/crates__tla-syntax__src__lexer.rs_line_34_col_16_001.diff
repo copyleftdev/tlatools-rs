@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace += with *= in module_start
+@@ -26,17 +26,17 @@
+         if trimmed.starts_with("----")
+             && trimmed
+                 .trim_start_matches('-')
+                 .trim_start()
+                 .starts_with("MODULE")
+         {
+             return (offset, u32::try_from(index).unwrap_or(u32::MAX) + 1);
+         }
+-        offset += text.len();
++        offset *= /* ~ changed by cargo-mutants ~ */ text.len();
+     }
+     (0, 1)
+ }
+ 
+ impl Lexer {
+     fn new(src: &str) -> Self {
+         let (offset, line) = module_start(src);
+         Self {
