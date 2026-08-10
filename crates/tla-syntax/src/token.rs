@@ -52,7 +52,7 @@ impl Kw {
             "LOCAL" => Self::Local,
             "RECURSIVE" => Self::Recursive,
             "LAMBDA" => Self::Lambda,
-            "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" => Self::Theorem,
+            "THEOREM" | "LEMMA" | "COROLLARY" | "PROPOSITION" | "AXIOM" => Self::Theorem,
             "PROOF" | "BY" | "OBVIOUS" | "OMITTED" | "QED" | "DEF" | "DEFS" | "DEFINE"
             | "SUFFICES" | "PICK" | "WITNESS" | "HAVE" | "TAKE" | "USE" | "HIDE" | "PROVE"
             | "NEW" | "ONLY" => Self::Proof,
@@ -145,6 +145,8 @@ pub(crate) const USER_OPERATORS: &[(&str, u8)] = &[
     ("\\doteq", 5),
     ("\\propto", 5),
     ("\\cdot", 5),
+    ("\\mod", 11),
+    ("\\times", 11),
     ("|-", 5),
     ("-|", 5),
     ("|=", 5),

@@ -21,7 +21,10 @@ struct Lexer {
 /// which are not characters the language allows loose.
 fn module_start(src: &str) -> (usize, u32) {
     let mut offset = 0;
-    for (index, text) in src.split_inclusive('\n').enumerate() {
+    if src.starts_with('\u{feff}') {
+        offset = '\u{feff}'.len_utf8();
+    }
+    for (index, text) in src[offset..].split_inclusive('\n').enumerate() {
         let trimmed = text.trim_start();
         if trimmed.starts_with("----")
             && trimmed
@@ -59,7 +62,10 @@ impl Lexer {
     fn bump(&mut self) -> Option<char> {
         let c = self.chars.get(self.pos).copied()?;
         self.pos += 1;
-        if c == '\n' {
+        // `\r\n` is one line break, not two, so a carriage return only ends a
+        // line when no newline follows it.
+        let ends_line = c == '\n' || (c == '\r' && self.peek() != Some('\n'));
+        if ends_line {
             self.line += 1;
             self.col = 1;
         } else {

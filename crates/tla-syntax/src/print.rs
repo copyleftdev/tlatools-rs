@@ -4,10 +4,17 @@
 //! precedence rather than preserved from the input, and where TLA+ offers
 //! several spellings of an operator the ASCII one is used. A round-trip
 //! through `parse_expression` gives back the same tree.
+//!
+//! Parenthesisation is conservative. A prefix operator is bracketed wherever
+//! an infix operator of the same precedence could otherwise steal its operand,
+//! which puts a few brackets in that a person would not — `-a * b` genuinely
+//! needs them, and `UNCHANGED v` is bracketed by the same rule. Being correct
+//! matters more here than being pretty: this output is what a counterexample
+//! quotes.
 
 use std::fmt;
 
-use crate::ast::{Bound, Def, ExceptPath, Expr, Param, QuantKind};
+use crate::ast::{Bound, Decl, Def, ExceptPath, Expr, Module, Param, QuantKind, Unit};
 use crate::token::Op;
 
 /// The binding power of the constructs that run to the end of the expression.
@@ -118,7 +125,13 @@ fn bare(e: &Expr, f: &mut fmt::Formatter<'_>) -> fmt::Result {
                 (prec, prec + 1)
             };
             write(lhs, left, f)?;
-            write!(f, " {} ", op.symbol())?;
+            // `1..n` is how a range is written; everything else reads better
+            // with room around it.
+            if *op == Op::DotDot {
+                f.write_str(op.symbol())?;
+            } else {
+                write!(f, " {} ", op.symbol())?;
+            }
             write(rhs, right, f)
         }
         Expr::Tuple(items) => write!(f, "<<{}>>", list(items)),
@@ -249,6 +262,77 @@ fn fields_list(fields: &[(String, Expr)], separator: &str) -> String {
     fields
         .iter()
         .map(|(name, value)| format!("{name} {separator} {value}"))
+        .collect::<Vec<_>>()
+        .join(", ")
+}
+
+/// A module, written back out in a single canonical form.
+///
+/// Layout is not preserved — bulleted lists become infix operators and
+/// alignment is lost — so this is a normal form rather than a formatter that
+/// respects the author's hand. Two files that mean the same thing print the
+/// same way, which is what makes it useful for comparing them.
+impl fmt::Display for Module {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "---- MODULE {} ----", self.name)?;
+        if !self.extends.is_empty() {
+            writeln!(f, "EXTENDS {}", self.extends.join(", "))?;
+        }
+        for unit in &self.units {
+            write!(f, "{unit}")?;
+        }
+        writeln!(f, "====")
+    }
+}
+
+impl fmt::Display for Unit {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Unit::Constants(decls) => writeln!(f, "CONSTANTS {}", decls_list(decls)),
+            Unit::Variables(names) => writeln!(f, "VARIABLES {}", names.join(", ")),
+            Unit::Recursive(decls) => writeln!(f, "RECURSIVE {}", decls_list(decls)),
+            Unit::Def(def) => {
+                if def.local {
+                    write!(f, "LOCAL ")?;
+                }
+                writeln!(f, "{def}")
+            }
+            Unit::Instance { name, module, subs } => {
+                match name {
+                    Some(name) => write!(f, "{name} == INSTANCE {module}")?,
+                    None => write!(f, "INSTANCE {module}")?,
+                }
+                if !subs.is_empty() {
+                    let with: Vec<String> = subs
+                        .iter()
+                        .map(|(name, value)| format!("{name} <- {value}"))
+                        .collect();
+                    write!(f, " WITH {}", with.join(", "))?;
+                }
+                writeln!(f)
+            }
+            Unit::Assume(e) => writeln!(f, "ASSUME {e}"),
+            Unit::Theorem(e) => writeln!(f, "THEOREM {e}"),
+            Unit::Inner(module) => write!(f, "{module}"),
+            Unit::Opaque => Ok(()),
+        }
+    }
+}
+
+impl fmt::Display for Decl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.name)?;
+        if self.arity > 0 {
+            write!(f, "({})", vec!["_"; self.arity].join(", "))?;
+        }
+        Ok(())
+    }
+}
+
+fn decls_list(decls: &[Decl]) -> String {
+    decls
+        .iter()
+        .map(ToString::to_string)
         .collect::<Vec<_>>()
         .join(", ")
 }

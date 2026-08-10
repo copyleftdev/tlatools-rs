@@ -41,26 +41,27 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-  # The parser is measured against every public TLA+ specification. A drop in
-  # the count is a regression even when every test still passes.
-  conformance:
+  # Every public TLA+ specification we can find, and exactly how this parser
+  # reads each one. A count can stay the same while the answers change; the
+  # committed manifests cannot.
+  golden:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: actions/checkout@v5
-        with:
-          repository: tlaplus/Examples
-          path: corpus
-      - name: parse the public corpus
-        run: |
-          read -r parsed _ total < <(
-            cargo run --release --quiet --example audit -p tla-syntax -- \
-              $(find corpus -name '*.tla') | head -1 | sed 's/parsed //'
-          )
-          echo "parsed $parsed of $total"
-          test "$parsed" -ge 415
+        with: { repository: tlaplus/Examples, path: corpus/examples }
+      - uses: actions/checkout@v5
+        with: { repository: tlaplus/CommunityModules, path: corpus/community }
+      - uses: actions/checkout@v5
+        with: { repository: tlaplus/tlaplus, path: corpus/tlaplus }
+      - name: check the golden manifests
+        env:
+          TLA_EXAMPLES: corpus/examples
+          TLA_COMMUNITY: corpus/community
+          TLA_TESTS: corpus/tlaplus/tlatools/org.lamport.tlatools/test-model
+        run: tools/golden.sh --check
 
   mutants:
     runs-on: ubuntu-latest

@@ -10,12 +10,12 @@ question is often not "what states can this system reach?" but "is *this*
 transition one the specification permits?", and TLC cannot be asked that
 directly.
 
-**Reads 425 of the 430 specifications** in the public
-[TLA+ examples](https://github.com/tlaplus/Examples) corpus and the standard
-modules shipped with `tla2tools` — user-defined operators, TLAPS proofs, nested
-modules, higher-order parameters and all. `cargo run --example audit -p
-tla-syntax -- $(find CORPUS -name '*.tla')` reproduces the count and lists
-whatever still fails.
+**Reads 1,214 of the 1,258 specifications** in every public TLA+ corpus we
+could find — the [examples](https://github.com/tlaplus/Examples), the
+[community modules](https://github.com/tlaplus/CommunityModules), and the
+[tools' own test models](https://github.com/tlaplus/tlaplus), which include
+specifications deliberately written to be rejected. Exactly how each one is
+read is recorded in `golden/`.
 
 ## Why an evaluator and not a checker
 
@@ -43,6 +43,26 @@ indices corrected by chunk offset afterwards.
 
 An evaluator answers the question that was actually being asked, and the
 encoding goes away with it.
+
+## Files
+
+```console
+$ tlatools parse spec/*.tla          # one tab-separated line per file
+spec/Paxos.tla	ok	Paxos	19 units
+spec/Broken.tla	error	14:3	expected an expression
+
+$ tlatools fmt Paxos.tla             # one canonical form, for comparing two files
+```
+
+`Spec::from_file` reads a `.tla` file and resolves whatever it extends or
+instantiates from the directory beside it, which is where TLA+ tools look.
+
+Real files are messier than curated ones, so: a UTF-8 byte-order mark is
+skipped, CRLF and lone-CR line endings both end a line, and a tab counts as one
+column. That last one matters, because bulleted lists are scoped by column —
+mixing tabs and spaces to indent the bullets of one list is ambiguous in any
+tool and best avoided. Of the 1,258 specifications surveyed, 55 contain tabs
+and 3 use CRLF.
 
 ## Using it
 
@@ -182,7 +202,16 @@ cargo clippy --all-targets
 CARGO_MUTANTS_JOBS=4 nice -n 19 cargo mutants   # are the tests worth having?
 cargo run --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')
 cargo run --example depth -p tla-syntax -- $(find CORPUS -name '*.tla')
+
+TLA_EXAMPLES=... TLA_COMMUNITY=... TLA_TESTS=... tools/golden.sh --check
+UPDATE_GOLDEN=1 cargo test -p tla-syntax --test golden
 ```
+
+`golden/` holds two things. `golden/*.tsv` records the verdict for each of the
+1,258 corpus specifications, so a behaviour change names the files it changed
+instead of moving a count. `golden/fmt/` holds the full canonical form of the
+specifications this repository vendors, so a change in the parser *or* the
+printer shows up as a readable diff.
 
 Mutation coverage is 85% (603 of 712 viable mutants caught). The run is
 deliberately bounded to four jobs and niced — it will otherwise take every core

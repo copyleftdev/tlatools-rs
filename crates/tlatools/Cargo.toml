@@ -15,10 +15,12 @@ path = "src/main.rs"
 
 [dependencies]
 tla-oracle = { path = "../tla-oracle", version = "0.1.0" }
+tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 serde_json = { workspace = true }
 
 [dev-dependencies]
 serde_json = { workspace = true }
+tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 
 [lints]
 workspace = true

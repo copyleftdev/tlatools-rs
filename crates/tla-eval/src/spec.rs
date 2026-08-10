@@ -79,6 +79,17 @@ impl Spec {
         Self::load(src, &NoModules)
     }
 
+    /// Read a specification from a `.tla` file, resolving whatever it extends
+    /// or instantiates from the directory the file is in — which is where TLA+
+    /// tools look, and what makes a path enough to work from.
+    pub fn from_file(path: impl AsRef<std::path::Path>) -> Result<Self> {
+        let path = path.as_ref();
+        let src = std::fs::read_to_string(path)
+            .map_err(|e| Error::Malformed(format!("reading {}: {e}", path.display())))?;
+        let directory = path.parent().unwrap_or(std::path::Path::new("."));
+        Self::load(&src, &Directory(directory.to_path_buf()))
+    }
+
     pub fn load(src: &str, modules: &impl Modules) -> Result<Self> {
         let root = parse_module(src)?;
         let mut builder = Builder {

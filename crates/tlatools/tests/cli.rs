@@ -120,7 +120,9 @@ fn help_is_available_and_succeeds() {
     let out = tlatools().arg("--help").output().expect("runs");
     assert_eq!(out.status.code(), Some(0));
     let text = String::from_utf8_lossy(&out.stdout);
-    assert!(text.contains("tlatools check"), "{text}");
+    for command in ["parse", "fmt", "check"] {
+        assert!(text.contains(command), "`{command}` is documented: {text}");
+    }
     assert!(text.contains("exit status"), "{text}");
 }
 
@@ -145,4 +147,94 @@ fn malformed_json_is_refused_before_anything_is_decided() {
     let out = run(&["check", "-"], "{not json");
     assert_eq!(out.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&out.stderr).contains("reading the job"));
+}
+
+// ------------------------------------------------------------------- files
+
+fn spec_path(name: &str) -> String {
+    format!("{}/../../specs/{name}", env!("CARGO_MANIFEST_DIR"))
+}
+
+#[test]
+fn parse_reports_one_line_per_file_and_exits_zero() {
+    let out = tlatools()
+        .args([
+            "parse",
+            &spec_path("BoundedBuffer.tla"),
+            &spec_path("Paxos.tla"),
+        ])
+        .output()
+        .expect("runs");
+    assert_eq!(out.status.code(), Some(0));
+    let text = String::from_utf8_lossy(&out.stdout);
+    assert_eq!(text.lines().count(), 2, "{text}");
+    assert!(text.contains("\tok\tBoundedBuffer\t"), "{text}");
+    assert!(text.contains("\tok\tPaxos\t"), "{text}");
+}
+
+#[test]
+fn parse_reports_a_file_it_cannot_read_and_exits_one() {
+    let out = tlatools()
+        .args(["parse", &spec_path("Paxos.tla"), "/nonexistent.tla"])
+        .output()
+        .expect("runs");
+    assert_eq!(out.status.code(), Some(1), "one file failed");
+    let text = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        text.contains("\tok\tPaxos\t"),
+        "the good file still reports"
+    );
+    assert!(text.contains("unreadable"), "{text}");
+}
+
+#[test]
+fn parse_reports_where_a_file_stops_making_sense() {
+    let dir = std::env::temp_dir().join("tlatools-parse-test");
+    std::fs::create_dir_all(&dir).expect("temp dir");
+    let path = dir.join("Broken.tla");
+    std::fs::write(&path, "---- MODULE Broken ----\nA == 1\nB == [\n====").expect("write");
+
+    let out = tlatools()
+        .args(["parse", path.to_str().expect("utf-8")])
+        .output()
+        .expect("runs");
+    assert_eq!(out.status.code(), Some(1));
+    let text = String::from_utf8_lossy(&out.stdout);
+    assert!(text.contains("\terror\t"), "{text}");
+    // Where exactly a truncated expression is noticed is the parser's call;
+    // that a position is reported at all is the command's.
+    let position = text.split('\t').nth(2).unwrap_or_default();
+    assert!(
+        position
+            .split_once(':')
+            .is_some_and(|(line, _)| line.parse::<u32>().is_ok()),
+        "a line and column are reported: {text}"
+    );
+    std::fs::remove_dir_all(&dir).ok();
+}
+
+#[test]
+fn fmt_writes_a_module_that_can_be_read_back() {
+    let out = tlatools()
+        .args(["fmt", &spec_path("BoundedBuffer.tla")])
+        .output()
+        .expect("runs");
+    assert_eq!(out.status.code(), Some(0));
+    let printed = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        printed.starts_with("---- MODULE BoundedBuffer ----"),
+        "{printed}"
+    );
+
+    // The real check: what it wrote is TLA+ this tool reads the same way.
+    let first = tla_syntax::parse_module(&printed).expect("the output parses");
+    let second = tla_syntax::parse_module(&first.to_string()).expect("and again");
+    assert_eq!(first, second);
+}
+
+#[test]
+fn fmt_takes_exactly_one_file() {
+    let out = tlatools().arg("fmt").output().expect("runs");
+    assert_eq!(out.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&out.stderr).contains("exactly one"));
 }
