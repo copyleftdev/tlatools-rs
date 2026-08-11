@@ -14,7 +14,17 @@
 #
 #     TLA_EXAMPLES   github.com/tlaplus/Examples
 #     TLA_COMMUNITY  github.com/tlaplus/CommunityModules
-#     TLA_TESTS      github.com/tlaplus/tlaplus  (tlatools test models)
+#     TLA_TESTS      github.com/tlaplus/tlaplus
+#
+# CI pins each to a commit, because a check that fails when somebody else
+# commits is not a check. To reproduce what CI sees:
+#
+#     git -C Examples          checkout 52c4c651022b2d50bc9ca2aca1bd53277d4332c6
+#     git -C CommunityModules  checkout a8068a4c21ed76b339b9a2aa6de69d78f64f6422
+#     git -C tlaplus           checkout 30cc3601321c3fc02e044d0ecb5c58d8921e18df
+#
+# TLA_TESTS points at the tlaplus repository root; only its test-model and test
+# directories hold .tla files.
 set -eu
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)

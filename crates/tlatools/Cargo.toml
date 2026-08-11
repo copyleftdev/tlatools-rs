@@ -1,12 +1,17 @@
 [package]
 name = "tlatools"
-description = "Command-line TLA+ refinement oracle"
+description = "Read, format and check TLA+ specifications from the command line"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-keywords = ["tla", "tlaplus", "cli", "formal-methods", "verification"]
-categories = ["development-tools", "parser-implementations"]
+homepage.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+# These read fixtures from the repository, which a published tarball has not.
+exclude = ["tests/cli.rs"]
+keywords = ["tlaplus", "tla", "formal-methods", "verification", "cli"]
+categories = ["command-line-utilities", "development-tools", "science"]
 readme = "../../README.md"
 
 [[bin]]
@@ -24,3 +29,7 @@ tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

@@ -1,12 +1,17 @@
 [package]
 name = "tla-eval"
-description = "Evaluate TLA+ expressions at concrete states"
+description = "Evaluate TLA+ predicates and actions at concrete states, with no dependencies"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-keywords = ["tla", "tlaplus", "evaluator", "formal-methods", "specification"]
-categories = ["development-tools", "parser-implementations"]
+homepage.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+# These read fixtures from the repository, which a published tarball has not.
+exclude = ["tests/evaluate_specs.rs", "tests/support"]
+keywords = ["tlaplus", "tla", "interpreter", "formal-methods", "verification"]
+categories = ["development-tools", "science", "simulation"]
 readme = "../../README.md"
 
 [dependencies]
@@ -14,3 +19,7 @@ tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

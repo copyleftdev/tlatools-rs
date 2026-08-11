@@ -44,35 +44,65 @@ jobs:
   # Every public TLA+ specification we can find, and exactly how this parser
   # reads each one. A count can stay the same while the answers change; the
   # committed manifests cannot.
+  #
+  # The corpora are pinned. They belong to other projects and move on their own
+  # schedule, and a check that fails because somebody else committed is not a
+  # check. Repinning is a deliberate change with a golden diff to read.
   golden:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+
       - uses: actions/checkout@v5
-        with: { repository: tlaplus/Examples, path: corpus/examples }
+        with:
+          repository: tlaplus/Examples
+          ref: 52c4c651022b2d50bc9ca2aca1bd53277d4332c6
+          path: corpus/examples
       - uses: actions/checkout@v5
-        with: { repository: tlaplus/CommunityModules, path: corpus/community }
+        with:
+          repository: tlaplus/CommunityModules
+          ref: a8068a4c21ed76b339b9a2aa6de69d78f64f6422
+          path: corpus/community
+      # Only the two directories the manifest was built from, so the file set
+      # matches whatever a contributor sees locally.
       - uses: actions/checkout@v5
-        with: { repository: tlaplus/tlaplus, path: corpus/tlaplus }
+        with:
+          repository: tlaplus/tlaplus
+          ref: 30cc3601321c3fc02e044d0ecb5c58d8921e18df
+          path: corpus/tlaplus
+          sparse-checkout: |
+            tlatools/org.lamport.tlatools/test-model
+            tlatools/org.lamport.tlatools/test
+
       - name: check the golden manifests
         env:
           TLA_EXAMPLES: corpus/examples
           TLA_COMMUNITY: corpus/community
-          TLA_TESTS: corpus/tlaplus/tlatools/org.lamport.tlatools/test-model
+          TLA_TESTS: corpus/tlaplus
         run: tools/golden.sh --check
 
+  # Is the code a change touches actually covered? Only on pull requests: on a
+  # push to main there is nothing to compare against, and the run is not cheap.
   mutants:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@v2
         with:
           tool: cargo-mutants
       - name: mutation coverage of the diff
-        run: cargo mutants --in-diff <(git diff origin/main...HEAD) -j 2
         env:
           CARGO_MUTANTS_JOBS: 2
+        run: |
+          git diff "origin/${{ github.base_ref }}...HEAD" > changes.diff
+          if [ ! -s changes.diff ]; then
+            echo "Nothing changed." && exit 0
+          fi
+          cargo mutants --in-diff changes.diff -j 2

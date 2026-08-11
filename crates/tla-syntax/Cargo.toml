@@ -1,13 +1,22 @@
 [package]
 name = "tla-syntax"
-description = "Lexer, parser and AST for the TLA+ specification language"
+description = "Parser, AST and printer for TLA+, with no dependencies"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-keywords = ["tla", "tlaplus", "parser", "formal-methods", "specification"]
-categories = ["development-tools", "parser-implementations"]
+homepage.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+# These read fixtures from the repository, which a published tarball has not.
+exclude = ["tests/parse_specs.rs", "tests/robustness.rs", "tests/golden.rs"]
+keywords = ["tlaplus", "tla", "parser", "formal-methods", "specification"]
+categories = ["parser-implementations", "development-tools", "science"]
 readme = "../../README.md"
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

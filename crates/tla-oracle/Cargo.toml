@@ -5,8 +5,13 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-keywords = ["tla", "tlaplus", "refinement", "formal-methods", "verification"]
-categories = ["development-tools", "parser-implementations"]
+homepage.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+# These read fixtures from the repository, which a published tarball has not.
+exclude = ["tests/jobs.rs"]
+keywords = ["tlaplus", "refinement", "formal-methods", "verification", "testing"]
+categories = ["development-tools::testing", "development-tools", "science"]
 readme = "../../README.md"
 
 [dependencies]
@@ -17,3 +22,7 @@ serde_json = { workspace = true }
 
 [lints]
 workspace = true
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
