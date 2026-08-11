@@ -66,7 +66,7 @@ reach, use TLC.
 
 | claim | reproduce with |
 | --- | --- |
-| Reads 1,266 of 1,268 specifications across three public TLA+ corpora; the two it misses are two SANY misses | `cargo run --release --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')` |
+| Reads 1,256 of 1,258 specifications across three public TLA+ corpora (78 + 420 + 760, exactly what `golden/*.tsv` records); the two it misses are two SANY misses | `cargo run --release --example audit -p tla-syntax -- $(find CORPUS -name '*.tla')` |
 | Verdicts byte-identical to Java TLC over 39 labelled cases — 6 that must pass, 33 mutants that must each be caught, including *which* check catches which | `diff <(tools/tlc_corpus.py --json) <(tools/corpus.py --json)` |
 | Deciding that corpus: TLC 72.3 s, this 0.5 s | quote the **deciding** step; exploration is the same Python in both and takes 3.7 s |
 | 164 tests, clippy-pedantic clean, 85% mutation coverage | `cargo test`, `cargo clippy --all-targets`, `cargo mutants` |
@@ -84,13 +84,32 @@ reach, use TLC.
 
 ## The argument, in one paragraph
 
-TLC asks what states a system can reach. That is the right question when you
-are designing a protocol and the wrong one when you already have a trace, a
-transition, or an implementation in front of you — and with an agent writing
-code, you always do. Asking "may this step happen?" directly means the
-specification is evaluated *at the step*, which is why it can name the action
-you were reaching for and the clause that stopped it, rather than reporting a
-search that failed to find something.
+For forty years "LGTM" has been the honest limit of code review: the invariants
+lived in the reviewer's head, so nothing could check them. Writing them down in
+TLA+ makes them checkable. With an agent producing code faster than anyone can
+read it, that stops being a nicety. The specification is evaluated *at the
+step*, which is why it can name the action you were reaching for and the clause
+that stopped it.
+
+### The claim that was wrong, and must not come back
+
+An earlier draft said TLC **cannot** be asked "is this step legal" directly —
+that you must encode a two-state trace and attach a liveness property engineered
+to fail. **This is false.** A plain `INVARIANT` over the steps-as-data does it,
+no liveness and no fairness, in 0.78 s on this spec. Counter-experiment is
+reproducible; the pattern is published work:
+
+> Cirstea, **Kuppe**, Loillier, Merz, *Validating Traces of Distributed Programs
+> Against TLA+ Specifications*, [arXiv:2404.16075](https://arxiv.org/abs/2404.16075).
+> Kuppe maintains the TLA+ tools. Safety checking, explicitly not liveness.
+
+That paper is also prior art for "a trace checker" as a follow-up idea. Cite it
+as the thing this complements; do not propose it as novel.
+
+**The defensible claim is narrower:** TLC tells you *that* the step is illegal,
+not *which conjunct* failed, and the ~0.7 s is JVM boot plus SANY parse paid on
+every query. Structured blame instead of a boolean, cheap enough for an edit
+loop.
 
 ## Things not to overclaim
 
@@ -101,14 +120,22 @@ search that failed to find something.
   the "buggy" implementation is the correct one.
 - 64-bit integers, no real arithmetic, no temporal formulas, proofs skipped.
 - The demo's state space is nine states. That is a demo. Say so.
-- **The agentic loop is argued, not measured.** The claim that formal feedback
-  beats an uninformative retry rests on the quality of the message, not on
-  data. The experiment that would settle it is built and has not been run. Say
-  "here is why I expect this to help", not "this helps".
+- **The agentic loop was measured and the result is null.** `focus-001`, 200
+  units: blind 90.5% [85.6–93.8] vs tla 92.5% [88.0–95.4], McNemar exact
+  p=0.125. Formal stratum n=13, 46.2% → 69.2%, p=0.25 — suggestive and
+  underpowered, not a result. Report the null; do not say the experiment is
+  unrun (an earlier draft did, and it was already three runs / 683 attempts old).
+
+- **Stuttering is a live bug.** `refines` evaluates `Next`, not `[Next]_vars`,
+  so a step that changes nothing is rejected though every TLA+ spec permits it.
+  Recorded in CHANGELOG "Known limits" and in the article's "What it won't do".
+  Do not describe the check as refinement without this caveat — refinement in
+  TLA+ is exactly the stuttering-closed relation.
 
 ## Follow-ups that would make good second articles
 
-- Run the experiment: feed the failure text back as the next prompt and measure
-  it against an equal number of uninformative retries.
-- A trace checker: take a production log, decode it into states, and ask
-  whether the run was one the specification allows.
+- Fix stuttering, then write about why `[Next]_vars` is not a detail.
+- Power the experiment properly on the formal stratum, where the only
+  suggestive signal is.
+- **Not** a trace checker — [arXiv:2404.16075](https://arxiv.org/abs/2404.16075)
+  already did it, better, with the tools maintainer as an author.

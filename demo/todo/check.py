@@ -124,7 +124,7 @@ def describe(states, report) -> str:
         lines.append(
             f"  {blocked['action']} {why},"
             f" because {blocked['conjunct']} does not hold"
-            f" ({blocked['satisfied']} of its {blocked['total']} clauses do)"
+            f" ({blocked['satisfied']} of its {blocked['total']} clauses hold)"
         )
     return "\n".join(lines)
 

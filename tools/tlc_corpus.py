@@ -7,6 +7,13 @@ case whose answer is already known.
 
     diff <(tools/tlc_corpus.py --json) <(tools/corpus.py --json)
 
+The benchmark's trace obligation demands a bare `Next` for every consecutive
+pair. A specification is `Init /\ [][Next]_vars`, so that is stricter than the
+specification it checks: it rejects steps that change nothing, which every
+specification permits. On `bank_transfer`'s `m03_self_transfer` -- a transfer
+that nets to zero -- the two obligations disagree, and the spec's own one is
+right. Give TLC `[Next]_vars` and its verdicts match this evaluator on all 39.
+
 The benchmark's `spec_check` obligation is deliberately absent: it model-checks
 the trusted specification against its own invariants, which is a reachability
 question and not something a ground evaluator answers.

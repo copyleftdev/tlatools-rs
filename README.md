@@ -14,8 +14,11 @@ spec/Paxos.tla	ok	Paxos	19 units
 spec/Draft.tla	error	14:3	expected an expression
 ```
 
-Reads **1,266 of the 1,268** specifications in every public TLA+ corpus. The
-two it doesn't are two that SANY, the reference parser, doesn't either.
+Reads **1,256 of the 1,258** specifications in three public TLA+ corpora —
+[Examples](https://github.com/tlaplus/Examples),
+[CommunityModules](https://github.com/tlaplus/CommunityModules) and the
+[tlaplus](https://github.com/tlaplus/tlaplus) tools' own test suite. The two it
+doesn't are two that SANY, the reference parser, doesn't either.
 
 ## Why this exists
 
@@ -24,12 +27,16 @@ right question surprisingly often, and the wrong one the rest of the time.
 
 Sometimes you already have the states. You have a trace from production, an
 implementation's transition, a candidate refinement — and you want to know
-whether the specification permits **this** step. TLC cannot be asked that
-directly. You have to smuggle the question past it: encode the step as a
-two-state trace, make a liveness property fail, and read the answer back out of
-the counterexample.
+whether the specification permits **this** step.
 
-This asks it directly.
+TLC can answer that: encode the steps as data, assert with a plain safety
+invariant that each one is enabled, and check it. See [Validating Traces of
+Distributed Programs Against TLA+ Specifications](https://arxiv.org/abs/2404.16075)
+(Cirstea, Kuppe, Loillier, Merz) for the thorough treatment. What you get back
+is a verdict, and it costs roughly 0.7 s of JVM boot and SANY parse per query.
+
+This evaluates the specification *at the pair of states*, which is cheap enough
+for an edit loop and can name the conjunct that failed.
 
 ```rust
 let spec = Spec::from_file("TwoPhase.tla")?;
@@ -50,12 +57,13 @@ $ tlatools check job.json
 no action of the specification takes [...] to [...]. The closest was
 `BecomeLeader(c = "s1")`, which was not available here:
 `Cardinality(votesGranted[c]) * 2 > Cardinality(Server)` does not hold
-(3 of its 4 conjuncts do)
+(3 of its 4 conjuncts hold)
 ```
 
-That is Raft's majority rule, named exactly. A model checker cannot report it,
-because it never evaluates the specification at the offending pair of states —
-it searches for the pair and fails to find it.
+That is Raft's majority rule, named exactly. A model checker will tell you the
+step is not permitted; it will not tell you *which conjunct* failed, because it
+searches for a matching pair rather than evaluating the specification at the
+pair you handed it.
 
 ## A worked example
 
@@ -71,7 +79,7 @@ $ demo/todo/check.py demo/todo/impl/clear_removes_everything.py
 
   ClearCompleted was available, but does not produce that state,
     because tasks' = [i \in Ids |-> IF tasks[i] = Done THEN Absent ELSE tasks[i]]
-    does not hold (1 of its 2 clauses do)
+    does not hold (1 of its 2 clauses hold)
 ```
 
 ## Install
@@ -122,11 +130,19 @@ end a line, and the prose around a module is not mistaken for TLA+.
 **Against the reference implementation.** Verdicts were compared with Java TLC
 over a labelled corpus of 39 cases — six implementations that must pass and
 thirty-three mutants that must each be caught. Byte-identical, including *which*
-check catches each mutant.
+check catches each mutant, with both sides discharging the specification's own
+obligation `Init /\ [][Next]_vars`.
 
-**Against every specification we could find.** `golden/*.tsv` records how each
-of 1,268 files is read, so a change names the files it changed rather than
-moving a count. `golden/fmt/` holds full canonical output for the vendored
+That last clause is not pedantry. Hand TLC a bare `Next` instead and it parts
+company with this tool on exactly one case: a mutant whose "bug" is transferring
+money from an account to itself, which nets to zero and so changes nothing.
+`[Next]_vars` permits it, because a step that changes nothing is a step every
+specification allows. Catching that one needs an abstraction where the operation
+is observable, not a stricter refinement check.
+
+**Against three public corpora.** `golden/*.tsv` records how each of 1,258
+files is read, so a change names the files it changed rather than moving a
+count. `golden/fmt/` holds full canonical output for the vendored
 specifications, so a change in the parser *or* the printer is a readable diff.
 
 **Against itself.** 164 tests, clippy-pedantic clean, 85% mutation coverage, and

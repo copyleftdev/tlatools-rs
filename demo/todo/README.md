@@ -30,9 +30,9 @@ The implementation takes a step the specification does not permit.
 
 The closest the specification came:
   Add(i = "a") was available, but does not produce that state,
-    because tasks' = [tasks EXCEPT ![i] = Open] does not hold (1 of its 2 clauses do)
+    because tasks' = [tasks EXCEPT ![i] = Open] does not hold (1 of its 2 clauses hold)
   Complete(i = "a") was not available here,
-    because tasks[i] = Open does not hold (1 of its 2 clauses do)
+    because tasks[i] = Open does not hold (1 of its 2 clauses hold)
 ```
 
 The second line is the bug, named: `Complete` requires the task to be open, and
@@ -52,7 +52,7 @@ $ demo/todo/check.py demo/todo/impl/clear_removes_everything.py
 The closest the specification came:
   ClearCompleted was available, but does not produce that state,
     because tasks' = [i \in Ids |-> IF tasks[i] = Done THEN Absent ELSE tasks[i]]
-    does not hold (1 of its 2 clauses do)
+    does not hold (1 of its 2 clauses hold)
 ```
 
 Note the difference in wording. One says the action *was not available*; the
@@ -60,20 +60,23 @@ other says it *was available but produced the wrong thing*. Those are different
 bugs and they want different fixes, and the tool can tell them apart because it
 knows which failing clause mentions the next state.
 
-## Why this needs an evaluator rather than a model checker
+## Why an evaluator rather than a model checker
 
-TLC would find these too — by exploring the specification's own state space and
-comparing. But it answers a different question: *what states can this reach?*
+TLC finds these too. You can encode the steps as data, assert with a plain
+safety invariant that each one is enabled, and run the checker — no liveness
+property required. On this spec it takes about 0.78 s. There is published work
+doing this properly on real systems: [Validating Traces of Distributed Programs
+Against TLA+ Specifications](https://arxiv.org/abs/2404.16075) (Cirstea, Kuppe,
+Loillier, Merz).
 
-Here the states are already known. They came from running the implementation.
-The question is whether the specification permits **these** steps, and a model
-checker cannot be asked that directly — you have to encode each step as a
-two-state trace and make a liveness property fail to get an answer out.
+What TLC gives you is a verdict. What it does not give you is *which conjunct
+failed* — and that 0.78 s is mostly JVM boot and SANY parse, paid again on every
+query.
 
-Asking directly is what makes the counterexample good. The specification is
-evaluated *at the offending pair of states*, so it can say which action came
-closest and which clause stopped it. A search that fails to find a pair has
-nothing to report but its own failure.
+Evaluating the specification directly *at the offending pair of states* is what
+makes the message good: it can name the action that came closest and the clause
+that stopped it, in microseconds. Structured blame instead of a boolean, cheap
+enough to sit inside an edit loop.
 
 ## The agentic loop
 
