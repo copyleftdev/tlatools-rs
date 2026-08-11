@@ -109,6 +109,10 @@ pub struct Stats {
     pub edges: usize,
     pub edges_checked: usize,
     pub outcomes_checked: usize,
+    /// Edges that changed nothing, permitted by `[Next]_vars` without asking
+    /// `Next`. Reported separately so a graph that is mostly self-loops is
+    /// visible rather than silently passing.
+    pub stutter_steps: usize,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -239,6 +243,13 @@ fn check_edges(
             ));
         };
         stats.edges_checked = index + 1;
+        // A specification is `Init /\ [][Next]_vars`, and `[Next]_vars` is
+        // `Next \/ UNCHANGED vars`. A step that changes nothing is therefore
+        // permitted whatever `Next` says, so it is never worth asking.
+        if from == to {
+            stats.stutter_steps += 1;
+            continue;
+        }
         match evaluator.step_allowed(&job.next_op, from, to) {
             Ok(true) => {}
             Ok(false) => {
@@ -375,7 +386,7 @@ fn explain(from: &State, to: &State, closest: Option<&BlockedReport>) -> String 
         "which was not available here"
     };
     format!(
-        "{head}. The closest was `{}`, {why}: `{}` does not hold ({} of its {} conjuncts do)",
+        "{head}. The closest was `{}`, {why}: `{}` does not hold ({} of its {} conjuncts hold)",
         near.action, near.conjunct, near.satisfied, near.total
     )
 }

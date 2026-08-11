@@ -72,6 +72,32 @@ fn an_illegal_edge_is_named() {
     assert_eq!(edge.label, "overfill");
 }
 
+/// A specification is `Init /\ [][Next]_vars`, so a step that leaves every
+/// variable unchanged is permitted by every specification. `BoundedBuffer`'s
+/// `Next` has no such action — an implementation that idles, retries or
+/// re-renders must still refine it.
+#[test]
+fn a_stuttering_step_is_permitted() {
+    let edges = r#"[[0,0,"idle"],[0,1,"put"],[1,1,"retry"],[1,2,"get"]]"#;
+    let report = check(&job(WALK, edges, "{}"));
+    assert_eq!(report.status, Status::Pass, "{}", report.detail);
+    assert_eq!(report.stats.stutter_steps, 2);
+    assert_eq!(report.stats.edges_checked, 4);
+}
+
+/// Stuttering is unchanged *variables*, not an unchanged label: two distinct
+/// states are still asked about, however the edge is named.
+#[test]
+fn a_relabelled_illegal_step_is_still_caught() {
+    let states = r#"[
+        {"buf": [],        "nextVal": 1, "received": []},
+        {"buf": [1, 2, 3], "nextVal": 4, "received": []}
+    ]"#;
+    let report = check(&job(states, r#"[[0,1,"idle"]]"#, "{}"));
+    assert_eq!(report.status, Status::Refines, "{}", report.detail);
+    assert_eq!(report.stats.stutter_steps, 0);
+}
+
 /// Every step above is legal, but the buffer never actually fills.
 #[test]
 fn an_unreachable_outcome_is_a_coverage_failure() {
