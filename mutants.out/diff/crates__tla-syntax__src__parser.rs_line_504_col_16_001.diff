@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace += with *= in Parser::past_brackets
+@@ -496,17 +496,17 @@
+                     depth -= 1;
+                     if depth == 0 {
+                         return at + 1;
+                     }
+                 }
+                 Tok::Eof => return at,
+                 _ => {}
+             }
+-            at += 1;
++            at *= /* ~ changed by cargo-mutants ~ */ 1;
+         }
+     }
+ 
+     fn decl_list(&mut self) -> Result<Vec<Decl>> {
+         let mut out = vec![self.decl()?];
+         while self.eat(&Tok::Comma) {
+             out.push(self.decl()?);
+         }

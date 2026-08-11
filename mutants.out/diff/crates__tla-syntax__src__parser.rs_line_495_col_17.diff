@@ -1,0 +1,26 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup in Parser::past_brackets
+@@ -487,22 +487,17 @@
+ 
+     /// The offset just past the bracket group that begins at `offset`.
+     fn past_brackets(&self, offset: usize) -> usize {
+         let mut depth = 0usize;
+         let mut at = offset;
+         loop {
+             match self.peek_at(at) {
+                 Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+-                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+-                    depth -= 1;
+-                    if depth == 0 {
+-                        return at + 1;
+-                    }
+-                }
++                 /* ~ changed by cargo-mutants ~ */
+                 Tok::Eof => return at,
+                 _ => {}
+             }
+             at += 1;
+         }
+     }
+ 
+     fn decl_list(&mut self) -> Result<Vec<Decl>> {

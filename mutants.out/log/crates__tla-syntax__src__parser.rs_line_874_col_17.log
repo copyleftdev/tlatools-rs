@@ -1,0 +1,49 @@
+
+*** crates/tla-syntax/src/parser.rs:874:17: replace && with || in Parser::expr_list
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace && with || in Parser::expr_list
+@@ -866,17 +866,17 @@
+         if self.peek() == close {
+             return Ok(out);
+         }
+         loop {
+             // `FoldSet(+, 0, S)` passes the operator itself, not an
+             // application of it. So does `apply(', v')`, where the operator is
+             // the prime.
+             if (matches!(self.peek_at(1), Tok::Comma) || self.peek_at(1) == close)
+-                && let Some(operator) = self.operator_by_symbol()
++                || /* ~ changed by cargo-mutants ~ */ let Some(operator) = self.operator_by_symbol()
+             {
+                 out.push(operator);
+                 if !self.eat(&Tok::Comma) {
+                     return Ok(out);
+                 }
+                 continue;
+             }
+             out.push(self.expr(0)?);
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/crates/tla-syntax): couldn't read metadata for file `target/debug/deps/libtla_syntax-169d03993c2aec3f.rlib`
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps`
+error: `||` operators are not supported in let chain conditions
+   --> crates/tla-syntax/src/parser.rs:874:17
+    |
+874 |                 || /* ~ changed by cargo-mutants ~ */ let Some(operator) = self.operator_by_symbol()
+    |                 ^^
+
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

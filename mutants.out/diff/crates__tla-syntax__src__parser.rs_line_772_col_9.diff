@@ -1,0 +1,22 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::postfix -> Result<Expr> with Ok(Default::default())
+@@ -764,18 +764,17 @@
+         }
+         for _ in 0..=ahead {
+             self.advance();
+         }
+         Some(self.expr(0))
+     }
+ 
+     fn postfix(&mut self) -> Result<Expr> {
+-        let e = self.primary()?;
+-        self.continue_postfix(e)
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn continue_postfix(&mut self, head: Expr) -> Result<Expr> {
+         let mut e = head;
+         loop {
+             if self.fenced() || self.at_unit_start() {
+                 break;
+             }

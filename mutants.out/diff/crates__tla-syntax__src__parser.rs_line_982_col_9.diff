@@ -1,0 +1,54 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::let_form -> Result<Expr> with Ok(Default::default())
+@@ -974,50 +974,17 @@
+                     action: Box::new(action),
+                 })
+             }
+             other => Err(self.err_at(at, format!("expected an expression, found {other:?}"))),
+         }
+     }
+ 
+     fn let_form(&mut self) -> Result<Expr> {
+-        let mut defs = Vec::new();
+-        let mut instances = Vec::new();
+-        while !matches!(self.peek(), Tok::Kw(Kw::In)) {
+-            if self.eat(&Tok::Kw(Kw::Recursive)) {
+-                self.decl_list()?;
+-                continue;
+-            }
+-            if matches!(self.peek(), Tok::Kw(Kw::Instance)) {
+-                let (module, subs) = self.instance_tail()?;
+-                instances.push(LetInstance {
+-                    name: None,
+-                    module,
+-                    subs,
+-                });
+-                continue;
+-            }
+-            let Tok::Ident(name) = self.peek().clone() else {
+-                return Err(self.err("expected a definition inside LET"));
+-            };
+-            match self.named_definition(name, false)? {
+-                Unit::Def(def) => defs.push(def),
+-                Unit::Instance { name, module, subs } => {
+-                    instances.push(LetInstance { name, module, subs });
+-                }
+-                _ => return Err(self.err("only definitions may appear inside LET")),
+-            }
+-        }
+-        self.advance();
+-        let body = self.expr(0)?;
+-        Ok(Expr::Let {
+-            defs,
+-            instances,
+-            body: Box::new(body),
+-        })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn case_form(&mut self) -> Result<Expr> {
+         let mut arms = Vec::new();
+         let mut other = None;
+         loop {
+             if self.eat(&Tok::Kw(Kw::Other)) {
+                 self.expect(&Tok::Arrow)?;

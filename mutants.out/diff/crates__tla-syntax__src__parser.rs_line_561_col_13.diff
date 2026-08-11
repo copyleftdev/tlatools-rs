@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace && with || in Parser::fixity_declaration
+@@ -553,17 +553,17 @@
+ 
+     /// An operator declared by the shape it is written in rather than by a
+     /// name: `_+_` takes two operands around it, `-._` one after it, `_^#` one
+     /// before it. The underscores are where the operands go.
+     fn fixity_declaration(&mut self) -> Option<Param> {
+         let mark = self.pos;
+         // `_ op _` and `_ op`
+         if matches!(self.peek(), Tok::Underscore)
+-            && let Tok::Op(op) = *self.peek_at(1)
++            || /* ~ changed by cargo-mutants ~ */ let Tok::Op(op) = *self.peek_at(1)
+         {
+             self.advance();
+             self.advance();
+             let arity = if self.eat(&Tok::Underscore) { 2 } else { 1 };
+             return Some(Param {
+                 name: op.symbol().to_string(),
+                 arity,
+             });

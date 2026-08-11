@@ -445,7 +445,7 @@ impl Parser {
                 | Kw::Recursive
                 | Kw::Extends,
             ) => true,
-            Tok::Ident(_) | Tok::Op(_) | Tok::Underscore => self.at_definition(),
+            Tok::Ident(_) | Tok::Op(_) => self.at_definition(),
             _ => false,
         }
     }
@@ -471,11 +471,6 @@ impl Parser {
             Tok::Op(_) => {
                 let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
                 self.is_name(after) && defeq(after + 1)
-            }
-            // `_ + _ ==`, `_ ^# ==`
-            Tok::Underscore => {
-                matches!(self.peek_at(1), Tok::Op(_))
-                    && (defeq(2) || (matches!(self.peek_at(2), Tok::Underscore) && defeq(3)))
             }
             _ => false,
         }

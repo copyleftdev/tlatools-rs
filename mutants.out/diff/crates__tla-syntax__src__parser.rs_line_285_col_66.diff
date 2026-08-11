@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace && with || in Parser::unit_body
+@@ -277,17 +277,17 @@
+                     params: vec![operand],
+                     body: self.expr(0)?,
+                     local,
+                 }))
+             }
+             Tok::Ident(name) => self.named_definition(name, local),
+             // A specification may define something spelled like a keyword.
+             // SANY reads it and complains afterwards; so do we.
+-            Tok::Kw(kw) if matches!(self.peek_at(1), Tok::DefEq) && kw.text().is_some() => {
++            Tok::Kw(kw) if matches!(self.peek_at(1), Tok::DefEq) || /* ~ changed by cargo-mutants ~ */ kw.text().is_some() => {
+                 let name = kw.text().expect("checked").to_string();
+                 self.named_definition(name, local)
+             }
+             other => Err(self.err(format!("expected a declaration, found {other:?}"))),
+         }
+     }
+ 
+     /// Everything that can follow a name at the head of a definition: an

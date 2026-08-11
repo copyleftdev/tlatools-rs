@@ -1,27 +1,21 @@
 --- crates/tla-syntax/src/parser.rs
-+++ replace parse_expression -> Result<Expr> with Ok(Default::default())
-@@ -5,23 +5,17 @@
++++ replace parse_module_bounded -> Result<Module> with Ok(Default::default())
+@@ -5,17 +5,17 @@
  
  pub fn parse_module(src: &str) -> Result<Module> {
-     Parser::new(lex(src)?).module()
+     parse_module_bounded(src, DEFAULT_NESTING_LIMIT)
+ }
+ 
+ /// Parse with a nesting limit of your own, for a caller whose stack is smaller
+ /// than [`DEFAULT_NESTING_LIMIT`] assumes.
+ pub fn parse_module_bounded(src: &str, nesting_limit: usize) -> Result<Module> {
+-    Parser::new(lex(src)?, nesting_limit).module()
++    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
  }
  
  /// Parse a bare expression, with no surrounding module. Task definitions carry
  /// predicates as strings, and they have nowhere else to live.
  pub fn parse_expression(src: &str) -> Result<Expr> {
--    let mut p = Parser::new(lex(src)?);
--    let e = p.expr(0)?;
--    if matches!(p.peek(), Tok::Eof) {
--        Ok(e)
--    } else {
--        Err(p.err(format!("unexpected {:?} after the expression", p.peek())))
--    }
-+    Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     parse_expression_bounded(src, DEFAULT_NESTING_LIMIT)
  }
  
- /// How deeply expressions may nest.
- ///
- /// The parser descends recursively, so without a bound a file of enough open
- /// brackets exhausts the stack, and a parser that aborts the process on bad
- /// input is worse than one that rejects it.
- ///

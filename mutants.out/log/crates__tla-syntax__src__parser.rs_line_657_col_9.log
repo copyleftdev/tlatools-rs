@@ -1,0 +1,74 @@
+
+*** crates/tla-syntax/src/parser.rs:657:9: replace Parser::expr_inner -> Result<Expr> with Ok(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::expr_inner -> Result<Expr> with Ok(Default::default())
+@@ -649,35 +649,17 @@
+     fn expr_inner(&mut self, min_prec: u8) -> Result<Expr> {
+         // A bulleted list is an operand, not a whole expression: after
+         //
+         //     /\ TypeOK
+         //     /\ OneVote
+         //     => chosen = {}
+         //
+         // the `=>` ends the list and then applies to it.
+-        let mut lhs = match *self.peek() {
+-            Tok::Op(op @ (Op::And | Op::Or)) => self.junction(op)?,
+-            _ => self.prefix()?,
+-        };
+-        loop {
+-            if self.fenced() || self.at_unit_start() || self.at_proof() {
+-                break;
+-            }
+-            let Tok::Op(op) = *self.peek() else { break };
+-            let Some(prec) = op.infix_prec() else { break };
+-            if prec < min_prec {
+-                break;
+-            }
+-            self.advance();
+-            let next_min = if op.is_right_assoc() { prec } else { prec + 1 };
+-            let rhs = self.expr(next_min)?;
+-            lhs = Expr::Binary(op, Box::new(lhs), Box::new(rhs));
+-        }
+-        Ok(lhs)
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// A bulleted `/\` or `\/` list, scoped by the column of its bullets.
+     fn junction(&mut self, op: Op) -> Result<Expr> {
+         let col = self.col();
+         self.fences.push(col);
+         let mut items = Vec::new();
+         while *self.peek() == Tok::Op(op) && self.col() == col {
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786406183.145369651s, 1s after last build at 1786406182.756345962s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps`
+error[E0277]: the trait bound `Expr: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:657:12
+    |
+657 |         Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+    |            ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Expr`
+   --> crates/tla-syntax/src/ast.rs:140:1
+    |
+140 | pub enum Expr {
+    | ^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-qHpCL3.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

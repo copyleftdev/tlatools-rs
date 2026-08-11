@@ -1,0 +1,73 @@
+
+*** crates/tla-syntax/src/lexer.rs:307:9: replace Lexer::scan_based_number -> Result<Option<Tok>> with Ok(Some(Default::default()))
+
+*** mutation diff:
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_based_number -> Result<Option<Tok>> with Ok(Some(Default::default()))
+@@ -299,34 +299,17 @@
+         self.advance(symbol.chars().count());
+         Some(Tok::Op(Op::User(symbol)))
+     }
+ 
+     /// `\b1011`, `\o777`, `\h1F` — a number written in another base. The
+     /// digits must follow the letter directly, which is what keeps `\o` as
+     /// concatenation everywhere else.
+     fn scan_based_number(&mut self) -> Result<Option<Tok>> {
+-        let (radix, digits) = match self.at(1) {
+-            Some('b' | 'B') => (2u32, "01"),
+-            Some('o' | 'O') => (8, "01234567"),
+-            Some('h' | 'H') => (16, "0123456789abcdefABCDEF"),
+-            _ => return Ok(None),
+-        };
+-        let mut end = self.pos + 2;
+-        while self.chars.get(end).is_some_and(|c| digits.contains(*c)) {
+-            end += 1;
+-        }
+-        if end == self.pos + 2 {
+-            return Ok(None);
+-        }
+-        let text: String = self.chars[self.pos + 2..end].iter().collect();
+-        let value = i64::from_str_radix(&text, radix)
+-            .map_err(|_| self.err(format!("number out of range: {text}")))?;
+-        self.advance(2 + text.chars().count());
+-        Ok(Some(Tok::Num(value)))
++        Ok(Some(Default::default())) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan_number(&mut self) -> Result<Tok> {
+         let start = self.pos;
+         while self.peek().is_some_and(|c| c.is_ascii_digit()) {
+             self.bump();
+         }
+         // `1aMessage` is a name, not a number followed by one: TLA+ only asks
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/ast.rs` has changed (1786406152.479502355s, 436026551ns after last build at 1786406152.043475804s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps`
+error[E0277]: the trait bound `Tok: Default` is not satisfied
+   --> crates/tla-syntax/src/lexer.rs:307:17
+    |
+307 |         Ok(Some(Default::default())) /* ~ changed by cargo-mutants ~ */
+    |                 ^^^^^^^^^^^^^^^^^^ unsatisfied trait bound
+    |
+help: the trait `Default` is not implemented for `Tok`
+   --> crates/tla-syntax/src/token.rs:361:1
+    |
+361 | pub enum Tok {
+    | ^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-5mUh25.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

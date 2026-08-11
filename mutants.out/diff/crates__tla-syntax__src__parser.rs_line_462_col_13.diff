@@ -1,0 +1,28 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Ident(_) in Parser::at_definition
+@@ -454,24 +454,17 @@
+     ///
+     /// Matching the shape matters rather than merely finding a `==` further
+     /// on: a generated specification wraps expressions into the first column,
+     /// and the next definition's `==` is only a few tokens away.
+     fn at_definition(&self) -> bool {
+         let defeq = |offset: usize| matches!(self.peek_at(offset), Tok::DefEq);
+         match self.peek() {
+             // `Name ==`, `Name(..) ==`, `Name[..] ==`, `a + b ==`, `b ^+ ==`
+-            Tok::Ident(_) => {
+-                defeq(1)
+-                    || match self.peek_at(1) {
+-                        Tok::LParen | Tok::LBrack => defeq(self.past_brackets(1)),
+-                        Tok::Op(_) => defeq(2) || (self.is_name(2) && defeq(3)),
+-                        _ => false,
+-                    }
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             // `-. a ==`, `- a ==`, `-. _ ==`
+             Tok::Op(_) => {
+                 let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
+                 self.is_name(after) && defeq(after + 1)
+             }
+             // `_ + _ ==`, `_ ^# ==`
+             Tok::Underscore => {
+                 matches!(self.peek_at(1), Tok::Op(_))

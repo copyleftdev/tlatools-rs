@@ -1,0 +1,39 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::expr_inner -> Result<Expr> with Ok(Default::default())
+@@ -649,35 +649,17 @@
+     fn expr_inner(&mut self, min_prec: u8) -> Result<Expr> {
+         // A bulleted list is an operand, not a whole expression: after
+         //
+         //     /\ TypeOK
+         //     /\ OneVote
+         //     => chosen = {}
+         //
+         // the `=>` ends the list and then applies to it.
+-        let mut lhs = match *self.peek() {
+-            Tok::Op(op @ (Op::And | Op::Or)) => self.junction(op)?,
+-            _ => self.prefix()?,
+-        };
+-        loop {
+-            if self.fenced() || self.at_unit_start() || self.at_proof() {
+-                break;
+-            }
+-            let Tok::Op(op) = *self.peek() else { break };
+-            let Some(prec) = op.infix_prec() else { break };
+-            if prec < min_prec {
+-                break;
+-            }
+-            self.advance();
+-            let next_min = if op.is_right_assoc() { prec } else { prec + 1 };
+-            let rhs = self.expr(next_min)?;
+-            lhs = Expr::Binary(op, Box::new(lhs), Box::new(rhs));
+-        }
+-        Ok(lhs)
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// A bulleted `/\` or `\/` list, scoped by the column of its bullets.
+     fn junction(&mut self, op: Op) -> Result<Expr> {
+         let col = self.col();
+         self.fences.push(col);
+         let mut items = Vec::new();
+         while *self.peek() == Tok::Op(op) && self.col() == col {

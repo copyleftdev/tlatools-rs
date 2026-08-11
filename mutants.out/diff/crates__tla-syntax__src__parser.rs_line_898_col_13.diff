@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Kw(Kw::Union) in Parser::operator_by_symbol
+@@ -890,17 +890,17 @@
+     fn operator_by_symbol(&mut self) -> Option<Expr> {
+         let symbol = match self.peek() {
+             Tok::Op(op) => op.symbol(),
+             Tok::Prime => "'",
+             Tok::Kw(Kw::Enabled) => "ENABLED",
+             Tok::Kw(Kw::Unchanged) => "UNCHANGED",
+             Tok::Kw(Kw::Domain) => "DOMAIN",
+             Tok::Kw(Kw::Subset) => "SUBSET",
+-            Tok::Kw(Kw::Union) => "UNION",
++             /* ~ changed by cargo-mutants ~ */
+             _ => return None,
+         };
+         self.advance();
+         Some(Expr::Ident(symbol.to_string()))
+     }
+ 
+     fn primary(&mut self) -> Result<Expr> {
+         let at = self.pos;

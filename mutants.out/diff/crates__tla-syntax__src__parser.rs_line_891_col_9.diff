@@ -1,0 +1,32 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::operator_by_symbol -> Option<Expr> with None
+@@ -883,28 +883,17 @@
+             if !self.eat(&Tok::Comma) {
+                 return Ok(out);
+             }
+         }
+     }
+ 
+     /// An operator standing where a value would, named by its own symbol.
+     fn operator_by_symbol(&mut self) -> Option<Expr> {
+-        let symbol = match self.peek() {
+-            Tok::Op(op) => op.symbol(),
+-            Tok::Prime => "'",
+-            Tok::Kw(Kw::Enabled) => "ENABLED",
+-            Tok::Kw(Kw::Unchanged) => "UNCHANGED",
+-            Tok::Kw(Kw::Domain) => "DOMAIN",
+-            Tok::Kw(Kw::Subset) => "SUBSET",
+-            Tok::Kw(Kw::Union) => "UNION",
+-            _ => return None,
+-        };
+-        self.advance();
+-        Some(Expr::Ident(symbol.to_string()))
++        None /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn primary(&mut self) -> Result<Expr> {
+         let at = self.pos;
+         match self.advance() {
+             Tok::Num(n) => Ok(Expr::Num(n)),
+             Tok::Decimal(text) => Ok(Expr::Decimal(text)),
+             Tok::Str(s) => Ok(Expr::Str(s)),

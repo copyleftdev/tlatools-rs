@@ -1,0 +1,3 @@
+crates/tla-syntax/src/lexer.rs:315:17: replace += with *= in Lexer::scan_based_number
+crates/tla-syntax/src/parser.rs:501:17: delete match arm Tok::Eof in Parser::past_brackets
+crates/tla-syntax/src/parser.rs:504:16: replace += with *= in Parser::past_brackets
