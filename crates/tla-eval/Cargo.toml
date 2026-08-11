@@ -15,7 +15,7 @@ categories = ["development-tools", "science", "simulation"]
 readme = "../../README.md"
 
 [dependencies]
-tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
+tla-syntax = { path = "../tla-syntax", version = "0.2.0" }
 
 [lints]
 workspace = true

@@ -126,15 +126,15 @@ loop.
   underpowered, not a result. Report the null; do not say the experiment is
   unrun (an earlier draft did, and it was already three runs / 683 attempts old).
 
-- **Stuttering is a live bug.** `refines` evaluates `Next`, not `[Next]_vars`,
-  so a step that changes nothing is rejected though every TLA+ spec permits it.
-  Recorded in CHANGELOG "Known limits" and in the article's "What it won't do".
-  Do not describe the check as refinement without this caveat — refinement in
-  TLA+ is exactly the stuttering-closed relation.
+- **Stuttering: fixed in 0.2.0**, and now the article's best anecdote. `refines`
+  checks `[Next]_vars`. The fix made `bank_transfer`'s `m03_self_transfer`
+  survive — a transfer to the same account nets to zero, so it changes nothing,
+  so it *is* a stuttering step and the spec permits it. The benchmark's
+  obligation was stricter than the specification it checks. Give Java TLC the
+  same `[Next]_vars` and it passes that mutant too, so the byte-identical claim
+  holds — but state the obligation when making it.
 
 ## Follow-ups that would make good second articles
-
-- Fix stuttering, then write about why `[Next]_vars` is not a detail.
 - Power the experiment properly on the formal stratum, where the only
   suggestive signal is.
 - **Not** a trace checker — [arXiv:2404.16075](https://arxiv.org/abs/2404.16075)

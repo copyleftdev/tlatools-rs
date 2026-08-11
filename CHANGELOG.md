@@ -3,7 +3,7 @@
 All notable changes to this project are recorded here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] — 2026-08-10
 
 ### Fixed
 
@@ -60,4 +60,5 @@ First release.
 - TLAPS proofs are skipped rather than checked.
 - Enumeration is capped at 2²⁰ elements.
 
+[0.2.0]: https://github.com/copyleftdev/tlatools-rs/releases/tag/v0.2.0
 [0.1.0]: https://github.com/copyleftdev/tlatools-rs/releases/tag/v0.1.0

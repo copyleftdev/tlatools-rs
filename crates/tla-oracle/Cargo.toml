@@ -15,8 +15,8 @@ categories = ["development-tools::testing", "development-tools", "science"]
 readme = "../../README.md"
 
 [dependencies]
-tla-eval = { path = "../tla-eval", version = "0.1.0" }
-tla-syntax = { path = "../tla-syntax", version = "0.1.0" }
+tla-eval = { path = "../tla-eval", version = "0.2.0" }
+tla-syntax = { path = "../tla-syntax", version = "0.2.0" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 

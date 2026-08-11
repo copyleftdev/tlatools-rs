@@ -88,14 +88,14 @@ dependencies = [
 
 [[package]]
 name = "tla-eval"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "tla-syntax",
 ]
 
 [[package]]
 name = "tla-oracle"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -105,11 +105,11 @@ dependencies = [
 
 [[package]]
 name = "tla-syntax"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "tlatools"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde_json",
  "tla-oracle",
