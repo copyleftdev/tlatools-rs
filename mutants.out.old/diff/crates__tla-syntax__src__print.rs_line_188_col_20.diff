@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/print.rs
++++ delete ! in bare
+@@ -180,17 +180,17 @@
+             f.write_str("LET ")?;
+             for (i, def) in defs.iter().enumerate() {
+                 if i > 0 {
+                     f.write_str(" ")?;
+                 }
+                 write!(f, "{def}")?;
+             }
+             for instance in instances {
+-                if !defs.is_empty() {
++                if  /* ~ changed by cargo-mutants ~ */defs.is_empty() {
+                     f.write_str(" ")?;
+                 }
+                 write!(f, "{instance}")?;
+             }
+             write!(f, " IN {body}")
+         }
+         Expr::If {
+             cond,

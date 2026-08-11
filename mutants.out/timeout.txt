@@ -1,3 +1,5 @@
 crates/tla-syntax/src/lexer.rs:315:17: replace += with *= in Lexer::scan_based_number
-crates/tla-syntax/src/parser.rs:501:17: delete match arm Tok::Eof in Parser::past_brackets
-crates/tla-syntax/src/parser.rs:504:16: replace += with *= in Parser::past_brackets
+crates/tla-syntax/src/parser.rs:496:17: delete match arm Tok::Eof in Parser::past_brackets
+crates/tla-syntax/src/parser.rs:499:16: replace += with *= in Parser::past_brackets
+crates/tla-syntax/src/parser.rs:605:9: replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok((String::new(), vec![]))
+crates/tla-syntax/src/parser.rs:605:9: replace Parser::instance_tail -> Result<(String, Vec<(String, Expr)>)> with Ok(("xyzzy".into(), vec![]))

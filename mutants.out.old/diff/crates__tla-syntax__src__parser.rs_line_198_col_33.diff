@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace == with != in Parser::module_body
+@@ -190,17 +190,17 @@
+                     }
+                 }
+                 _ => {
+                     // A unit that reads nothing would leave this loop spinning
+                     // on the same token for ever. Nothing should do that, and
+                     // if something does, saying so beats hanging.
+                     let before = self.pos;
+                     let unit = self.unit_body()?;
+-                    if self.pos == before {
++                    if self.pos != /* ~ changed by cargo-mutants ~ */ before {
+                         return Err(self.err(format!(
+                             "cannot make sense of {:?}, and cannot get past it",
+                             self.peek()
+                         )));
+                     }
+                     units.push(unit);
+                 }
+             }

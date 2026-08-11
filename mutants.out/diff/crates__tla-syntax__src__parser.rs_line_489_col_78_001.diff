@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace += with *= in Parser::past_brackets
+@@ -481,17 +481,17 @@
+     }
+ 
+     /// The offset just past the bracket group that begins at `offset`.
+     fn past_brackets(&self, offset: usize) -> usize {
+         let mut depth = 0usize;
+         let mut at = offset;
+         loop {
+             match self.peek_at(at) {
+-                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
++                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth *= /* ~ changed by cargo-mutants ~ */ 1,
+                 Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+                     depth -= 1;
+                     if depth == 0 {
+                         return at + 1;
+                     }
+                 }
+                 Tok::Eof => return at,
+                 _ => {}

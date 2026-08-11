@@ -20,7 +20,7 @@
 -                | Kw::Extends,
 -            ) => true,
 +             /* ~ changed by cargo-mutants ~ */
-             Tok::Ident(_) | Tok::Op(_) | Tok::Underscore => self.at_definition(),
+             Tok::Ident(_) | Tok::Op(_) => self.at_definition(),
              _ => false,
          }
      }

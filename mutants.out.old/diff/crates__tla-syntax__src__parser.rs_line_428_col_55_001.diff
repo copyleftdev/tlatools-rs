@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace < with > in Parser::begins_line
+@@ -420,17 +420,17 @@
+         // or name, then `>`. It always begins a line; without that, the `<`
+         // and `>` of an ordinary comparison would look the same.
+         self.begins_line()
+             && matches!(self.peek(), Tok::Op(Op::Lt))
+             && matches!(self.peek_at(2), Tok::Op(Op::Gt))
+     }
+ 
+     fn begins_line(&self) -> bool {
+-        self.pos == 0 || self.toks[self.pos - 1].line < self.toks[self.pos].line
++        self.pos == 0 || self.toks[self.pos - 1].line > /* ~ changed by cargo-mutants ~ */ self.toks[self.pos].line
+     }
+ 
+     /// Does a new module unit begin here? Only tokens in the first column can,
+     /// which is what keeps a proof's own keywords from ending it early.
+     fn at_unit_start(&self) -> bool {
+         if self.col() != 1 {
+             return false;
+         }

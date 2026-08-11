@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::is_name -> bool with false
+@@ -472,17 +472,17 @@
+                 let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
+                 self.is_name(after) && defeq(after + 1)
+             }
+             _ => false,
+         }
+     }
+ 
+     fn is_name(&self, offset: usize) -> bool {
+-        matches!(self.peek_at(offset), Tok::Ident(_) | Tok::Underscore)
++        false /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// The offset just past the bracket group that begins at `offset`.
+     fn past_brackets(&self, offset: usize) -> usize {
+         let mut depth = 0usize;
+         let mut at = offset;
+         loop {
+             match self.peek_at(at) {

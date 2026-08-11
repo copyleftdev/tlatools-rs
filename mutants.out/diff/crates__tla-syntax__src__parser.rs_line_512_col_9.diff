@@ -1,0 +1,41 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::decl -> Result<Decl> with Ok(Default::default())
+@@ -504,37 +504,17 @@
+         let mut out = vec![self.decl()?];
+         while self.eat(&Tok::Comma) {
+             out.push(self.decl()?);
+         }
+         Ok(out)
+     }
+ 
+     fn decl(&mut self) -> Result<Decl> {
+-        if let Some(param) = self.fixity_declaration() {
+-            return Ok(Decl {
+-                name: param.name,
+-                arity: param.arity,
+-            });
+-        }
+-        let name = self.expect_ident()?;
+-        let mut arity = 0;
+-        if self.eat(&Tok::LParen) {
+-            loop {
+-                if !self.eat(&Tok::Underscore) {
+-                    self.expect_ident()?;
+-                }
+-                arity += 1;
+-                if !self.eat(&Tok::Comma) {
+-                    break;
+-                }
+-            }
+-            self.expect(&Tok::RParen)?;
+-        }
+-        Ok(Decl { name, arity })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn opt_params(&mut self) -> Result<Vec<Param>> {
+         let mut params = Vec::new();
+         if self.eat(&Tok::LParen) {
+             loop {
+                 params.push(self.param()?);
+                 if !self.eat(&Tok::Comma) {

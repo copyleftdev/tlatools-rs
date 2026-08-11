@@ -1,0 +1,41 @@
+--- crates/tla-syntax/src/lexer.rs
++++ replace Lexer::scan_dashes -> Tok with Default::default()
+@@ -438,37 +438,17 @@
+             });
+         }
+         Err(self.err("`===` is neither a definition nor a module terminator"))
+     }
+ 
+     /// A run of four or more dashes is a separator, so the operators spelled
+     /// with dashes have to be recognised around it rather than before it.
+     fn scan_dashes(&mut self) -> Tok {
+-        if self.starts_with("-+->") {
+-            self.advance(4);
+-            return Tok::Op(Op::User("-+->"));
+-        }
+-        let run = self.run_of('-');
+-        if run >= 4 {
+-            self.advance(run);
+-            return Tok::Separator;
+-        }
+-        if run == 2 {
+-            self.advance(2);
+-            return Tok::Op(Op::User("--"));
+-        }
+-        for (text, tok) in [("->", Tok::Arrow), ("-|", Tok::Op(Op::User("-|")))] {
+-            if self.starts_with(text) {
+-                self.advance(2);
+-                return tok;
+-            }
+-        }
+-        self.bump();
+-        Tok::Op(Op::Minus)
++        Default::default() /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn scan_lt(&mut self) -> Tok {
+         for (text, tok) in [
+             ("<<", Tok::LTup),
+             ("<=>", Tok::Op(Op::Equiv)),
+             ("<=", Tok::Op(Op::Le)),
+             ("<-", Tok::Gets),

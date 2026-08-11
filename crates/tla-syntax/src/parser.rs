@@ -455,49 +455,31 @@ impl Parser {
     /// Matching the shape matters rather than merely finding a `==` further
     /// on: a generated specification wraps expressions into the first column,
     /// and the next definition's `==` is only a few tokens away.
+    /// Does a definition's left-hand side start here?
+    ///
+    /// The two callers want different things, and the looser answer suits
+    /// both. Ending an expression only ever turns on an operator, because a
+    /// name cannot continue one — the expression stops at a name whether or
+    /// not anything calls it a definition. Ending a *proof* turns on a name,
+    /// and there a rough answer is enough: proof steps are indented, so
+    /// anything in the first column that looks like a definition is one.
     fn at_definition(&self) -> bool {
         let defeq = |offset: usize| matches!(self.peek_at(offset), Tok::DefEq);
-        match self.peek() {
-            // `Name ==`, `Name(..) ==`, `Name[..] ==`, `a + b ==`, `b ^+ ==`
-            Tok::Ident(_) => {
-                defeq(1)
-                    || match self.peek_at(1) {
-                        Tok::LParen | Tok::LBrack => defeq(self.past_brackets(1)),
-                        Tok::Op(_) => defeq(2) || (self.is_name(2) && defeq(3)),
-                        _ => false,
-                    }
-            }
-            // `-. a ==`, `- a ==`, `-. _ ==`
-            Tok::Op(_) => {
-                let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
-                self.is_name(after) && defeq(after + 1)
-            }
-            _ => false,
+        if matches!(self.peek(), Tok::Ident(_)) {
+            return match self.peek_at(1) {
+                // `Name ==`, and `Name(..) ==` / `Name[..] ==` without walking
+                // past brackets that may hold anything.
+                Tok::DefEq | Tok::LParen | Tok::LBrack => true,
+                // `b ^+ ==` defines a postfix operator and `a ++ b ==` an
+                // infix one. Both begin with what looks like an ordinary name.
+                Tok::Op(_) => defeq(2) || (matches!(self.peek_at(2), Tok::Ident(_)) && defeq(3)),
+                _ => false,
+            };
         }
-    }
-
-    fn is_name(&self, offset: usize) -> bool {
-        matches!(self.peek_at(offset), Tok::Ident(_) | Tok::Underscore)
-    }
-
-    /// The offset just past the bracket group that begins at `offset`.
-    fn past_brackets(&self, offset: usize) -> usize {
-        let mut depth = 0usize;
-        let mut at = offset;
-        loop {
-            match self.peek_at(at) {
-                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
-                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
-                    depth -= 1;
-                    if depth == 0 {
-                        return at + 1;
-                    }
-                }
-                Tok::Eof => return at,
-                _ => {}
-            }
-            at += 1;
-        }
+        // `-. a ==`, `- a ==`, `- _ ==`. An operator *can* continue an
+        // expression, so here the whole shape has to be right.
+        let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
+        matches!(self.peek_at(after), Tok::Ident(_) | Tok::Underscore) && defeq(after + 1)
     }
 
     fn decl_list(&mut self) -> Result<Vec<Decl>> {

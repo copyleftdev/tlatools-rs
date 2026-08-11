@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace + with * in Parser::at_unit_start_after
+@@ -404,17 +404,17 @@
+             }
+             self.advance();
+         }
+     }
+ 
+     /// Would a new unit begin `ahead` tokens from here? Used to tell an
+     /// operator substitution from the start of an expression.
+     fn at_unit_start_after(&self, ahead: usize) -> bool {
+-        self.toks.get(self.pos + ahead).is_some_and(|t| t.col == 1)
++        self.toks.get(self.pos * /* ~ changed by cargo-mutants ~ */ ahead).is_some_and(|t| t.col == 1)
+     }
+ 
+     fn at_proof(&self) -> bool {
+         if matches!(self.peek(), Tok::Kw(Kw::Proof)) {
+             return true;
+         }
+         // A proof step is written `<1>2.`, which reaches us as `<`, a number
+         // or name, then `>`. It always begins a line; without that, the `<`

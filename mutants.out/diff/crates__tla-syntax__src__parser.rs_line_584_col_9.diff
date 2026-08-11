@@ -1,0 +1,38 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::param -> Result<Param> with Ok(Default::default())
+@@ -576,34 +576,17 @@
+             self.pos = mark;
+         }
+         None
+     }
+ 
+     /// A formal parameter: a name, `f(_, _)` for one that is itself an
+     /// operator, or an operator written by its fixity.
+     fn param(&mut self) -> Result<Param> {
+-        if let Some(operator) = self.fixity_declaration() {
+-            return Ok(operator);
+-        }
+-        let name = self.expect_ident()?;
+-        let mut arity = 0;
+-        if self.eat(&Tok::LParen) {
+-            loop {
+-                if !self.eat(&Tok::Underscore) {
+-                    self.expect_ident()?;
+-                }
+-                arity += 1;
+-                if !self.eat(&Tok::Comma) {
+-                    break;
+-                }
+-            }
+-            self.expect(&Tok::RParen)?;
+-        }
+-        Ok(Param { name, arity })
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn instance_tail(&mut self) -> Result<(String, Vec<(String, Expr)>)> {
+         self.expect(&Tok::Kw(Kw::Instance))?;
+         let module = self.expect_ident()?;
+         let mut subs = Vec::new();
+         if self.eat(&Tok::Kw(Kw::With)) {
+             loop {

@@ -1,0 +1,82 @@
+
+*** crates/tla-syntax/src/parser.rs:553:9: replace Parser::fixity_declaration -> Option<Param> with Some(Default::default())
+
+*** mutation diff:
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::fixity_declaration -> Option<Param> with Some(Default::default())
+@@ -545,42 +545,17 @@
+         }
+         Ok(params)
+     }
+ 
+     /// An operator declared by the shape it is written in rather than by a
+     /// name: `_+_` takes two operands around it, `-._` one after it, `_^#` one
+     /// before it. The underscores are where the operands go.
+     fn fixity_declaration(&mut self) -> Option<Param> {
+-        let mark = self.pos;
+-        // `_ op _` and `_ op`
+-        if matches!(self.peek(), Tok::Underscore)
+-            && let Tok::Op(op) = *self.peek_at(1)
+-        {
+-            self.advance();
+-            self.advance();
+-            let arity = if self.eat(&Tok::Underscore) { 2 } else { 1 };
+-            return Some(Param {
+-                name: op.symbol().to_string(),
+-                arity,
+-            });
+-        }
+-        // `op _`, and the `-._` spelling that marks a prefix minus.
+-        if let Tok::Op(op) = *self.peek() {
+-            self.advance();
+-            self.eat(&Tok::Dot);
+-            if self.eat(&Tok::Underscore) {
+-                return Some(Param {
+-                    name: op.symbol().to_string(),
+-                    arity: 1,
+-                });
+-            }
+-            self.pos = mark;
+-        }
+-        None
++        Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// A formal parameter: a name, `f(_, _)` for one that is itself an
+     /// operator, or an operator written by its fixity.
+     fn param(&mut self) -> Result<Param> {
+         if let Some(operator) = self.fixity_declaration() {
+             return Ok(operator);
+         }
+
+
+*** /home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/cargo test --no-run --verbose --package=tla-syntax@0.1.0
+       Dirty tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/crates/tla-syntax): the file `crates/tla-syntax/src/parser.rs` has changed (1786406507.489119400s, 3s after last build at 1786406504.995967588s)
+   Compiling tla-syntax v0.1.0 (/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/crates/tla-syntax)
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps`
+     Running `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps`
+error[E0277]: the trait bound `Param: Default` is not satisfied
+   --> crates/tla-syntax/src/parser.rs:553:14
+    |
+553 |         Some(Default::default()) /* ~ changed by cargo-mutants ~ */
+    |              ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `Param`
+    |
+help: consider annotating `Param` with `#[derive(Default)]`
+   --> crates/tla-syntax/src/ast.rs:79:1
+    |
+ 79 + #[derive(Default)]
+ 80 | pub struct Param {
+    |
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `tla-syntax` (lib test) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --test --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=b9cdaea3d809ecd1 -C extra-filename=-7b1a32620c4b87af --out-dir /tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps` (exit status: 1)
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `tla-syntax` (lib) due to 1 previous error
+
+Caused by:
+  process didn't exit successfully: `/home/ops/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rustc --crate-name tla_syntax --edition=2024 crates/tla-syntax/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 '--warn=clippy::pedantic' '--deny=clippy::all' --forbid=unsafe_code '--allow=clippy::similar_names' '--allow=clippy::must_use_candidate' '--allow=clippy::missing_errors_doc' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=85b1367430153dc6 -C extra-filename=-169d03993c2aec3f --out-dir /tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps -C incremental=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/incremental -L dependency=/tmp/cargo-mutants-tlatools-rs-wuBbcL.tmp/target/debug/deps` (exit status: 1)
+
+*** result: Failure(101)

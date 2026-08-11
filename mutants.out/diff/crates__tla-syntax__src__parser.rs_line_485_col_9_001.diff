@@ -1,21 +1,36 @@
 --- crates/tla-syntax/src/parser.rs
-+++ replace Parser::is_name -> bool with false
-@@ -477,17 +477,17 @@
-                 matches!(self.peek_at(1), Tok::Op(_))
-                     && (defeq(2) || (matches!(self.peek_at(2), Tok::Underscore) && defeq(3)))
-             }
-             _ => false,
-         }
++++ replace Parser::past_brackets -> usize with 1
+@@ -477,32 +477,17 @@
      }
  
      fn is_name(&self, offset: usize) -> bool {
--        matches!(self.peek_at(offset), Tok::Ident(_) | Tok::Underscore)
-+        false /* ~ changed by cargo-mutants ~ */
+         matches!(self.peek_at(offset), Tok::Ident(_) | Tok::Underscore)
      }
  
      /// The offset just past the bracket group that begins at `offset`.
      fn past_brackets(&self, offset: usize) -> usize {
-         let mut depth = 0usize;
-         let mut at = offset;
-         loop {
-             match self.peek_at(at) {
+-        let mut depth = 0usize;
+-        let mut at = offset;
+-        loop {
+-            match self.peek_at(at) {
+-                Tok::LParen | Tok::LBrack | Tok::LBrace | Tok::LTup => depth += 1,
+-                Tok::RParen | Tok::RBrack | Tok::RBrace | Tok::RTup => {
+-                    depth -= 1;
+-                    if depth == 0 {
+-                        return at + 1;
+-                    }
+-                }
+-                Tok::Eof => return at,
+-                _ => {}
+-            }
+-            at += 1;
+-        }
++        1 /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     fn decl_list(&mut self) -> Result<Vec<Decl>> {
+         let mut out = vec![self.decl()?];
+         while self.eat(&Tok::Comma) {
+             out.push(self.decl()?);
+         }
+         Ok(out)

@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::RTup in Parser::continue_postfix
+@@ -824,20 +824,17 @@
+                         Tok::At => {
+                             self.advance();
+                             "@".to_string()
+                         }
+                         Tok::LTup => {
+                             self.advance();
+                             "<<".to_string()
+                         }
+-                        Tok::RTup => {
+-                            self.advance();
+-                            ">>".to_string()
+-                        }
++                         /* ~ changed by cargo-mutants ~ */
+                         Tok::Colon => {
+                             self.advance();
+                             String::new()
+                         }
+                         _ => self.expect_ident()?,
+                     };
+                     let mut args = Vec::new();
+                     if self.eat(&Tok::LParen) {

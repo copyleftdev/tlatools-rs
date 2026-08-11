@@ -1,6 +1,6 @@
 --- crates/tla-syntax/src/parser.rs
 +++ replace Parser::at_definition -> bool with false
-@@ -451,39 +451,17 @@
+@@ -451,34 +451,17 @@
      }
  
      /// Does a definition's left-hand side start here?
@@ -24,11 +24,6 @@
 -            Tok::Op(_) => {
 -                let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
 -                self.is_name(after) && defeq(after + 1)
--            }
--            // `_ + _ ==`, `_ ^# ==`
--            Tok::Underscore => {
--                matches!(self.peek_at(1), Tok::Op(_))
--                    && (defeq(2) || (matches!(self.peek_at(2), Tok::Underscore) && defeq(3)))
 -            }
 -            _ => false,
 -        }

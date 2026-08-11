@@ -23,7 +23,7 @@
 -                | Kw::Recursive
 -                | Kw::Extends,
 -            ) => true,
--            Tok::Ident(_) | Tok::Op(_) | Tok::Underscore => self.at_definition(),
+-            Tok::Ident(_) | Tok::Op(_) => self.at_definition(),
 -            _ => false,
 -        }
 +        false /* ~ changed by cargo-mutants ~ */

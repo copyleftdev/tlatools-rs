@@ -1,0 +1,24 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Tok::Op(_) in Parser::at_definition
+@@ -463,20 +463,17 @@
+                 defeq(1)
+                     || match self.peek_at(1) {
+                         Tok::LParen | Tok::LBrack => defeq(self.past_brackets(1)),
+                         Tok::Op(_) => defeq(2) || (self.is_name(2) && defeq(3)),
+                         _ => false,
+                     }
+             }
+             // `-. a ==`, `- a ==`, `-. _ ==`
+-            Tok::Op(_) => {
+-                let after = usize::from(matches!(self.peek_at(1), Tok::Dot)) + 1;
+-                self.is_name(after) && defeq(after + 1)
+-            }
++             /* ~ changed by cargo-mutants ~ */
+             // `_ + _ ==`, `_ ^# ==`
+             Tok::Underscore => {
+                 matches!(self.peek_at(1), Tok::Op(_))
+                     && (defeq(2) || (matches!(self.peek_at(2), Tok::Underscore) && defeq(3)))
+             }
+             _ => false,
+         }
+     }

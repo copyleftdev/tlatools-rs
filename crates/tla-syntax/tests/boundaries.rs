@@ -206,3 +206,60 @@ fn a_let_instance_keeps_its_substitutions() {
     assert_eq!(subs.len(), 1);
     assert_eq!(subs[0].0, "a");
 }
+
+/// A substitution that is the last one in the clause has nothing after it to
+/// say where it ends but the unit that follows.
+#[test]
+fn an_operator_may_be_the_last_substitution() {
+    let m = parse_module("---- MODULE T ----\nI == INSTANCE M WITH F <- '\nY == 1\n====")
+        .expect("parses");
+    let Unit::Instance { subs, .. } = &m.units[0] else {
+        panic!("expected an instance, got {:?}", m.units[0]);
+    };
+    assert_eq!(subs.len(), 1);
+    assert_eq!(subs[0].1, Expr::Ident("'".to_string()));
+    assert!(m.definition("Y").is_some(), "the next unit still starts");
+}
+
+/// Every prefix operator that can be handed over by name.
+#[test]
+fn each_word_operator_can_be_passed_by_name() {
+    for word in ["ENABLED", "UNCHANGED", "DOMAIN", "SUBSET", "UNION"] {
+        let src = format!("---- MODULE T ----\nX == apply({word}, v)\n====");
+        let body = parse_module(&src)
+            .unwrap_or_else(|e| panic!("{word}: {e}"))
+            .definition("X")
+            .expect("X")
+            .body
+            .clone();
+        let Expr::Apply(_, args) = &body else {
+            panic!("expected an application for {word}, got {body}");
+        };
+        assert_eq!(args[0], Expr::Ident(word.to_string()), "{word}");
+    }
+}
+
+/// A proof ends at the next definition, whatever shape that definition takes.
+///
+/// The operator shapes matter here and nowhere else. Elsewhere a definition
+/// beginning with a name ends the previous one regardless, because a name
+/// cannot continue an expression — so a test that only checks the boundary
+/// will pass even when this is wrong. What it changes is how much a proof
+/// swallows, which the corpus manifests notice and unit tests did not.
+#[test]
+fn a_proof_ends_at_the_next_definition_of_any_shape() {
+    for (rest, name) in [
+        ("After == 1", "After"),
+        ("After(p) == p", "After"),
+        ("After[i \\in S] == i", "After"),
+        ("a ++ b == a", "++"),
+        ("a ^+ == a", "^+"),
+        ("-. a == a", "-"),
+    ] {
+        let src = format!(
+            "---- MODULE T ----\nTHEOREM T1 == TRUE\n<1>1. TRUE\n  BY DEF T1\n{rest}\n===="
+        );
+        let m = parse_module(&src).unwrap_or_else(|e| panic!("{rest}: {e}"));
+        assert!(m.definition(name).is_some(), "`{rest}` follows the proof");
+    }
+}

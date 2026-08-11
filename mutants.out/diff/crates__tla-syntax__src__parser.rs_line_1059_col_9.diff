@@ -1,0 +1,32 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::subscript -> Result<Expr> with Ok(Default::default())
+@@ -1051,28 +1051,17 @@
+             Tok::Underscore => true,
+             Tok::Ident(name) => name.starts_with('_'),
+             _ => false,
+         }
+     }
+ 
+     /// The `v` of `[A]_v`, parsed tightly so it cannot swallow what follows.
+     fn subscript(&mut self) -> Result<Expr> {
+-        if let Tok::Ident(name) = self.peek()
+-            && let Some(rest) = name.strip_prefix('_')
+-            && !rest.is_empty()
+-        {
+-            let head = Expr::Ident(rest.to_string());
+-            self.advance();
+-            // The name may carry on -- `[A]_Inst!vars` -- so whatever follows
+-            // it still belongs to the subscript.
+-            return self.continue_postfix(head);
+-        }
+-        self.expect(&Tok::Underscore)?;
+-        self.postfix()
++        Ok(Default::default()) /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// `{a, b}`, `{x \in S : P}` and `{e : x \in S}` are told apart by what
+     /// follows their first expression rather than by scanning ahead: a
+     /// `CHOOSE` inside the braces has a `:` of its own, and a lookahead
+     /// cannot tell whose it is.
+     fn brace_form(&mut self) -> Result<Expr> {
+         if self.eat(&Tok::RBrace) {

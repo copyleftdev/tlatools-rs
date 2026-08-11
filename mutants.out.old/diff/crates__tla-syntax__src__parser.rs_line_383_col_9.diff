@@ -1,0 +1,33 @@
+--- crates/tla-syntax/src/parser.rs
++++ replace Parser::skip_proof with ()
+@@ -375,29 +375,17 @@
+     }
+ 
+     /// Skip a TLAPS proof.
+     ///
+     /// Proofs are checked by a prover, not by an evaluator, so this crate
+     /// recognises them in order to get past them. A proof runs until the next
+     /// token that can only begin a new module unit.
+     fn skip_proof(&mut self) {
+-        if !self.at_proof() {
+-            return;
+-        }
+-        // Always consume the token that began the proof. A proof step can
+-        // itself look like the start of a unit -- `<1> DEFINE Op == ...` --
+-        // and returning without moving would leave the caller where it was.
+-        self.advance();
+-        while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+-            if self.at_unit_start() {
+-                return;
+-            }
+-            self.advance();
+-        }
++        () /* ~ changed by cargo-mutants ~ */
+     }
+ 
+     /// Advance to whatever comes after something that could not be read.
+     fn skip_to_unit(&mut self) {
+         self.advance();
+         while !matches!(self.peek(), Tok::Eof | Tok::ModuleEnd | Tok::Separator) {
+             if self.at_unit_start() {
+                 return;

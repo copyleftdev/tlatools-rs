@@ -1,0 +1,21 @@
+--- crates/tla-syntax/src/parser.rs
++++ delete match arm Unit::Def(def) in Parser::let_form
+@@ -989,17 +989,17 @@
+                     subs,
+                 });
+                 continue;
+             }
+             let Tok::Ident(name) = self.peek().clone() else {
+                 return Err(self.err("expected a definition inside LET"));
+             };
+             match self.named_definition(name, false)? {
+-                Unit::Def(def) => defs.push(def),
++                 /* ~ changed by cargo-mutants ~ */
+                 Unit::Instance { name, module, subs } => {
+                     instances.push(LetInstance { name, module, subs });
+                 }
+                 _ => return Err(self.err("only definitions may appear inside LET")),
+             }
+         }
+         self.advance();
+         let body = self.expr(0)?;
