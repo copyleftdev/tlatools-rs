@@ -145,7 +145,7 @@ files is read, so a change names the files it changed rather than moving a
 count. `golden/fmt/` holds full canonical output for the vendored
 specifications, so a change in the parser *or* the printer is a readable diff.
 
-**Against itself.** 164 tests, clippy-pedantic clean, 85% mutation coverage, and
+**Against itself.** 166 tests, clippy-pedantic clean, 85% mutation coverage, and
 a robustness suite that feeds back every prefix and every dropped line of every
 fixture — a parser must never panic, whatever it is handed.
 
