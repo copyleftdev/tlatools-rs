@@ -1,6 +1,8 @@
 # tlatools-rs
 
 [![ci](https://github.com/copyleftdev/tlatools-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/copyleftdev/tlatools-rs/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/tlatools.svg)](https://crates.io/crates/tlatools)
+[![docs.rs](https://img.shields.io/docsrs/tla-eval)](https://docs.rs/tla-eval)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Tip my tokens](https://tokentip.to/badge/copyleftdev.svg?logo=1)](https://tokentip.to/@copyleftdev)
 
