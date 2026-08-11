@@ -21,7 +21,7 @@ import sys
 import time
 from pathlib import Path
 
-BENCH = Path(os.environ.get("TLA_FOR_AI", "/home/ops/Project/tla-for-ai"))
+BENCH = Path(os.environ.get("TLA_FOR_AI", "../tla-for-ai"))
 sys.path.insert(0, str(BENCH))
 
 from harness import oracle, task as task_mod  # noqa: E402

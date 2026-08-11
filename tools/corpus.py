@@ -25,7 +25,7 @@ import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-BENCH = Path(os.environ.get("TLA_FOR_AI", "/home/ops/Project/tla-for-ai"))
+BENCH = Path(os.environ.get("TLA_FOR_AI", "../tla-for-ai"))
 
 DEFAULT_LIMITS = {
     "max_states": 400,

@@ -84,7 +84,6 @@ search that failed to find something.
 
 - Wiring this into an actual agent loop, with the failure text fed back as the
   next prompt, and measuring whether it beats an uninformative retry. That
-  experiment exists at `/home/ops/Project/tla-for-ai` and has not been run to
-  a conclusion.
+  experiment is built but has not been run to a conclusion.
 - A trace checker: take a production log, decode it into states, and ask
   whether the run was one the specification allows.
