@@ -119,8 +119,9 @@ jobs:
             artifacts/*
 
   # Publishing is separate and last: a GitHub release can be deleted and a
-  # crates.io version cannot. It only runs where the token exists, so a fork
-  # cutting a tag does nothing.
+  # crates.io version cannot. It skips where the token is absent, so a fork
+  # cutting a tag does nothing, and it skips crates already at this version, so
+  # a re-run finishes a partial publish instead of failing on what landed.
   crates:
     needs: publish
     runs-on: ubuntu-latest
@@ -136,4 +137,13 @@ jobs:
             echo "No CARGO_REGISTRY_TOKEN set; skipping crates.io." >&2
             exit 0
           fi
-          cargo publish --workspace --locked --token "$TOKEN"
+          version="${GITHUB_REF_NAME#v}"
+          for crate in tla-syntax tla-eval tla-oracle tlatools; do
+            if curl -sfo /dev/null \
+                 -H 'User-Agent: tlatools-rs release workflow' \
+                 "https://crates.io/api/v1/crates/$crate/$version"; then
+              echo "$crate $version is already published"
+              continue
+            fi
+            cargo publish -p "$crate" --locked --token "$TOKEN"
+          done
