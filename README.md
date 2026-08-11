@@ -57,6 +57,23 @@ That is Raft's majority rule, named exactly. A model checker cannot report it,
 because it never evaluates the specification at the offending pair of states —
 it searches for the pair and fails to find it.
 
+## A worked example
+
+[`demo/todo`](demo/todo) is a to-do list: a 40-line specification, three Python
+implementations, and a script that asks the specification about each one. Two
+of the implementations have bugs, and it names both:
+
+```console
+$ demo/todo/check.py demo/todo/impl/clear_removes_everything.py
+  from   a=open, b=done
+  doing  clear_completed
+  to     a=absent, b=absent
+
+  ClearCompleted was available, but does not produce that state,
+    because tasks' = [i \in Ids |-> IF tasks[i] = Done THEN Absent ELSE tasks[i]]
+    does not hold (1 of its 2 clauses do)
+```
+
 ## Install
 
 ```console

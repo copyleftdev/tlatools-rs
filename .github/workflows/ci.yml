@@ -33,6 +33,19 @@ jobs:
         env:
           RUSTDOCFLAGS: -D warnings
 
+      # The demo is the first thing anyone runs. A demo that quietly stopped
+      # working is worse than no demo.
+      - name: demo
+        run: |
+          cargo build --release --quiet -p tlatools
+          demo/todo/check.py demo/todo/impl/correct.py
+          for bug in completes_anything clear_removes_everything; do
+            if demo/todo/check.py "demo/todo/impl/$bug.py"; then
+              echo "$bug was supposed to be caught" >&2
+              exit 1
+            fi
+          done
+
   audit:
     runs-on: ubuntu-latest
     steps:
